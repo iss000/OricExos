@@ -5,8 +5,11 @@ master.rom - original Oric v1.1 ROM for the master Oric
 master.pch - patches, both 'master.*' files can be used in Oricutron
 
 slave-1.rom  - ROM for slave #1
+
 slave-2.rom  - ROM for slave #2
+
 slave-3.rom  - ROM for slave #3
+
 
 How To create slave.rom:
 ------------------------

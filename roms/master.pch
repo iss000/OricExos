@@ -4,7 +4,7 @@
 ; symbol (C) as slave number 1,2,3
 $2DB0:31
 
-; jmp to cload
+; jmp to cload $E874
 $2D76:A974A0E8
 
 ; default ink white

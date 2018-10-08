@@ -1,17 +1,20 @@
 ; cls intead of free bytes print
-;$2D73:20CECC
+$2D73:20CECC
 
 ; symbol (C) as slave number 1,2,3
 $2DB0:31
+
+; hide cursor
+$2DB1:11
 
 ; jmp to cload $E874
 $2D76:A974A0E8
 
 ; default ink white
-;$3914:A907
+$3914:A907
 
 ; default paper black
-;$3919:A900
+$3919:A900
 
 ; no caps
 ;$3770:101010101000101010101000 

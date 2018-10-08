@@ -10,4 +10,4 @@ cat slave-1.rom | sed -e 's/1 1983/3 1983/g' > slave-3.rom
 # duplicate rom content for use with 27356 eproms
 cat slave-1.rom slave-1.rom > slave-1-27256.rom
 cat slave-2.rom slave-2.rom > slave-2-27256.rom
-cat slave-3.rom slave-1.rom > slave-3-27256.rom
+cat slave-3.rom slave-3.rom > slave-3-27256.rom

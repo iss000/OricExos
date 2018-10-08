@@ -5,7 +5,7 @@ $2D73:20CECC
 $2DB0:31
 
 ; hide cursor
-$2DB1:11
+$2DB6:11
 
 ; jmp to cload $E874
 $2D76:A974A0E8

@@ -16,7 +16,7 @@ static int i;
 
 void main(void)
 {
-  oric_id = 0x07 & peek(0xEDB0);
+  oric_id = 0x03 & peek(0xEDB0);
   id = 1 << oric_id;
   if(id<8)
   {

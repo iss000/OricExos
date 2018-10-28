@@ -12,12 +12,14 @@ id_addr = $edb0
 *       = START_ADDRESS
 
 _start
+        sei
+        
         jsr   r_cls
         lda   id_addr
         and   #$07
         sta   id
         sta   tmp
-        clc
+        sec
         adc   #'@'
         sta   msg+1
         lda   id

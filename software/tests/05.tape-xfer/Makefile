@@ -9,12 +9,12 @@ PROJECT_DIR		:= $(shell pwd)
 # CPU			:= 65816
 
 # # # Autorun main project file
-PROJECT_AUTORUN		:= 1
+PROJECT_AUTORUN		:= 0
 
 # # # Leave DOS
-PROJECT_QUITDOS		:= 0
+PROJECT_QUITDOS		:= 1
 
-ATAPS			:= master-helper slave slave-debug
+ATAPS			:= slave slave-debug
 BTAPS			:= $(PROJECT)
 CTAPS			:=
 
@@ -25,17 +25,11 @@ common_SRC 		:=
 $(PROJECT)_SRC 		:= master.txt
 $(PROJECT)_AUTORUN	:= 1
 
-master-helper_SRC 	:= master-helper.s
-master-helper_AUTORUN	:= 0
-master-helper_ADDRESS	:= $(shell echo $$((0x0f00)))
-
-slave_SRC 		:= slave.s
+slave_SRC 		:= slave.s tape.s tape-in.s tape-out.s test-tape-in.s test-tape-out.s
 slave_AUTORUN		:= 0
-slave_ADDRESS		:= $(shell echo $$((0x1000)))
 
-slave-debug_SRC 	:= slave.s
+slave-debug_SRC 	:= slave.s tape.s tape-in.s tape-out.s test-tape-in.s test-tape-out.s
 slave-debug_AUTORUN	:= 1
-slave-debug_ADDRESS	:= $(shell echo $$((0x1000)))
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
@@ -58,7 +52,7 @@ COMMON			:= ${HOME}/work/projects/8Bit/work/common
 
 START_ADDRESS		:= $(shell echo $$((0x1000)))
 
-VPATH           	:= $(VPATH) $(COMMON)
+VPATH           	:= $(VPATH) $(COMMON) tape/
 
 PREPARE			:= prepare
 FINALIZE		:= finalize
@@ -77,7 +71,7 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= DSKA0*.HFE first-demo.tap
+TEMP_FILES 		+= DSKA0*.HFE tape-xfer.tap
 
 prepare:
 	@echo "Building..."
@@ -85,9 +79,8 @@ prepare:
 finalize: hxc
 # 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
-	@cat $(PROJECT).tap slave.tap > first-demo.tap
-# 	@cp -f first-demo.tap ../01.first-demo.tap
-	@cp -f $(PROJECT).dsk ../01.first-demo.dsk
+	@cat $(PROJECT).tap slave.tap > tape-xfer.tap
+	@cp -f tape-xfer.tap ../05.tape-xfer.tap
 	@echo "Done"
 
 # 
@@ -96,7 +89,7 @@ finalize: hxc
 gom: all
 	@oric -ma -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym first-demo.tap
+	-s $(PROJECT_DIR)/slave.sym tape-xfer.tap
 
 gos1: all
 	@oric -m1 -r:$(PROJECT_DIR)/$(PROJECT).brk \
@@ -107,3 +100,4 @@ gos2: all
 	@oric -mp -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
 	-s $(PROJECT_DIR)/slave.sym slave-debug.tap
+

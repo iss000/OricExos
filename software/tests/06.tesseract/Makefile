@@ -14,9 +14,9 @@ PROJECT_AUTORUN		:= 1
 # # # Leave DOS
 PROJECT_QUITDOS		:= 0
 
-ATAPS			:= master-helper slave slave-debug
+ATAPS			:= master-helper
 BTAPS			:= $(PROJECT)
-CTAPS			:=
+CTAPS			:= slave slave-debug
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 
@@ -29,11 +29,11 @@ master-helper_SRC 	:= master-helper.s
 master-helper_AUTORUN	:= 0
 master-helper_ADDRESS	:= $(shell echo $$((0x0f00)))
 
-slave_SRC 		:= slave.s
+slave_SRC 		:= main.c charmap.s draw.s random.s inlay.s
 slave_AUTORUN		:= 0
 slave_ADDRESS		:= $(shell echo $$((0x1000)))
 
-slave-debug_SRC 	:= slave.s
+slave-debug_SRC 	:= main.c charmap.s draw.s random.s inlay.s
 slave-debug_AUTORUN	:= 1
 slave-debug_ADDRESS	:= $(shell echo $$((0x1000)))
 
@@ -77,17 +77,18 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= DSKA0*.HFE first-demo.tap
+TEMP_FILES 		+= DSKA0*.HFE tesseract-demo.tap
 
 prepare:
 	@echo "Building..."
+	@$(OSDK)/bin/pictconv -d1 -o4_LabelPicture pics/inlay.png inlay.s
 
 finalize: hxc
 # 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
-	@cat $(PROJECT).tap slave.tap > first-demo.tap
-# 	@cp -f first-demo.tap ../01.first-demo.tap
-	@cp -f $(PROJECT).dsk ../01.first-demo.dsk
+	@cat $(PROJECT).tap slave.tap > tesseract-demo.tap
+# 	@cp -f tesseract-demo.tap ../06.tesseract-demo.tap
+	@cp -f $(PROJECT).dsk ../06.tesseract-demo.dsk
 	@echo "Done"
 
 # 
@@ -96,7 +97,7 @@ finalize: hxc
 gom: all
 	@oric -ma -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym first-demo.tap
+	-s $(PROJECT_DIR)/slave.sym tesseract-demo.tap
 
 gos1: all
 	@oric -m1 -r:$(PROJECT_DIR)/$(PROJECT).brk \

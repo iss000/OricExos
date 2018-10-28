@@ -1,11 +1,13 @@
 # # # 
 DEMOS := \
-01.first \
-02.bars \
-03.circles \
-04.morebars \
-05.tape-xfer \
-06.cube
+	01.first \
+	02.bars \
+	03.circles \
+	04.morebars \
+	05.tape-xfer \
+	06.tesseract
+
+
 # 
 all:
 	@rm -f *.tap

@@ -77,14 +77,14 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= DSKA0*.HFE tesseract-demo.tap
+TEMP_FILES 		+= *.HFE *.hfe tesseract-demo.tap
 
 prepare:
 	@echo "Building..."
 	@$(OSDK)/bin/pictconv -d1 -o4_LabelPicture pics/inlay.png inlay.s
 
 finalize: hxc
-# 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
+	@cp -f $(PROJECT)_dsk.hfe 06.tesseract-demo.hfe
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@cat $(PROJECT).tap slave.tap > tesseract-demo.tap
 # 	@cp -f tesseract-demo.tap ../06.tesseract-demo.tap

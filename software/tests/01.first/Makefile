@@ -77,13 +77,13 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= DSKA0*.HFE first-demo.tap
+TEMP_FILES 		+= *.HFE *.hfe first-demo.tap
 
 prepare:
 	@echo "Building..."
 
 finalize: hxc
-# 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
+	@cp -f $(PROJECT)_dsk.hfe 01.first-demo.hfe
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@cat $(PROJECT).tap slave.tap > first-demo.tap
 # 	@cp -f first-demo.tap ../01.first-demo.tap

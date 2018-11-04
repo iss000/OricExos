@@ -9,12 +9,12 @@ PROJECT_DIR		:= $(shell pwd)
 # CPU			:= 65816
 
 # # # Autorun main project file
-PROJECT_AUTORUN		:= 0
+PROJECT_AUTORUN		:= 1
 
 # # # Leave DOS
-PROJECT_QUITDOS		:= 1
+PROJECT_QUITDOS		:= 0
 
-ATAPS			:= slave slave-debug
+ATAPS			:= master-helper slave slave-debug
 BTAPS			:= $(PROJECT)
 CTAPS			:=
 
@@ -25,11 +25,17 @@ common_SRC 		:=
 $(PROJECT)_SRC 		:= master.txt
 $(PROJECT)_AUTORUN	:= 1
 
+master-helper_SRC 	:= master-helper.s
+master-helper_AUTORUN	:= 0
+master-helper_ADDRESS	:= $(shell echo $$((0x0f00)))
+
 slave_SRC 		:= slave.s
 slave_AUTORUN		:= 0
+slave_ADDRESS		:= $(shell echo $$((0x1000)))
 
 slave-debug_SRC 	:= slave.s
 slave-debug_AUTORUN	:= 1
+slave-debug_ADDRESS	:= $(shell echo $$((0x1000)))
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
@@ -71,16 +77,17 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= DSKA0*.HFE bars-demo.tap
+TEMP_FILES 		+= *.HFE *.hfe bars-demo.tap
 
 prepare:
 	@echo "Building..."
 
 finalize: hxc
-# 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
+	@cp -f $(PROJECT)_dsk.hfe 02.bars-demo.hfe
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@cat $(PROJECT).tap slave.tap > bars-demo.tap
-	@cp -f bars-demo.tap ../02.bars-demo.tap
+# 	@cp -f bars-demo.tap ../02.bars-demo.tap
+	@cp -f $(PROJECT).dsk ../02.bars-demo.dsk
 	@echo "Done"
 
 # 

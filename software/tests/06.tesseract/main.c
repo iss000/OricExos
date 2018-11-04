@@ -166,7 +166,7 @@ void InitClrTab()
 void Delay()
 {
 	char i;
-	unsigned char id = (0x03 & *idptr) + 1;
+	unsigned char id = (0x03 & *idptr) * 2;
 	for(i=0;i<id;i++)
 		delay();
 }

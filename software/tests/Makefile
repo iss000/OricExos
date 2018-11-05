@@ -9,6 +9,12 @@ DEMOS := \
 
 
 # 
-all:
-	@rm -f *.tap
+all: remove-bin
 	@for i in $(DEMOS); do make -C $$i all && make -C $$i clean; done
+
+clean: remove-bin
+	@for i in $(DEMOS); do make -C $$i clean; done
+
+.PHONY: remove-bin
+remove-bin:
+	@rm -f *.tap *.dsk *.hfe

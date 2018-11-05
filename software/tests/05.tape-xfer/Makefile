@@ -1,4 +1,8 @@
 # # #
+DEMO_NUMBER		:= 05
+DEMO_NAME		:= tape-xfer
+
+# # #
 PROJECT 		:= master
 PROJECT_DIR		:= $(shell pwd)
 
@@ -9,27 +13,36 @@ PROJECT_DIR		:= $(shell pwd)
 # CPU			:= 65816
 
 # # # Autorun main project file
-PROJECT_AUTORUN		:= 0
+PROJECT_AUTORUN		:= 1
 
 # # # Leave DOS
-PROJECT_QUITDOS		:= 1
+PROJECT_QUITDOS		:= 0
 
-ATAPS			:= slave slave-debug
-BTAPS			:= $(PROJECT)
+ATAPS			:= master-helper slave slave-debug
+BTAPS			:= $(PROJECT) master-tape
 CTAPS			:=
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 
 common_SRC 		:=
 
-$(PROJECT)_SRC 		:= master.txt
+$(PROJECT)_SRC		:= $(PROJECT).txt
 $(PROJECT)_AUTORUN	:= 1
+
+master-tape_SRC		:= master-tape.txt
+master-tape_AUTORUN	:= 1
+
+master-helper_SRC 	:= master-helper.s
+master-helper_AUTORUN	:= 0
+master-helper_ADDRESS	:= $(shell echo $$((0x0f00)))
 
 slave_SRC 		:= slave.s tape.s tape-in.s tape-out.s test-tape-in.s test-tape-out.s
 slave_AUTORUN		:= 0
+slave_ADDRESS		:= $(shell echo $$((0x1000)))
 
 slave-debug_SRC 	:= slave.s tape.s tape-in.s tape-out.s test-tape-in.s test-tape-out.s
 slave-debug_AUTORUN	:= 1
+slave-debug_ADDRESS	:= $(shell echo $$((0x1000)))
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
@@ -48,7 +61,7 @@ EMUARG 			+= --rendermode opengl
 EMUPARAM		+= -s $(PROJECT_DIR)/$(PROJECT).sym
 EMUPARAM		+= -r:$(PROJECT_DIR)/$(PROJECT).brk
 
-COMMON			:= ${HOME}/work/projects/8Bit/work/common
+COMMON			:= ../common
 
 START_ADDRESS		:= $(shell echo $$((0x1000)))
 
@@ -71,16 +84,17 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= DSKA0*.HFE tape-xfer.tap
+TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap $(DEMO_NAME).tap
 
 prepare:
 	@echo "Building..."
 
 finalize: hxc
-# 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
-	@cat $(PROJECT).tap slave.tap > tape-xfer.tap
-	@cp -f tape-xfer.tap ../05.tape-xfer.tap
+	@cat master-tape.tap slave.tap > $(DEMO_NAME).tap
+	@cp -f $(DEMO_NAME).tap ../$(DEMO_NUMBER).$(DEMO_NAME).tap
+	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
+	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
 	@echo "Done"
 
 # 
@@ -89,7 +103,7 @@ finalize: hxc
 gom: all
 	@oric -ma -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym tape-xfer.tap
+	-s $(PROJECT_DIR)/slave.sym $(DEMO_NAME).tap
 
 gos1: all
 	@oric -m1 -r:$(PROJECT_DIR)/$(PROJECT).brk \
@@ -100,4 +114,3 @@ gos2: all
 	@oric -mp -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
 	-s $(PROJECT_DIR)/slave.sym slave-debug.tap
-

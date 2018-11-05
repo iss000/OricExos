@@ -1,4 +1,8 @@
 # # #
+DEMO_NUMBER		:= 06
+DEMO_NAME		:= tesseract
+
+# # #
 PROJECT 		:= master
 PROJECT_DIR		:= $(shell pwd)
 
@@ -15,15 +19,18 @@ PROJECT_AUTORUN		:= 1
 PROJECT_QUITDOS		:= 0
 
 ATAPS			:= master-helper
-BTAPS			:= $(PROJECT)
+BTAPS			:= $(PROJECT) master-tape
 CTAPS			:= slave slave-debug
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 
 common_SRC 		:=
 
-$(PROJECT)_SRC 		:= master.txt
+$(PROJECT)_SRC		:= $(PROJECT).txt
 $(PROJECT)_AUTORUN	:= 1
+
+master-tape_SRC		:= master-tape.txt
+master-tape_AUTORUN	:= 1
 
 master-helper_SRC 	:= master-helper.s
 master-helper_AUTORUN	:= 0
@@ -54,7 +61,7 @@ EMUARG 			+= --rendermode opengl
 EMUPARAM		+= -s $(PROJECT_DIR)/$(PROJECT).sym
 EMUPARAM		+= -r:$(PROJECT_DIR)/$(PROJECT).brk
 
-COMMON			:= ${HOME}/work/projects/8Bit/work/common
+COMMON			:= ../common
 
 START_ADDRESS		:= $(shell echo $$((0x1000)))
 
@@ -77,18 +84,18 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= *.HFE *.hfe tesseract-demo.tap
+TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap $(DEMO_NAME).tap
 
 prepare:
 	@echo "Building..."
 	@$(OSDK)/bin/pictconv -d1 -o4_LabelPicture pics/inlay.png inlay.s
 
 finalize: hxc
-	@cp -f $(PROJECT)_dsk.hfe 06.tesseract-demo.hfe
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
-	@cat $(PROJECT).tap slave.tap > tesseract-demo.tap
-# 	@cp -f tesseract-demo.tap ../06.tesseract-demo.tap
-	@cp -f $(PROJECT).dsk ../06.tesseract-demo.dsk
+	@cat master-tape.tap slave.tap > $(DEMO_NAME).tap
+	@cp -f $(DEMO_NAME).tap ../$(DEMO_NUMBER).$(DEMO_NAME).tap
+	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
+	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
 	@echo "Done"
 
 # 
@@ -97,7 +104,7 @@ finalize: hxc
 gom: all
 	@oric -ma -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym tesseract-demo.tap
+	-s $(PROJECT_DIR)/slave.sym $(DEMO_NAME).tap
 
 gos1: all
 	@oric -m1 -r:$(PROJECT_DIR)/$(PROJECT).brk \

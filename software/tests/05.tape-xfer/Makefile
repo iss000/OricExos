@@ -36,11 +36,11 @@ master-helper_SRC 	:= master-helper.s
 master-helper_AUTORUN	:= 0
 master-helper_ADDRESS	:= $(shell echo $$((0x0f00)))
 
-slave_SRC 		:= slave.s tape.s tape-in.s tape-out.s test-tape-in.s test-tape-out.s
+slave_SRC 		:= slave.s tape.s
 slave_AUTORUN		:= 0
 slave_ADDRESS		:= $(shell echo $$((0x1000)))
 
-slave-debug_SRC 	:= slave.s tape.s tape-in.s tape-out.s test-tape-in.s test-tape-out.s
+slave-debug_SRC 	:= $(slave_SRC)
 slave-debug_AUTORUN	:= 1
 slave-debug_ADDRESS	:= $(shell echo $$((0x1000)))
 
@@ -65,7 +65,7 @@ COMMON			:= ../common
 
 START_ADDRESS		:= $(shell echo $$((0x1000)))
 
-VPATH           	:= $(VPATH) $(COMMON) tape/
+VPATH           	:= $(VPATH) $(COMMON) tape
 
 PREPARE			:= prepare
 FINALIZE		:= finalize
@@ -73,8 +73,9 @@ FINALIZE		:= finalize
 # # #
 include $($(TOOLCHAIN))/atmos.make
 
-AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -I$(COMMON)
+AFLAGS			+= -DASSEMBLER
+AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 $(PROJECT)_AFLAGS 	:=
 
 CFLAGS			+= -I$(COMMON)

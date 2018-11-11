@@ -40,18 +40,24 @@ crclen                  = $38                     ; length of data for crc.
 errorflg                = $39                     ; 0 no error, 1 error
 dstptr                  = $40
                         
-buffer                  = $b400
-tap_start               = buffer+$10
-tap_end                 = buffer+$12
-tap_run                 = buffer+$14
+_buffer                 = $b400
+tap_start               = _buffer+$10
+tap_end                 = _buffer+$12
+tap_run                 = _buffer+$14
+tap_fast                = _buffer+$16
                         
-bit_time                = $b0
+; bit_time                = $20
+; bit_treshold            = $40
+
+#include "../bit_values.s"
 
 r_via_set               = $e76a       ; init VIA (disable T1 interrupt) and set flag I
 r_via_reset             = $e93d       ; restore VIA settings and clear flag I
 
 ;--------------------------
 .text
+
+_values           dsb   256,0
 
 ;--------------------------
 ;--- tape -----------------
@@ -77,7 +83,19 @@ r_via_reset             = $e93d       ; restore VIA settings and clear flag I
 ;                 plp
 ;                 rts
 
-; via_set
+via_set
+                  jsr r_via_set
+
+                  lda #<(bit_time)
+                  sta via_t1ll
+                  lda #>(bit_time)
+                  sta via_t1lh
+                  lda #$ff
+                  sta via_t2ll
+                  lda #$ff
+                  sta via_t2lh
+                  rts
+                  
 ;                 php
 ;                 sei
 ;                 lda #<(bit_time)
@@ -102,7 +120,7 @@ r_via_reset             = $e93d       ; restore VIA settings and clear flag I
 dispname        
                 ldx #0
 dispname_1
-                lda buffer,y
+                lda _buffer,y
                 cmp #$d
                 beq dspnend
                 sta $bf92,x
@@ -192,8 +210,8 @@ datdudms        byt 'data ?  '
 errormess       byt 'error at block : '
 searmess        byt 'searching'
 
-load
-                jsr r_via_set
+_load
+                jsr via_set
                 lda #0
                 sta errorflg
                 sta block
@@ -219,7 +237,7 @@ blockload_4
                 ldy #0
 blockload_1
                 jsr inbyte
-                sta buffer+$20,y
+                sta _buffer+$20,y
                 iny
                 cpy #28
 
@@ -233,16 +251,16 @@ blockload_3
                 bpl blockload_3
                 ldy #$20
                 jsr dispname
-                lda buffer+$30
+                lda _buffer+$30
                 ldx #$3b
                 jsr dispblock
-                lda buffer
+                lda _buffer
                 cmp #$d
                 beq nameok
                 ldx #0
 blockload_2
-                lda buffer,x
-                cmp buffer+$20,x
+                lda _buffer,x
+                cmp _buffer+$20,x
                 bne nameduff
                 cmp #$d
                 beq nameok
@@ -254,12 +272,12 @@ blockload_2
 nameok
                 ldx #0
 nameok_2
-                lda buffer+$20,x
-                sta buffer,x
+                lda _buffer+$20,x
+                sta _buffer,x
                 inx
                 cmp #$d
                 bne nameok_2
-                lda buffer+$30
+                lda _buffer+$30
                 cmp block
                 beq blockok
 
@@ -274,21 +292,21 @@ nameduff_1
                 jmp loaderror
 
 blockok
-                lda #<(buffer+$20)
+                lda #<(_buffer+$20)
                 sta crcdata
-                lda #>(buffer+$20)
+                lda #>(_buffer+$20)
                 sta crcdata+1
                 lda #$16
                 sta crclen
                 jsr crccalc
                 lda crcl
-                cmp buffer+$36
+                cmp _buffer+$36
                 bne headbad
                 lda crch
-                cmp buffer+$37
-                beq bufferok
+                cmp _buffer+$37
+                beq headerok
                 
-; crc on buffer is bad, say so.
+; crc on header is bad, say so.
 headbad
                 ldx #7
 headbad_1
@@ -298,36 +316,36 @@ headbad_1
                 bpl headbad_1
                 jmp loaderror
 
-; if we get here then buffer is ok
+; if we get here then header is ok
 ; so let`s try and load some data.
-bufferok
+headerok
                 ldx #7
-bufferok_2
+headerok_2
                 lda loading,x
                 sta $bf6a,x
                 dex
-                bpl bufferok_2
+                bpl headerok_2
                 inx
                 stx errorflg
-                lda buffer+$31
+                lda _buffer+$31
                 sta dstptr
-                lda buffer+$32
+                lda _buffer+$32
                 clc
                 adc block
                 sta dstptr+1
                 jsr synchin
 
 ; wait for zero after synch
-bufferok_1
+headerok_1
                 jsr inbyte
-                bne bufferok_1
+                bne headerok_1
 
                 ldy #0
-bufferok_6
+headerok_6
                 jsr inbyte
                 sta (dstptr),y
                 iny
-                bne bufferok_6
+                bne headerok_6
                 
 ; yes readers, this pathetic bit
 ; of code is all it takes to load
@@ -349,7 +367,7 @@ bufferok_6
                 lda crch
                 cmp dstptr+1
                 bne databad
-                lda buffer+$33
+                lda _buffer+$33
                 bne endload
 
 ; is it the last block ?
@@ -358,13 +376,14 @@ bufferok_6
 
 ; yup, it`s the last block
 endload
-                lda buffer+$35
+                jsr r_via_reset
+
+                lda _buffer+$35
                 beq noautorun
                 
 ; does it orto run ?
-                jmp (buffer+$34)
+                jmp (_buffer+$34)
 noautorun
-                jsr r_via_reset
                 rts
 
 ; the poor bastard has had a data
@@ -425,23 +444,72 @@ inbyte_13
                 rts
 inbyte_3
                 pha
+                
+; ;                 txa
+; ;                 pha
+; ;                 tya
+; ;                 pha
+                
                 lda via_b
 inbyte_7
                 lda via_ifr
                 and #$10
                 beq inbyte_7
                 
-                lda via_t2ch
+;                 lda via_t2ch
+;                 pha
+;                 lda #$ff
+;                 sta via_t2ch
+;                 pla
+;                 cmp #$fe
 
+; 40 - H
+; 50 - J
+; 60 - F
+; 70 - B
+; 80 - A/2
+; 90 ?
+
+                lda via_t2cl
                 pha
                 lda #$ff
                 sta via_t2ch
                 pla
-                
-                cmp #$fe
-                
+                jsr byte_dump
+                cmp #64
                 pla
                 rts
+              
+; ;                 lda via_t2cl
+; ;                 pha
+; ;                 lda #$ff
+; ;                 sta via_t2ch
+; ;                 pla
+; ; 
+; ;                 tay
+; ;                 ldx _values,y
+; ;                 cpx #38
+; ;                 bcs skp_1
+; ;                 inx
+; ; skp_1
+; ;                 txa
+; ;                 sta _values,y
+; ; 
+; ;                 lda _scrn_lo,y
+; ;                 sta _auto_ptr+1
+; ;                 lda _scrn_hi,y
+; ;                 sta _auto_ptr+2
+; ; 
+; ;                 lda #$3f
+; ; _auto_ptr       = *
+; ;                 sta $1234,x
+; ;                 
+; ;                 pla
+; ;                 tay
+; ;                 pla
+; ;                 tax                
+; ;                 pla
+; ;                 rts
 
 
 ; get byte from cassette, leave in
@@ -476,12 +544,91 @@ inbyte_9
                 pla
                 tax
                 lda shifter
+;                 jsr byte_dump
                 rts
 
+                
+byte_dump
+                sty byte_dump_y
+                ldy byte_dump_c
+                cpy #240
+                bcs bd_exit
+                
+                stx byte_dump_x
+                ldx #1
+                pha
+                pha
+                lsr
+                lsr
+                lsr
+                lsr
+                jsr hp
+                inx
+                inx
+                inx
+                pla
+                and #$0f
+                jsr hp
+                inc byte_dump_c
+                ldx byte_dump_x
+                pla
+bd_exit
+                ldy byte_dump_y
+                rts
+
+byte_dump_c     
+                byt 0
+byte_dump_x     
+                byt 0
+byte_dump_y
+                byt 0
+
+
+hp
+                clc
+                adc #48
+                cmp #58
+                bcc nl
+                clc
+                adc #7
+nl      
+                sta $bb80+40
+                txa
+                clc
+                adc nl+1
+                sta nl+1
+                lda #0
+                adc nl+2
+                sta nl+2
+                rts
+
+                
 ;--------------------------
 ;--- tape-out -------------
 ;--------------------------
-save
+_save
+                jsr via_set
+                ldy #0
+                jsr dispname
+
+                ldx #0
+sv_1
+                lda #$00
+                jsr outbyte
+                inx
+                cpx #10
+                bne sv_1
+                rts
+                
+                ldx #0
+sv_2
+                lda #$FF
+                jsr outbyte
+                inx
+                cpx #10
+                bne sv_2
+                rts
+
                 lda #0
                 sta block
                 sta tap_start
@@ -491,7 +638,7 @@ save
                 sec
                 sbc tap_start+1
                 sta length
-                jsr r_via_set
+                jsr via_set
                 ldy #0
                 jsr dispname
                 lda tap_start
@@ -571,8 +718,8 @@ outbyte_11
                 lda #<(bit_time)
                 ldx #>(bit_time)
                 bcs outbyte_6
-                lda #<(bit_time*2)
-                ldx #>(bit_time*2)
+                lda #<(bit_time+bit_treshold)
+                ldx #>(bit_time+bit_treshold)
 outbyte_6
                 sta via_t1ll
                 stx via_t1lh
@@ -646,7 +793,7 @@ synchout_1
 ; this does all the work for save
 sendblock
                 ldx #16
-                lda buffer+$16
+                lda tap_fast
                 beq fastgap
                 ldx #2
 fastgap
@@ -675,7 +822,7 @@ sendblock_5
                 sty crch
 sendblock_2
 ; send name
-                lda buffer,y
+                lda _buffer,y
                 jsr crcoutbyt
                 iny
                 cpy #16
@@ -734,3 +881,6 @@ outdata
                 jsr outbyte
                 jsr outbyte
                 rts
+
+
+#include "../scrn_tab.s"

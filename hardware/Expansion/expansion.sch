@@ -8,7 +8,7 @@ encoding utf-8
 Sheet 1 1
 Title "OricExos expansion board"
 Date "2018-11-30"
-Rev "1.0"
+Rev "1.1"
 Comp "copyright © 2018 iss"
 Comment1 ""
 Comment2 ""
@@ -971,11 +971,11 @@ PDO7
 Wire Wire Line
 	7800 950  8050 950 
 Text Label 8050 950  2    60   ~ 0
-STB
+STBI
 Wire Wire Line
 	10400 950  10150 950 
 Text Label 10150 950  0    60   ~ 0
-STB
+STBO
 Wire Wire Line
 	10400 1850 10150 1850
 Text Label 10150 1850 0    60   ~ 0
@@ -1165,4 +1165,53 @@ Wire Wire Line
 Wire Wire Line
 	2550 3300 2550 4050
 Connection ~ 2550 4050
+$Comp
+L D D2
+U 1 1 5C12C7AE
+P 9550 3400
+F 0 "D2" H 9550 3500 50  0000 C CNN
+F 1 "D" H 9550 3300 50  0001 C CNN
+F 2 "Diodes_THT:D_A-405_P7.62mm_Horizontal" H 9550 3400 50  0001 C CNN
+F 3 "" H 9550 3400 50  0001 C CNN
+	1    9550 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9400 3400 9100 3400
+Text Label 9100 3400 0    60   ~ 0
+STBI
+Wire Wire Line
+	9700 3400 9950 3400
+Text Label 9950 3400 2    60   ~ 0
+STBO
+$Comp
+L R R5
+U 1 1 5C12D242
+P 9550 3200
+F 0 "R5" V 9350 3150 50  0000 C CNN
+F 1 "470" V 9450 3150 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 9480 3200 50  0001 C CNN
+F 3 "" H 9550 3200 50  0001 C CNN
+	1    9550 3200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	9700 3200 9950 3200
+Text Label 9950 3200 2    60   ~ 0
+VCC
+Wire Wire Line
+	9400 3200 9350 3200
+Wire Wire Line
+	9350 3200 9350 3400
+Connection ~ 9350 3400
+Wire Notes Line
+	8750 2600 8750 3600
+Wire Notes Line
+	8750 3600 10200 3600
+Wire Notes Line
+	10200 3600 10200 2600
+Wire Notes Line
+	10200 2600 8750 2600
+Text Notes 8800 2750 0    60   ~ 0
+Update not included in v.1.0
 $EndSCHEMATC

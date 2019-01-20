@@ -1,4 +1,4 @@
-update=Sat 01 Dec 2018 01:47:58 PM EET
+update=Sun 20 Jan 2019 07:55:55 PM EET
 last_client=kicad
 [eeschema]
 version=1
@@ -8,3 +8,13 @@ LibName1=expansion-cache
 LibName2=oric-expansion
 [general]
 version=1
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60

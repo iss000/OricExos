@@ -1,4 +1,7 @@
 ;--------------------------
+#include <defasm.s>
+
+;--------------------------
 #define dsb             .dsb
 #define byt             .byt
 #define wrd             .word
@@ -883,4 +886,4 @@ outdata
                 rts
 
 
-#include "../scrn_tab.s"
+#include <scrn_tab.s>

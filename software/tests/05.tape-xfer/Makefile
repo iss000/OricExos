@@ -76,7 +76,9 @@ include $($(TOOLCHAIN))/atmos.make
 AFLAGS			+= -I$(COMMON)
 AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
-$(PROJECT)_AFLAGS 	:= -DUSE_HIRES
+AFLAGS 			+= -DUSE_HIRES
+
+$(PROJECT)_AFLAGS 	:=
 
 CFLAGS			+= -I$(COMMON)
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
@@ -85,7 +87,7 @@ $(PROJECT)_CFLAGS 	:=
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
 
-TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap $(DEMO_NAME).tap
+TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap $(DEMO_NAME).tap master-*.dsk
 
 prepare:
 	@echo "Building..."

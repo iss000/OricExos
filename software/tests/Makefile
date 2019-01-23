@@ -5,8 +5,9 @@ DEMOS := \
 	03.circles \
 	04.morebars \
 	05.tape-xfer \
-	06.tesseract
-
+	06.tesseract \
+	07.pp-xfer \
+	08.exp-map
 
 # 
 all: remove-bin

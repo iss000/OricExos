@@ -1,0 +1,21 @@
+Behaviour for reading the IRs is as follows:
+
+If you read a pin on IRA and input latching is disabled for port A, then you
+will simply read the current state of the corresponding PA pin, regardless of
+whether that pin is set to be an input or an output.
+
+If you read a pin on IRA and input latching is enabled for port A, then you
+will read the actual IRA, which is the last value that was latched into IRA.
+
+If you read a pin on IRB and the pin is set to be an input (with latching
+disabled), then you will read the current state of the corresponding PB pin.
+
+If you read a pin on IRB and the pin is set to be an input (with latching
+enabled), then you will read the actual IRB.
+
+If you read a pin on IRB and the pin is set to be an output, then you will
+actually read ORB, which contains the last value that was written to port B.
+
+Writing to a pin which is set to be an input will change the OR for that pin,
+but the state of the pin itself will not change as long as the DDR dictates
+that it is an input.

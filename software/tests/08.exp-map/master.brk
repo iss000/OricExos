@@ -1,0 +1,3 @@
+bs $1000 c
+bs $e8d3 c
+bs copy_rom_to_ram c

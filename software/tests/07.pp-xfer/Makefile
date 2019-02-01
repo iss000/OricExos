@@ -1,9 +1,9 @@
 # # #
-DEMO_NUMBER		:= 07
-DEMO_NAME		:= pp-xfer
+DEMO_NUMBER             := 07
+DEMO_NAME               := pp-xfer
 
 # # #
-PROJECT 		:= master
+PROJECT                 := master
 PROJECT_DIR		:= $(shell pwd)
 
 # # # Only if floppybuilder
@@ -33,12 +33,12 @@ master-tape_SRC		:= master-tape.txt
 master-tape_AUTORUN	:= 1
 
 master-helper_SRC 	:= master-helper.s
-master-helper_AUTORUN	:= 0
-master-helper_ADDRESS	:= $(shell echo $$((0x0f00)))
+master-helper_AUTORUN   := 0
+master-helper_ADDRESS   := $(shell echo $$((0x0f00)))
 
-slave_SRC 		:= slave.s pp.s
-slave_AUTORUN		:= 0
-slave_ADDRESS		:= $(shell echo $$((0x1000)))
+slave_SRC               := slave.s pp.s oricexos.s
+slave_AUTORUN           := 0
+slave_ADDRESS           := $(shell echo $$((0x1000)))
 
 slave-debug_SRC 	:= $(slave_SRC)
 slave-debug_AUTORUN	:= 1
@@ -57,18 +57,19 @@ EMUARG 			+= --vsynchack off
 EMUARG 			+= --scanlines off
 EMUARG 			+= --rendermode opengl
 
-# EMUPARAM		+= -r $(shell echo $$(($(START_ADDRESS))))
-EMUPARAM		+= -s $(PROJECT_DIR)/$(PROJECT).sym
-EMUPARAM		+= -r:$(PROJECT_DIR)/$(PROJECT).brk
+# EMUPARAM              += -r $(shell echo $$(($(START_ADDRESS))))
+EMUPARAM                += -s $(PROJECT_DIR)/$(PROJECT).sym 
+EMUPARAM                += -s $(PROJECT_DIR)/slave.sym
+EMUPARAM                += -r:$(PROJECT_DIR)/$(PROJECT).brk
 
-COMMON			:= ../common
+COMMON                  := ../common
 
-START_ADDRESS		:= $(shell echo $$((0x1000)))
+START_ADDRESS           := $(shell echo $$((0x1000)))
 
-VPATH           	:= $(VPATH) $(COMMON)
+VPATH                   := $(VPATH) . $(COMMON)
 
-PREPARE			:= prepare
-FINALIZE		:= finalize
+PREPARE                 := prepare
+FINALIZE                := finalize
 
 # # #
 include $($(TOOLCHAIN))/atmos.make
@@ -77,7 +78,7 @@ AFLAGS			+= $(addprefix -I,$(VPATH))
 AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 AFLAGS			+= -DUSE_TEXT
-$(PROJECT)_AFLAGS 	:=
+$(PROJECT)_AFLAGS 	:= 
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
@@ -100,19 +101,26 @@ finalize: hxc
 	@echo "Done"
 
 # 
-.PHONY: gom gos1 gos2
+.PHONY: gom gos1 gos2 gos3
 
+# use atmos config to run as master
 gom: all
-	@oric -ma -r:$(PROJECT_DIR)/$(PROJECT).brk \
-	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym $(DEMO_NAME).tap
+	@oric -ma -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
+        -s $(PROJECT_DIR)/$(PROJECT).sym \
+        -s $(PROJECT_DIR)/slave.sym master.dsk $(DEMO_NAME).tap
 
+# use oric-1 config to run as slave 1
 gos1: all
-	@oric -m1 -r:$(PROJECT_DIR)/$(PROJECT).brk \
-	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym slave-debug.tap
+	@oric -m1 -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
+        -s $(PROJECT_DIR)/$(PROJECT).sym \
+        -s $(PROJECT_DIR)/slave.sym master.dsk slave-debug.tap
 
+# use pravetz config to run as slave 2
 gos2: all
-	@oric -mp -r:$(PROJECT_DIR)/$(PROJECT).brk \
-	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym slave-debug.tap
+	@oric -mp -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
+        -s $(PROJECT_DIR)/$(PROJECT).sym \
+        -s $(PROJECT_DIR)/slave.sym master.dsk slave-debug.tap
+
+# no more config to run as slave 3
+gos3:
+	@echo "no more config to run as slave 3"

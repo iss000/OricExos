@@ -28,8 +28,8 @@ extstat   byt 0
 #define f_pp_off    %11111101
 #define f_pp_on     %00000010
 
-#define f_pp_out     %11111011
-#define f_pp_in      %00000100
+#define f_pp_out    %11111011
+#define f_pp_in     %00000100
 
 #define f_mix_a     %11110111
 #define f_mix_b     %00001000

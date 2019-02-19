@@ -111,15 +111,15 @@ gom: all
 
 # use oric-1 config to run as slave 1
 gos1: all
-	@oric -m1 -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	@oric -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym master.dsk slave-debug.tap
+        -s $(PROJECT_DIR)/slave.sym slave-debug.tap
 
 # use pravetz config to run as slave 2
 gos2: all
-	@oric -mp -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	@oric -mp -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym master.dsk slave-debug.tap
+        -s $(PROJECT_DIR)/slave.sym slave-debug.tap
 
 # no more config to run as slave 3
 gos3:

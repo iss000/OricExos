@@ -1,7 +1,7 @@
 #ifndef __ORIC_EXOS_H__
 #define __ORIC_EXOS_H__
 
-;--------------------------
+// --------------------------
 #define via_b         $0300
 #define via_a         $0301
 #define via_ddrb      $0302
@@ -21,17 +21,17 @@
 #define via_ier       $030e
 #define via_aor       $030f
 
-;--------------------------
-; the value on address is 
-; used as ID of every oric
-; PEEK(#EDB0) AND 7
-; 
+// --------------------------
+//  the value on address is 
+//  used as ID of every oric
+//  PEEK(#EDB0) AND 7
+//  
 #define id_addr       $edb0
 
-;--------------------------
-; some useful atmos rom 
-; functions
-;
+// --------------------------
+//  some useful atmos rom 
+//  functions
+// 
 #define r_cls         $ccce
 #define r_print       $ccb0
 #define r_cload       $e874
@@ -40,17 +40,31 @@
 #define r_lores1      $d9ea
 #define r_hires       $ec33
 
-; restore VIA settings and clear flag I
+//  restore VIA settings and clear flag I
 #define r_via_reset   $e93d
 
-; init VIA (disable T1 interrupt) and set flag I
+//  init VIA (disable T1 interrupt) and set flag I
 #define r_via_set     $e76a
 
-;--------------------------
-; ... params in page 2 for
-; above functions
-;
+// --------------------------
+//  ... params in page 2 for
+//  above functions
+// 
 #define b_paper       $026b
 #define b_ink         $026c
+
+#ifdef ASSEMBLER
+#else
+void set_ram_on(void);
+void set_rom_off(void);
+void set_rom_on(void);
+void set_ram_off(void);
+void set_pp_on(void);
+void set_pp_off(void);
+void set_pp_in(void);
+void set_pp_out(void);
+void set_mix_a(void);
+void set_mix_b(void);
+#endif
 
 #endif /* __ORIC_EXOS_H__ */

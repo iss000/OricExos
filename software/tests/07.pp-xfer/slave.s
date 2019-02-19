@@ -60,18 +60,38 @@ jump_tab
         wrd   oric_2
         wrd   oric_3
 
+        
+; sample command
+test_cmd
+        ; command id
+        byt   %00000000
+        ; all 3 slaves
+        ; no run
+        byt   %00000111
+        ; dst start
+        wrd   $bb80
+        ; size
+        wrd   40*25
+        ; src start
+        wrd   $bb80
+        
 ;--------------------------
 ;--- test-pp-out --------
 ;--------------------------
-test_pp_out
-        jmp   _pp_out
+test_pp_master
+        jsr   _pp_setup_master
+        ; A:X command ptr
+        lda   #>test_cmd
+        ldx   #<test_cmd
+        jsr   _pp_send
         rts
 
 ;--------------------------
 ;--- test-pp-in ---------
 ;--------------------------
-test_pp_in
-        jmp   _pp_in
+test_pp_slave
+        jsr   _pp_setup_slave
+        jsr   _pp_receive
         rts
 
 oric_0
@@ -80,7 +100,7 @@ oric_0
         adc   id
         sta   b_paper
         jsr   r_cls
-        jsr   test_pp_out
+        jsr   test_pp_master
         jmp   _stop
 
 oric_1
@@ -91,7 +111,7 @@ oric_3
         adc   id
         sta   b_paper
         jsr   r_cls
-        jsr   test_pp_in
+        jsr   test_pp_slave
         jmp   _stop
 
 _stop

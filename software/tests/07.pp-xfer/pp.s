@@ -8,6 +8,7 @@
 
 ;--------------------------
 .zero
+zpp     =     0
 
 ;--------------------------
 .text
@@ -32,7 +33,7 @@ set_pp_out
 ;--------------------------
 set_pp_in
         ; disable via irq
-        lda   #0  ;%01111111
+        lda   #%01111111
         sta   via_ier
         lda   #$00
         sta   via_ifr
@@ -50,9 +51,9 @@ set_pp_in
         and   #%11111101
         sta   via_acr
         
-        ; set ca1 active pos edge
+        ; set ca1 active neg edge
         lda   via_pcr
-        ora   #%00000001
+        and   #%11111110
         sta   via_pcr
         ; set port a as input
         lda   #%00000000
@@ -78,8 +79,65 @@ pp_in_get_byte
         
         rts
 
-;--------------------------
 
+;--------------------------
+_pp_setup_master
+        rts
+
+;--------------------------
+_pp_send
+        stx   zpp
+        sta   zpp+1
+
+        ldy   #$07
+        ; setup source buffer ptr
+        lda   (zpp),y
+        sta   zpp+3
+        dey
+        sta   zpp+2
+        dey
+
+        ; setup size counter
+        lda   (zpp),y
+        sta   zpp+5
+        dey
+        lda   (zpp),y
+        sta   zpp+4
+
+        ; send 6 bytes header
+        ldy   #$00
+        ldx   #$06
+lp_hdr
+        lda   (zpp),y
+        jsr   pp_out_put_byte
+        dex
+        bne   lp_hdr
+        
+        ; send content
+        ldy   #$00
+lp_cont
+        lda   (zpp+2),y
+        jsr   pp_out_put_byte
+        inc   zpp+2
+        bne   skp_1
+        inc   zpp+3
+skp_1
+        dec   zpp+4
+        bne   lp_cont
+        lda   zpp+5
+        beq   skp_2
+        dec   zpp+5
+        jmp   lp_cont
+skp_2
+        rts
+
+
+;--------------------------
+_pp_setup_slave
+        rts
+;--------------------------
+_pp_receive
+        rts
         
 ;--------------------------
 ; #include <scrn_tab.s>

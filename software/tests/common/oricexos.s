@@ -37,15 +37,13 @@ extstat   byt 0
 ;==========================
 _set_ram_on
 _set_rom_off
-.(
         pha
         txa
         pha
         lda   extstat
         ora   #f_ram_on
         ; forced branch
-        bne   br
-
+        bne   br_rm
 ;--------------------------
 _set_rom_on
 _set_ram_off
@@ -54,7 +52,7 @@ _set_ram_off
         pha
         lda   extstat
         and   #f_ram_off
-br            
+br_rm
         sta   extstat        
         tax   
         sta   extadr,x
@@ -62,19 +60,17 @@ br
         tax
         pla
         rts
-.)
+
 
 ;==========================
 _set_pp_on
-.(
         pha
         txa
         pha
         lda   extstat
         ora   #f_pp_on
         ; forced branch
-        bne   br
-
+        bne   br_ppoff
 ;--------------------------
 _set_pp_off
         pha
@@ -82,7 +78,7 @@ _set_pp_off
         pha
         lda   extstat
         and   #f_pp_off
-br
+br_ppoff
         sta   extstat        
         tax
         sta   extadr,x
@@ -90,19 +86,16 @@ br
         tax
         pla
         rts
-.)
 
 ;==========================
 _set_pp_in
-.(
         pha
         txa
         pha
         lda   extstat
         ora   #f_pp_in
         ; forced branch
-        bne br
-
+        bne br_ppout
 ;--------------------------
 _set_pp_out
         pha
@@ -110,7 +103,7 @@ _set_pp_out
         pha
         lda   extstat
         and   #f_pp_out
-br
+br_ppout
         sta   extstat        
         tax
         sta   extadr,x
@@ -118,19 +111,16 @@ br
         tax
         pla
         rts
-.)
 
 ;==========================
 _set_mix_a
-.(
         pha
         txa
         pha
         lda   extstat
         ora   #f_mix_a
         ; forced branch
-        bne   br
-
+        bne   br_mix
 ;--------------------------
 _set_mix_b
         pha
@@ -138,7 +128,7 @@ _set_mix_b
         pha
         lda   extstat
         and   #f_mix_b
-br
+br_mix
         sta   extstat        
         tax
         sta   extadr,x
@@ -146,5 +136,4 @@ br
         tax
         pla
         rts
-.)
 

@@ -1,6 +1,8 @@
 #ifndef __ORIC_EXOS_H__
 #define __ORIC_EXOS_H__
 
+#ifdef ASSEMBLER
+
 // --------------------------
 #define via_b         $0300
 #define via_a         $0301
@@ -53,7 +55,6 @@
 #define b_paper       $026b
 #define b_ink         $026c
 
-#ifdef ASSEMBLER
 #else
 void set_ram_on(void);
 void set_rom_off(void);

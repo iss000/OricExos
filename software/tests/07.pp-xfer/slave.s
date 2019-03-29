@@ -61,22 +61,40 @@ jump_tab
         wrd   oric_3
 
         
-; sample command
+;--------------------------
+; sample command to send 
+; (40*25) bytes
+; from masters $BB80
+; to slaves $BB80
 test_cmd
-        ; command id
+
+; command id
+cmd_id
         byt   %00000000
-        ; all 3 slaves
-        ; no run
+
+; command flag
+;              +-------- autorun
+;              |    +--- slave 1
+;              |    |+-- slave 2
+;              |    ||+- slave 3
+;              |    |||
+cmd_flg
         byt   %00000111
-        ; dst start
-        wrd   $bb80
-        ; size
-        wrd   40*25
-        ; src start
+
+; destination start address
+cmd_dst
         wrd   $bb80
         
+; transfer size
+cmd_size
+        wrd   40*25
+        
+; source start address
+cmd_src
+        wrd   $bb80
+
 ;--------------------------
-;--- test-pp-out --------
+;--- test-pp-out ----------
 ;--------------------------
 test_pp_master
         jsr   _pp_setup_master
@@ -84,14 +102,36 @@ test_pp_master
         lda   #>test_cmd
         ldx   #<test_cmd
         jsr   _pp_send
+        jsr   _pp_reset
         rts
 
 ;--------------------------
-;--- test-pp-in ---------
+;--- test-pp-in -----------
 ;--------------------------
 test_pp_slave
         jsr   _pp_setup_slave
+        ; Y - slave mask
+        ldy   id
+        lda   id_mask,y
+        tay
+        ; A:X command ptr
+        lda   #>test_cmd
+        ldx   #<test_cmd
         jsr   _pp_receive
+        jsr   _pp_reset
+
+        lda   cmd_flg
+        ; no autoexec
+        bpl   nope
+        
+        ldx   id
+        and   id_mask,x
+
+        ; not for this slave
+        beq   nope
+        
+        jmp   (cmd_dst)
+nope
         rts
 
 oric_0
@@ -138,10 +178,12 @@ loop_wait
         bne   loop_wait
         rts
         
-
 ;--------------------------
-id      byt  0
-tmp     byt  0
-crlf    byt  $0d, $0a, 0
-msg     byt  $1b,$00,"ORIC #"
-msgn    byt  "X READY.",$0d,$0a,0
+tmp     byt   0
+;--------------------------
+id      byt   0
+id_mask byt   $00,$01,$02,$04
+;--------------------------
+crlf    byt   $0d, $0a, 0
+msg     byt   $1b,$00,"ORIC #"
+msgn    byt   "X READY.",$0d,$0a,0

@@ -6,20 +6,6 @@
 .text
 
 ;--------------------------
-r_cls   = $ccce
-r_print = $ccb0
-r_cload = $e874
-r_text  = $ec21
-r_lores0= $d9ed
-r_lores1= $d9ea
-r_hires = $ec33
-
-b_paper = $026b
-b_ink   = $026c
-
-id_addr = $edb0
-
-;--------------------------
 *       = START_ADDRESS
 
 _start

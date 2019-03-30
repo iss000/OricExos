@@ -135,6 +135,7 @@ nope
         rts
 
 oric_0
+        jsr   wait
         clc
         lda   #$10
         adc   id

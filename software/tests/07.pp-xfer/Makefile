@@ -18,7 +18,7 @@ PROJECT_AUTORUN		:= 1
 # # # Leave DOS
 PROJECT_QUITDOS		:= 0
 
-ATAPS			:= master-helper slave slave-debug
+ATAPS			:= master-helper slave slave-debug slave-rom
 BTAPS			:= $(PROJECT) master-tape
 CTAPS			:=
 
@@ -43,6 +43,10 @@ slave_ADDRESS           := $(shell echo $$((0x1000)))
 slave-debug_SRC 	:= $(slave_SRC)
 slave-debug_AUTORUN	:= 1
 slave-debug_ADDRESS	:= $(shell echo $$((0x1000)))
+
+slave-rom_SRC 		:= slave-rom.s
+slave-rom_AUTORUN	:= 1
+slave-rom_ADDRESS	:= $(shell echo $$((0x1000)))
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65

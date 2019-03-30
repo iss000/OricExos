@@ -3,30 +3,7 @@
 #include <oricexos.h>
 
 ;--------------------------
-#define via_b           $0300
-#define via_a           $0301
-#define via_ddrb        $0302
-#define via_ddra        $0303
-#define via_t1cl        $0304
-#define via_t1ch        $0305
-#define via_t1ll        $0306
-#define via_t1lh        $0307
-#define via_t2ll        $0308
-#define via_t2lh        $0309
-#define via_t2cl        $0308
-#define via_t2ch        $0309
-#define via_sr          $030a
-#define via_acr         $030b
-#define via_pcr         $030c
-#define via_ifr         $030d
-#define via_ier         $030e
-#define via_aor         $030f
-
-;--------------------------
 .zero
-
-r_via_reset             = $e93d       ; restore VIA settings and clear flag I
-r_via_set               = $e76a       ; init VIA (disable T1 interrupt) and set flag I
 
 ;--------------------------
 .text

@@ -8,6 +8,11 @@
 
 ;--------------------------
 .zero
+
+;--------------------------
+; NOTE: 
+; change zpp if needed
+;
 zpp     =     0
 zptr    =     zpp
 zcmd    =     zpp+2
@@ -18,77 +23,15 @@ zsrc    =     zpp+8
 
 ;--------------------------
 .text
-
 ;--------------------------
-pp_out_put_byte
-        pha
-        
-        sta   via_a
-
-        lda   via_b
-        and   #%11101111
-        sta   via_b
-
-        lda   #via_irq_ca1
-lp_opb
-        bit   via_ifr
-        beq   lp_opb
-
-        lda   via_b
-        ora   #%00010000
-        sta   via_b
-        
-        pla
-        rts
-
-;--------------------------
-pp_out_get_byte
-        ; ToDo ....
-        rts
-
-;--------------------------
-pp_in_put_byte
-        ; ToDo ....
-        rts
-;--------------------------
-pp_in_get_byte
-        lda   #via_irq_ca1
-lp_igb
-        bit   via_ifr
-        beq   lp_igb
-        
-        lda   via_a
-        pha
-
-        ; the tricky part
-        ; set PB4 as input
-        ; which sets line to 1
-        lda   #%11101111
-        and   via_ddrb
-        sta   via_ddrb
-
-        ; wait other slaves
-        ; to do the same
-lp_igbw
-        lda   via_b
-        and   #%00010000
-        beq   lp_igbw
-
-        ; set PB4 as output
-        ; which sets line to 0
-        lda   #%00010000
-        ora   via_ddrb
-        sta   via_ddrb
-
-        pla
-        rts
+id_mask byt   $00,$01,$02,$04
 
 ;--------------------------
 _pp_setup_master
         ; disable via irq
         lda   #%01111111
         sta   via_ier
-        lda   #$00
+        lda   #%00000000
         sta   via_ifr
 
         ; set pb4(stb) to 1
@@ -101,23 +44,19 @@ _pp_setup_master
         ora   #%00010000
         sta   via_ddrb
 
-        ; disable port b latch
-        lda   via_acr
-        and   #%11111101
-        sta   via_acr
-
         ; set ca1 active pos edge
         lda   via_pcr
         ora   #via_ca1_rise
         sta   via_pcr
+
         ; set port a as output
         lda   #%11111111
         sta   via_ddra
         sta   via_a
 
-        ; disable port a latch
+        ; disable port a+b latch
         lda   via_acr
-        and   #%11111110
+        and   #%11111100
         sta   via_acr
 
         jsr   _set_pp_out
@@ -185,13 +124,40 @@ txs_1
 txs_2
         rts
 
+;--------------------------
+pp_out_put_byte
+        pha
+        
+        sta   via_a
+
+        lda   via_b
+        and   #%11101111
+        sta   via_b
+
+        lda   #via_irq_ca1
+lp_opb
+        bit   via_ifr
+        beq   lp_opb
+
+        lda   via_b
+        ora   #%00010000
+        sta   via_b
+        
+        pla
+        rts
+
+;--------------------------
+pp_out_get_byte
+        ; ToDo ....
+        rts
+
 
 ;--------------------------
 _pp_setup_slave
         ; disable via irq
         lda   #%01111111
         sta   via_ier
-        lda   #$00
+        lda   #%00000000
         sta   via_ifr
 
         ; set pb4(stb) to 0
@@ -204,11 +170,6 @@ _pp_setup_slave
         ora   #%00010000
         sta   via_ddrb
 
-        ; disable port b latch
-        lda   via_acr
-        and   #%11111101
-        sta   via_acr
-
         ; set ca1 active neg edge
         lda   via_pcr
         and   #via_ca1_fall
@@ -219,8 +180,10 @@ _pp_setup_slave
         sta   via_ddra
         sta   via_a
 
-        ; enable port a latch
         lda   via_acr
+        ; disable port b latch
+        and   #%11111101
+        ; enable port a latch
         ora   #%00000001
         sta   via_acr
 
@@ -230,11 +193,12 @@ _pp_setup_slave
 
 ;--------------------------
 _pp_receive
-        ; Y - slave mask
-        sty   zflg
         ; A:X command ptr
         sta   zptr+1
         stx   zptr
+        ; Y - slave
+        lda   id_mask,y
+        sta   zflg
 
         ; receive synchro
 rx_55
@@ -285,8 +249,8 @@ rx_cont
         jsr   pp_in_get_byte
         ldx   zflg
         beq   rxs_1
+        
         sta   (zdst),y
-
         inc   zdst
         bne   rxs_1
         inc   zdst+1
@@ -296,8 +260,47 @@ rxs_1
         lda   zsiz+1
         beq   rxs_2
         dec   zsiz+1
-        jmp   rx_cont
+        clc
+        bcc   rx_cont
 rxs_2
+        rts
+
+;--------------------------
+pp_in_put_byte
+        ; ToDo ....
+        rts
+        
+;--------------------------
+pp_in_get_byte
+        lda   #via_irq_ca1
+lp_igb
+        bit   via_ifr
+        beq   lp_igb
+        
+        lda   via_a
+        pha
+
+        ; the tricky part
+        ; set PB4 as input
+        ; which sets line to 1
+        lda   #%11101111
+        and   via_ddrb
+        sta   via_ddrb
+
+        ; wait other slaves
+        ; to do the same
+lp_igbw
+        lda   via_b
+        and   #%00010000
+        beq   lp_igbw
+
+        ; set PB4 as output
+        ; which sets line to 0
+        ; optimized - lda   #%00010000
+        ora   via_ddrb
+        sta   via_ddrb
+
+        pla
         rts
 
 ;--------------------------

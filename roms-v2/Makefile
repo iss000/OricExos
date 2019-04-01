@@ -14,7 +14,7 @@ PROJECT_AUTORUN		:= 1
 # # # Leave DOS
 PROJECT_QUITDOS		:= 1
 
-ATAPS			:= $(PROJECT) $(PROJECT)-boot
+ATAPS			:= $(PROJECT) $(PROJECT)-slave
 BTAPS			:=
 CTAPS			:=
 
@@ -29,10 +29,10 @@ $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 $(PROJECT)_ACPP		:= 1
 
-$(PROJECT)-boot_SRC 	:= $(PROJECT)-boot.s
-$(PROJECT)-boot_AUTORUN	:= 1
-$(PROJECT)-boot_ADDRESS	:= $(START_ADDRESS)
-$(PROJECT)-boot_ACPP	:= 1
+$(PROJECT)-slave_SRC 	:= $(PROJECT).s
+$(PROJECT)-slave_AUTORUN:= 1
+$(PROJECT)-slave_ADDRESS:= $(START_ADDRESS)
+$(PROJECT)-slave_ACPP	:= 1
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
@@ -67,12 +67,14 @@ AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 AFLAGS			+= -I$(COMMON)
 
-$(PROJECT)_AFLAGS 	:=
+$(PROJECT)_AFLAGS 	:= 
+$(PROJECT)-slave_AFLAGS := -DORICEXOC
 
 CFLAGS			+= -I$(COMMON)
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 
-$(PROJECT)_CFLAGS 	:=
+$(PROJECT)_CFLAGS 	:= 
+$(PROJECT)-slave_CFLAGS := -DORICEXOC
 
 LFLAGS			+=
 
@@ -83,8 +85,14 @@ TEMP_FILES 		+= DSKA0*.HFE
 prepare:
 	@echo "Building..."
 
-finalize: hxc
+finalize: #hxc
 # 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@if [ 'c3a92bef' = `crc32 $(PROJECT)` ]; then echo "[CRC]   OK!"; else echo -n; fi
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' > slave-1.rom
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' > slave-2.rom
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' > slave-3.rom
+	@cat slave.pch > slave-1.pch
+	@cat slave.pch > slave-2.pch
+	@cat slave.pch > slave-3.pch
 	@echo "Done"

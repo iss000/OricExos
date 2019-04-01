@@ -110,10 +110,8 @@ test_pp_master
 ;--------------------------
 test_pp_slave
         jsr   _pp_setup_slave
-        ; Y - slave mask
+        ; Y - slave
         ldy   id
-        lda   id_mask,y
-        tay
         ; A:X command ptr
         lda   #>test_cmd
         ldx   #<test_cmd
@@ -123,10 +121,10 @@ test_pp_slave
         lda   cmd_flg
         ; no autoexec
         bpl   nope
-        
+
+        and   #%00000011
         ldx   id
         and   id_mask,x
-
         ; not for this slave
         beq   nope
         
@@ -183,7 +181,6 @@ loop_wait
 tmp     byt   0
 ;--------------------------
 id      byt   0
-id_mask byt   $00,$01,$02,$04
 ;--------------------------
 crlf    byt   $0d, $0a, 0
 msg     byt   $1b,$00,"ORIC #"

@@ -79,7 +79,6 @@ f0110 = $0110
 f0111 = $0111
 f0112 = $0112
 f0238 = $0238
-f026B = $026B
 f0272 = $0272
 f0273 = $0273
 f0277 = $0277
@@ -5126,12 +5125,25 @@ bE770   LDX fE782,Y
         STA $0300,X
         DEY 
         BPL bE770
+; ==================================
+#ifndef ORICEXOC
+; ==================================
         LDA #$40
+#else
+        LDA #$60  ; PB5 patch
+#endif
         STA $0300
         RTS 
 
+; ==================================
+#ifndef ORICEXOC
+; ==================================
 fE782   BYT  $05,$04,$0B,$02,$0C,$08,$0E
 fE789   BYT  $00,$D0,$C0,$FF,$10,$F4,$7F
+#else
+fE782   BYT  $05,$04,$0B,$02,$0C,$08,$0E
+fE789   BYT  $00,$D0,$C0,$F7,$10,$F4,$7F
+#endif
 
 sE790   LDY #$00
         LDX #$00
@@ -5616,7 +5628,8 @@ zid     =     zpp+6
 ; the value on address is 
 ; used as ID of every oric
 ; PEEK(#EDB0) AND 3
-#define id_addr       $edb0
+
+; #define id_addr       $edb0
 
 ; ---------------------------------
 #define r_via_reset   $e93d
@@ -6130,9 +6143,17 @@ bED55   JSR sC6F0
         JSR PrintInt
         LDA #$88
         LDY #$ED
+; ==================================
+#ifndef ORICEXOC
+; ==================================
         JSR PrintString
         LDA #<PrintString
         LDY #>PrintString
+#else
+        jsr ClrScr
+        lda #<PPLOAD
+        ldy #>PPLOAD
+#endif
         STA $1B
         STY $1C
         LDA #$10
@@ -6140,14 +6161,33 @@ bED55   JSR sC6F0
         JMP BackToBASIC
 
         BYT  $00,$00
-MessageBytesFree BYT  $20,$42,$59,$54,$45,$53,$20,$46
+        
+MessageBytesFree 
+        BYT  $20,$42,$59,$54,$45,$53,$20,$46
         BYT  $52,$45,$45,$0A,$0D,$00
-MessageOricExtendedBasic BYT  $4F,$52,$49,$43,$20,$45,$58,$54
+
+MessageOricExtendedBasic 
+        BYT  $4F,$52,$49,$43,$20,$45,$58,$54
         BYT  $45,$4E,$44,$45,$44,$20,$42,$41
         BYT  $53,$49,$43,$20,$56,$31,$2E,$31
-        BYT  $0D,$0A,$60,$20,$31,$39,$38,$33
-        BYT  $20,$54,$41,$4E,$47,$45,$52,$49
+        BYT  $0D,$0A
+
+id_addr
+        BYT  $60
+
+        BYT  $20,$31,$39,$38,$33
+        
+; ==================================
+#ifndef ORICEXOC
+; ==================================
+        BYT  $20
+#else
+        BYT  $11 ; hide cursor
+#endif
+
+        BYT  $54,$41,$4E,$47,$45,$52,$49
         BYT  $4E,$45,$0D,$0A,$00,$00
+
 CopyMem LDX #$00
         LDY #$00
 bEDC8   CPY $10
@@ -6230,7 +6270,14 @@ bEE3B   LDA f0272,Y
         LDX #$00
         LDY #$03
         JSR SetTimer
+; ==================================
+#ifndef ORICEXOC
+; ==================================
         JSR ReadKbd
+#else
+        ldx #$00
+        nop
+#endif
         TXA 
         BPL bEE6B
         STX $02DF
@@ -6756,7 +6803,7 @@ sF21C   LDA #$08
         LDX $021F
         BNE bF247
         LDX $0D
-        STA f026B,X
+        STA $026B,X
         LDA #$A8
         CLC 
         ADC $0D
@@ -7165,7 +7212,15 @@ ReadKbdCol
         AND #$07
         TAX 
         STA $0211
+        
+; ==================================
+#ifndef ORICEXOC
+; ==================================
 bF56E   ORA #$B8
+#else
+bF56E   ora #$a8  ; pb4 = 0
+#endif
+
         STA $0300
         LDY #$04
 bF575   DEY 
@@ -7377,7 +7432,7 @@ bF71E   STA (p12),Y
         DEY 
         BPL bF71E
         LDY #$00
-        LDA f026B
+        LDA $026B
         STA (p12),Y
         LDA $026C
         INY 
@@ -7416,10 +7471,19 @@ jF76A   LDX #$23
         JSR PrintStatus
         RTS
 
+; ==================================
+#ifndef ORICEXOC
+; ==================================
 CAPS
         BYT  $07,$43,$41,$50,$53,$00
 NOCAPS
         BYT  $07,$20,$20,$20,$20,$00
+#else  
+CAPS
+        BYT  $10,$10,$10,$10,$10,$00
+NOCAPS
+        BYT  $10,$10,$10,$10,$10,$00
+#endif
 
 Char2Scr
         PHA 
@@ -7653,10 +7717,19 @@ sF8DC   PHA
 sF90E   PHA 
         LDA #$03
         STA $026A
-        LDA #>p17
+; ==================================
+#ifndef ORICEXOC
+; ==================================
+        LDA #$00
         STA $026C
-        LDA #<p17
-        STA f026B
+        LDA #$17
+        STA $026B
+#else
+        lda #$07    ; ink 7
+        sta $026c
+        lda #$00    ; paper 0
+        sta $026b
+#endif
         PLA 
         RTS 
 
@@ -7721,6 +7794,9 @@ AddressTable
         BYT  $80,$07,$00,$A0,$01,$A0,$3F,$1F
 
 ResetVIA 
+; ==================================
+#ifndef ORICEXOC
+; ==================================
         LDA #$FF
         STA $0303
         LDA #$F7
@@ -7734,6 +7810,21 @@ ResetVIA
         LDA #$00
         STA $030B
         RTS 
+#else
+        lda #$00      ; RESET 6522
+        sta $0303     ; Port A all input.
+        lda #$a7      ; Turn off cassette motor. PB4 = L
+        sta $0300     ;
+        lda #$f7      ;
+        sta $0302     ; Port B all output except bit 3.
+        lda #$dc      ; Set CA2 and CB2 to 0 and set
+        sta $030c     ; CA1 active H to L and CB1 active L to H.
+        lda #$7f      ;
+        sta $030e     ; Disable all interrupts.
+        lda #$01      ; Enable port A latch with CA1
+        sta $030b     ; Set the ACR.
+        rts
+#endif
 
 SetupText LDA #$1A
         JSR sFA07

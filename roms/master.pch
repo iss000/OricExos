@@ -83,14 +83,14 @@ tt_writeleader_end_pc = $e769
 ; cls intead of free bytes print
 $2D73:20CECC
 
+; jmp to cload $E874
+$2D76:A974A0E8
+
 ; symbol (C) as slave number 1,2,3
 $2DB0:31
 
 ; hide cursor
 $2DB6:11
-
-; jmp to cload $E874
-$2D76:A974A0E8
 
 ; default ink white
 $3914:A907

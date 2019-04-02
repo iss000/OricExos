@@ -18,20 +18,23 @@ PROJECT_AUTORUN		:= 1
 # # # Leave DOS
 PROJECT_QUITDOS		:= 0
 
+START_ADDRESS           := $(shell echo $$((0x0600)))
+
 ATAPS			:= 
 BTAPS			:= 
 CTAPS			:= $(PROJECT) slave
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 
-common_SRC 		:= pp.s libsedoric.s oricexos.s
+common_SRC 		:= compat.s pp.s oricexos.s
 
-$(PROJECT)_SRC		:= $(common_SRC) $(PROJECT).c
+$(PROJECT)_SRC		:= $(common_SRC) libsedoric.s $(PROJECT).c
 $(PROJECT)_AUTORUN	:= 1
+$(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 
-slave_SRC               := pp.s oricexos.s slave.s
-slave_AUTORUN           := 1
-slave_ADDRESS           := $(shell echo $$((0x1000)))
+slave_SRC               := $(common_SRC) slave.c
+slave_AUTORUN           := 0
+slave_ADDRESS           := $(START_ADDRESS)
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
@@ -52,8 +55,6 @@ EMUPARAM                += -s $(PROJECT_DIR)/slave.sym
 EMUPARAM                += -r:$(PROJECT_DIR)/$(PROJECT).brk
 
 COMMON                  := ../common
-
-START_ADDRESS           := $(shell echo $$((0x1000)))
 
 VPATH                   := $(VPATH) . $(COMMON)
 

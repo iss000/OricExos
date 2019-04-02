@@ -84,6 +84,9 @@
 #define b_ink         $026c
 
 #else
+
+#define id_addr       0xedb0
+
 void set_ram_on(void);
 void set_rom_off(void);
 void set_rom_on(void);

@@ -101,7 +101,7 @@ test_pp_master
         ; A:X command ptr
         lda   #>test_cmd
         ldx   #<test_cmd
-        jsr   _pp_send
+        jsr   pp_send
         jsr   _pp_reset
         rts
 
@@ -115,7 +115,7 @@ test_pp_slave
         ; A:X command ptr
         lda   #>test_cmd
         ldx   #<test_cmd
-        jsr   _pp_receive
+        jsr   pp_receive
         jsr   _pp_reset
 
         lda   cmd_flg

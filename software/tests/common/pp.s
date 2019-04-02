@@ -27,6 +27,20 @@ zsrc    =     zpp+8
 id_mask byt   $00,$01,$02,$04
 
 ;--------------------------
+__pp_cmd_buf
+pp_cmd_buf_cmd
+       byt   0
+pp_cmd_buf_flags
+       byt   0
+pp_cmd_buf_dst_addr
+       wrd   0
+pp_cmd_buf_length
+       wrd   0
+pp_cmd_buf_src_addr
+       wrd   0
+pp_cmd_buf_slave_id = pp_cmd_buf_src_addr
+
+;--------------------------
 _pp_setup_master
         ; disable via irq
         lda   #%01111111
@@ -64,7 +78,12 @@ _pp_setup_master
         rts
 
 ;--------------------------
-_pp_send
+__pp_send
+        lda   #>__pp_cmd_buf
+        ldx   #<__pp_cmd_buf
+
+;--------------------------
+pp_send
         ; A:X command ptr
         sta   zptr+1
         stx   zptr
@@ -192,7 +211,13 @@ _pp_setup_slave
         rts
 
 ;--------------------------
-_pp_receive
+__pp_receive
+        lda   #>__pp_cmd_buf
+        ldx   #<__pp_cmd_buf
+        ldy   pp_cmd_buf_slave_id
+
+;--------------------------
+pp_receive
         ; A:X command ptr
         sta   zptr+1
         stx   zptr

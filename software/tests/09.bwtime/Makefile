@@ -28,7 +28,8 @@ TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 
 common_SRC 		:= compat.s pp.s oricexos.s
 
-$(PROJECT)_SRC		:= $(common_SRC) libsedoric.s $(PROJECT).c
+# $(PROJECT)_SRC		:= $(common_SRC) libsedoric.s $(PROJECT).c
+$(PROJECT)_SRC		:= $(common_SRC) xxx.s
 $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 
@@ -38,7 +39,7 @@ slave_ADDRESS           := $(START_ADDRESS)
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
-TOOLCHAIN		:= CC65
+TOOLCHAIN		:= OSDK
 
 EMU 			:= ./oricutron
 EMUDIR 			:= ${HOME}/work/projects/8Bit/emulators/oricutron-build

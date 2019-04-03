@@ -29,19 +29,24 @@ id_mask byt   $00,$01,$02,$04
 ;--------------------------
 __pp_cmd_buf
 pp_cmd_buf_cmd
-       byt   0
+        byt   0
 pp_cmd_buf_flags
-       byt   0
+        byt   0
 pp_cmd_buf_dst_addr
-       wrd   0
+        wrd   0
 pp_cmd_buf_length
-       wrd   0
+        wrd   0
 pp_cmd_buf_src_addr
-       wrd   0
+        wrd   0
 pp_cmd_buf_slave_id = pp_cmd_buf_src_addr
 
 ;--------------------------
+ppsavey byt   0
+        
+;--------------------------
 _pp_setup_master
+        sty   ppsavey
+        
         ; disable via irq
         lda   #%01111111
         sta   via_ier
@@ -75,10 +80,14 @@ _pp_setup_master
 
         jsr   _set_pp_out
         jsr   _set_pp_on
+        
+        ldy   ppsavey
         rts
 
 ;--------------------------
 __pp_send
+        sty   ppsavey
+
         lda   #>__pp_cmd_buf
         ldx   #<__pp_cmd_buf
 
@@ -141,6 +150,7 @@ txs_1
         dec   zsiz+1
         jmp   tx_cont
 txs_2
+        ldy   ppsavey
         rts
 
 ;--------------------------
@@ -173,6 +183,8 @@ pp_out_get_byte
 
 ;--------------------------
 _pp_setup_slave
+        sty   ppsavey
+
         ; disable via irq
         lda   #%01111111
         sta   via_ier
@@ -208,10 +220,14 @@ _pp_setup_slave
 
         jsr   _set_pp_in
         jsr   _set_pp_on
+
+        ldy   ppsavey
         rts
 
 ;--------------------------
 __pp_receive
+        sty   ppsavey
+        
         lda   #>__pp_cmd_buf
         ldx   #<__pp_cmd_buf
         ldy   pp_cmd_buf_slave_id
@@ -288,6 +304,7 @@ rxs_1
         clc
         bcc   rx_cont
 rxs_2
+        ldy   ppsavey
         rts
 
 ;--------------------------
@@ -331,6 +348,8 @@ lp_igbw
 ;--------------------------
 ; restore VIA defaults
 _pp_reset
+        sty   ppsavey
+
         jsr   _set_pp_off
         jsr   _set_pp_out
 
@@ -355,7 +374,6 @@ _pp_reset
         lda   #$27
         sta   via_t1lh
         sta   via_t1ch
+        
+        ldy   ppsavey
         rts
-
-;--------------------------
-; #include <scrn_tab.s>

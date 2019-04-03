@@ -35,6 +35,34 @@ extstat   byt 0
 #define f_mix_b     %00001000
 
 ;==========================
+_sei
+        sei
+        rts
+;--------------------------
+_cli
+        cli
+        rts
+
+;--------------------------
+irqflag byt   0
+;--------------------------
+_phi
+        php
+        pla
+        and   #%00000100
+        sta   irqflag
+        sei
+        rts
+;--------------------------
+_pli
+        php
+        pla
+        ora   irqflag
+        pha
+        plp
+        rts
+
+;==========================
 _set_ram_on
 _set_rom_off
         pha

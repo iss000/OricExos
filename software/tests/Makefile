@@ -7,7 +7,8 @@ DEMOS := \
 	05.tape-xfer \
 	06.tesseract \
 	07.pp-xfer \
-	08.exp-map
+	08.exp-map \
+	09.bwtime
 
 # 
 all: remove-bin

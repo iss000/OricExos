@@ -87,6 +87,12 @@
 
 #define id_addr       0xedb0
 
+void sei(void);
+void cli(void);
+
+void phi(void);
+void pli(void);
+
 void set_ram_on(void);
 void set_rom_off(void);
 void set_rom_on(void);

@@ -11,10 +11,7 @@ typedef struct s_ppcmd {
   unsigned char flags;
   unsigned char* dst_addr;
   unsigned int length;
-  union {
-    unsigned char* src_addr;
-    unsigned char id;
-  };
+  unsigned char* src_addr;
 } t_ppcmd, *p_ppcmd;
 
 extern t_ppcmd _pp_cmd_buf;

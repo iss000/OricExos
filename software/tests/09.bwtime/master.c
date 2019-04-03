@@ -8,25 +8,33 @@ static void* heap = (void*)(0x4000);
 static void* scrn = (void*)(0xbb80);
 static int rc, len;
 
-static t_ppcmd ppc;
+// static t_ppcmd ppc;
 
 void main(void)
 {
+  paper(3);
+  ink(4);
   cls();
-  printf("\nLoading SLAVE.BIN");
   
   len = 0;
-  rc = loadfile("SLAVE.BIN", heap, &len);
+  //printf("\nLoading SLAVE.BIN");
+  //rc = loadfile("SLAVE.BIN", heap, &len);
 
-  ppc.cmd = 0;
-  ppc.flags = 0x83; // autoexec + 3 slaves;
-  ppc.dst_addr = (void*)0x0600;
-  ppc.length = len;
-  ppc.src_addr = heap;
+  _pp_cmd_buf.cmd = 0;
+  _pp_cmd_buf.flags = 0x07; // 0x87; // autoexec + 3 slaves;
+  _pp_cmd_buf.dst_addr = scrn;  //(void*)0x0600;
+  _pp_cmd_buf.length = 25*4;
+  _pp_cmd_buf.src_addr = scrn;  //heap;
   
-  pp_setup_master();
   printf("\nSending SLAVE.BIN (%d bytes)", len);
-  pp_send(ppc);
+  
+  sei();
+  pp_setup_master();
+  _pp_send(); // pp_send(&ppc);
   pp_reset();  
+  cli();
+  
+  paper(0);
+  ink(7);
+  cls();
 }
-

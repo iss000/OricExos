@@ -6,9 +6,10 @@
 .text
 
 ;--------------------------
-*       = START_ADDRESS
+; *       = START_ADDRESS
 
 _start
+_main
         sei
         cld
         ldx   #$ff
@@ -221,7 +222,7 @@ loop_wait
         rts
         
 ;--------------------------
-tmp     byt   0
+;tmp     byt   0
 ;--------------------------
 id      byt   0
 ;--------------------------

@@ -5126,7 +5126,7 @@ bE770   LDX fE782,Y
         DEY 
         BPL bE770
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
         LDA #$40
 #else
@@ -5136,7 +5136,7 @@ bE770   LDX fE782,Y
         RTS 
 
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
 fE782   BYT  $05,$04,$0B,$02,$0C,$08,$0E
 fE789   BYT  $00,$D0,$C0,$FF,$10,$F4,$7F
@@ -5388,7 +5388,7 @@ jE981   JSR sE94C
         JMP jDF40
 
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
 ; E987
 STORE   PHP 
@@ -6144,7 +6144,7 @@ bED55   JSR sC6F0
         LDA #$88
         LDY #$ED
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
         JSR PrintString
         LDA #<PrintString
@@ -6178,7 +6178,7 @@ id_addr
         BYT  $20,$31,$39,$38,$33
         
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
         BYT  $20
 #else
@@ -6271,7 +6271,7 @@ bEE3B   LDA f0272,Y
         LDY #$03
         JSR SetTimer
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
         JSR ReadKbd
 #else
@@ -7214,7 +7214,7 @@ ReadKbdCol
         STA $0211
         
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
 bF56E   ORA #$B8
 #else
@@ -7472,7 +7472,7 @@ jF76A   LDX #$23
         RTS
 
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
 CAPS
         BYT  $07,$43,$41,$50,$53,$00
@@ -7718,7 +7718,7 @@ sF90E   PHA
         LDA #$03
         STA $026A
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
         LDA #$00
         STA $026C
@@ -7795,7 +7795,7 @@ AddressTable
 
 ResetVIA 
 ; ==================================
-#ifndef ORICEXOC
+#ifndef ORICEXOS
 ; ==================================
         LDA #$FF
         STA $0303

@@ -68,13 +68,13 @@ AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 AFLAGS			+= -I$(COMMON)
 
 $(PROJECT)_AFLAGS 	:= 
-$(PROJECT)-slave_AFLAGS := -DORICEXOC
+$(PROJECT)-slave_AFLAGS := -DORICEXOS
 
 CFLAGS			+= -I$(COMMON)
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 
 $(PROJECT)_CFLAGS 	:= 
-$(PROJECT)-slave_CFLAGS := -DORICEXOC
+$(PROJECT)-slave_CFLAGS := -DORICEXOS
 
 LFLAGS			+=
 
@@ -92,7 +92,7 @@ finalize: #hxc
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' > slave-1.rom
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' > slave-2.rom
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' > slave-3.rom
-	@cat slave.pch > slave-1.pch
-	@cat slave.pch > slave-2.pch
-	@cat slave.pch > slave-3.pch
+# 	@cat slave.pch > slave-1.pch
+# 	@cat slave.pch > slave-2.pch
+# 	@cat slave.pch > slave-3.pch
 	@echo "Done"

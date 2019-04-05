@@ -20,26 +20,25 @@ PROJECT_QUITDOS		:= 0
 
 START_ADDRESS           := $(shell echo $$((0x0600)))
 
-ATAPS			:= 
+ATAPS			:= slave
 BTAPS			:= 
-CTAPS			:= $(PROJECT) slave
+CTAPS			:= $(PROJECT)
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 
 common_SRC 		:= compat.s pp.s oricexos.s
 
-# $(PROJECT)_SRC		:= $(common_SRC) libsedoric.s $(PROJECT).c
-$(PROJECT)_SRC		:= $(common_SRC) xxx.s
+$(PROJECT)_SRC		:= $(common_SRC) libsedoric.s $(PROJECT).c
 $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 
-slave_SRC               := $(common_SRC) slave.c
+slave_SRC               := slave.s pp.s oricexos.s
 slave_AUTORUN           := 0
 slave_ADDRESS           := $(START_ADDRESS)
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
-TOOLCHAIN		:= OSDK
+TOOLCHAIN		:= CC65
 
 EMU 			:= ./oricutron
 EMUDIR 			:= ${HOME}/work/projects/8Bit/emulators/oricutron-build

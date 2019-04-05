@@ -28,8 +28,8 @@
 
 #define via_bit_ca1   1
 #define via_irq_ca1   (1<<via_bit_ca1)
-#define via_ca1_rise  via_irq_ca1
-#define via_ca1_fall  ($ff ^ via_irq_ca1)
+#define via_ca1_rise  %00000001
+#define via_ca1_fall  ($ff ^ via_ca1_rise)
 
 #define via_bit_sr    2
 #define via_irq_sr    (1<<via_bit_sr)
@@ -39,8 +39,8 @@
 
 #define via_bit_cb1   4
 #define via_irq_cb1   (1<<via_bit_cb1)
-#define via_cb1_rise  via_irq_cb1
-#define via_cb1_fall  ($ff ^ via_irq_cb1)
+#define via_cb1_rise  %00010000
+#define via_cb1_fall  ($ff ^ via_cb1_rise)
 
 #define via_bit_t2    5
 #define via_irq_t2    (1<<via_bit_t2)

@@ -181,7 +181,7 @@ oric_0
         sta   b_paper
         jsr   r_cls
         
-;       jmp   _stop
+        jmp   _stop
         rts
 
 

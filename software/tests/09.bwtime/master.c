@@ -9,6 +9,7 @@ static void* scrn = (void*)(0xbb80);
 static int rc, len;
 
 // static t_ppcmd ppc;
+#define ppc _pp_cmd_buf
 
 void main(void)
 {
@@ -17,15 +18,15 @@ void main(void)
   cls();
   
   len = 0;
-  //printf("\nLoading SLAVE.BIN");
-  //rc = loadfile("SLAVE.BIN", heap, &len);
-
-  _pp_cmd_buf.cmd = 0;
-  _pp_cmd_buf.flags = 0x07; // 0x87; // autoexec + 3 slaves;
-  _pp_cmd_buf.dst_addr = scrn;  //(void*)0x0600;
-  _pp_cmd_buf.length = 25*4;
-  _pp_cmd_buf.src_addr = scrn;  //heap;
+  printf("\nLoading SLAVE.BIN");
+  rc = loadfile("SLAVE.BIN", heap, &len);
   
+  ppc.cmd = 0;
+  ppc.flags = 0x87; // autoexec + 3 slaves;
+  ppc.dst_addr = (void*)START_ADDRESS; // i.e. 0x0600;
+  ppc.length = len;
+  ppc.src_addr = heap;
+
   printf("\nSending SLAVE.BIN (%d bytes)", len);
   
   sei();
@@ -37,4 +38,6 @@ void main(void)
   paper(0);
   ink(7);
   cls();
+  
+  printf("Master done.");
 }

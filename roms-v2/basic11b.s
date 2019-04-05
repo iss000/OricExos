@@ -207,8 +207,6 @@ aA000 = $A000
 ;
 ; **** POINTERS **** 
 ;
-p17 = $0017
-p88 = $0088
 p0091 = $0091
 pD0 = $00D0
 p02F5 = $02F5
@@ -2921,8 +2919,8 @@ jD654   STX $A2
         LDX $A1
         STA $CE
         STX $CF
-        LDA #<p88
-        LDX #>p88
+        LDA #$88
+        LDX #$00
         STA $91
         STX $92
 bD66E   CMP $85
@@ -5594,8 +5592,8 @@ sEA9E   CLC
 
 #define via_bit_ca1   1
 #define via_irq_ca1   (1<<via_bit_ca1)
-#define via_ca1_rise  via_irq_ca1
-#define via_ca1_fall  ($ff ^ via_irq_ca1)
+#define via_ca1_rise  %00000001
+#define via_ca1_fall  ($ff ^ via_ca1_rise)
 
 #define via_bit_sr    2
 #define via_irq_sr    (1<<via_bit_sr)
@@ -5605,8 +5603,8 @@ sEA9E   CLC
 
 #define via_bit_cb1   4
 #define via_irq_cb1   (1<<via_bit_cb1)
-#define via_cb1_rise  via_irq_cb1
-#define via_cb1_fall  ($ff ^ via_irq_cb1)
+#define via_cb1_rise  %00010000
+#define via_cb1_fall  ($ff ^ via_cb1_rise)
 
 #define via_bit_t2    5
 #define via_irq_t2    (1<<via_bit_t2)
@@ -5622,7 +5620,8 @@ zcmd    =     zpp
 zflg    =     zpp+1
 zdst    =     zpp+2
 zsiz    =     zpp+4
-zid     =     zpp+6
+zptr    =     zpp+6
+zsid    =     zpp+8
 
 ; ---------------------------------
 ; the value on address is 
@@ -5640,12 +5639,13 @@ PPLOAD
 ; ---------------------------------
 reload
         sei
+        cld
         ; setup id mask
         lda   id_addr
         and   #%00000011
         tax
         lda   id_mask,x
-        sta   zid
+        sta   zsid
 
         jsr   setup_slave
         sta   $384          ; $384 : rom|off|in |A
@@ -5656,13 +5656,13 @@ reload
         jsr   r_via_reset
         
         ; not for this slave
-        lda   zid
+        lda   zsid
         beq   reload
         ; not autoexec
         lda   zflg
         bpl   reload
 ; ---------------------------------
-        jmp   (zdst)
+        jmp   (zptr)
 
 ; ---------------------------------
 id_mask byt   $00,$01,$02,$04
@@ -5727,15 +5727,20 @@ rx_hdr
         cpy   #$06
         bne   rx_hdr
 
-        lda   zid
+        lda   zsid
         and   zflg
-        sta   zid
+        sta   zsid
+        
+        lda   zdst
+        sta   zptr
+        lda   zdst+1
+        sta   zptr+1
         
         ; receive content
         ldy   #$00
 rx_cont
         jsr   receive_byte
-        ldx   zid
+        ldx   zsid
         beq   rxs_1
         
         sta   (zdst),y

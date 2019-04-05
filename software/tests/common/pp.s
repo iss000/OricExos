@@ -13,7 +13,7 @@
 ; NOTE: 
 ; change zpp if needed
 ;
-zpp     =     0
+zpp     =     $80
 zptr    =     zpp
 zcmd    =     zpp+2
 zflg    =     zpp+3
@@ -80,7 +80,7 @@ _pp_setup_master
 
         jsr   _set_pp_out
         jsr   _set_pp_on
-        
+
         ldy   ppsavey
         rts
 
@@ -114,8 +114,8 @@ pp_send
         sta   zsiz
 
         ; send synchro
-        ; 55 55 .. 55 AA
-        ldy   #$07
+        ; 55 55 55 AA
+        ldy   #$03
         lda   #$55
 tx_syn
         jsr   pp_out_put_byte
@@ -284,6 +284,12 @@ rx_hdr
         and   zflg
         sta   zflg
 
+        ; save jump pointer
+        lda   zdst
+        sta   zptr
+        lda   zdst+1
+        sta   zptr+1
+        
         ; receive content
         ldy   #$00
 rx_cont
@@ -304,6 +310,12 @@ rxs_1
         clc
         bcc   rx_cont
 rxs_2
+        ; restore jump pointer
+        lda   zptr
+        sta   zdst
+        lda   zptr+1
+        sta   zdst+1
+
         ldy   ppsavey
         rts
 

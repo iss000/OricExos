@@ -6,30 +6,42 @@
 
 static t_ppcmd ppc;
 
-static void* slave_buffer = (void*)SLAVE_ADDRESS;
-static int rc, len;
+static const void* buffer = (const void*)0x4000;
+static unsigned int len;
+static int rc;
+
+static void send_item(const char* name, void* dst, void* src, unsigned char flags);
 
 void main(void)
 {
   paper(0);
   ink(7);
   cls();
-  
-  len = 0;
-  printf("\n\n\n\n\n\nLoading SLAVE.BIN");
-  rc = loadfile("SLAVE.BIN", slave_buffer, &len);
-  
-  ppc.cmd = 0;
-  ppc.flags = 0x87; // autoexec + 3 slaves;
-  ppc.dst_addr = ppc.src_addr = slave_buffer;
-  ppc.length = len;
-  
-  printf("\nSending SLAVE.BIN (%d bytes)", len);
-  pp_send(&ppc);
+
+  send_item("PPLINK.BIN", (void*)PPLINK_ADDRESS, buffer, 0x87);
+  send_item("SLAVE01.BIN", (void*)SLAVE_01_ADDRESS, buffer, 0x87);
+  send_item("SLAVE.BIN", (void*)SLAVE_ADDRESS, buffer, 0x87);
+
   printf("\nMaster done.");
-  
   for(rc=0;rc<10000;rc++);
   
   // jump to slave code
-  ((void (*)(void))slave_buffer)();
+  rc = loadfile("SLAVE.BIN", (void*)SLAVE_ADDRESS, &len);
+  ((void (*)(void))SLAVE_ADDRESS)();
+}
+
+static void send_item(const char* name, void* dst, void* src, unsigned char flags)
+{
+  len = 0;
+  printf("\nLoading %s", name);
+  rc = loadfile(name, src, &len);
+  
+  ppc.cmd = 0;
+  ppc.flags = flags;
+  ppc.dst_addr = dst;
+  ppc.src_addr = src;
+  ppc.length = len;
+  
+  printf("\nSending %s (%d bytes)", name, len);
+  pp_send(&ppc);
 }

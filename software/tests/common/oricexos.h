@@ -50,7 +50,7 @@
 #define via_irq_t1    (1<<via_bit_t1)
 #define via_mask_t1   ($7f ^ via_irq_t1)
 
-
+#ifndef NO_ROM
 // --------------------------
 //  the value on address is 
 //  used as ID of every oric
@@ -83,9 +83,28 @@
 #define b_paper       $026b
 #define b_ink         $026c
 
+#endif /* NO_ROM */
+
+// --------------------------
+// inter process common area (ipc)
+#define ipc_ptr       $bfe0
+#define ipc_id        ipc_ptr+0
+
 #else
 
+#ifndef NO_ROM
+
 #define id_addr       0xedb0
+
+#endif /* NO_ROM */
+
+// --------------------------
+// inter process common area (ipc)
+typedef struct s_ipc {
+  unsigned char id;
+} t_ipc,*p_ipc;
+
+extern t_ipc ipc;
 
 void sei(void);
 void cli(void);
@@ -103,6 +122,7 @@ void set_pp_in(void);
 void set_pp_out(void);
 void set_mix_a(void);
 void set_mix_b(void);
-#endif
+
+#endif /* ASSEMBLER */
 
 #endif /* __ORIC_EXOS_H__ */

@@ -8,7 +8,7 @@ extern void* sed_end;
 extern unsigned int sed_size;
 extern int sed_err;
 
-int savefile(const char* fname, void* buf, int len) 
+int savefile(const char* fname, void* buf, unsigned int len) 
 {
     extern void sed_savefile(void);
     sed_fname = fname;
@@ -19,7 +19,7 @@ int savefile(const char* fname, void* buf, int len)
     return sed_err;
 }
 
-int loadfile(const char* fname, void* buf, int* len)
+int loadfile(const char* fname, void* buf, unsigned int* len)
 {
     extern void sed_loadfile(void);
     sed_fname = fname;

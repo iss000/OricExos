@@ -4,6 +4,11 @@
 #include <oricexos.h>
 
 ;==========================
+; oricexos inter process
+; common area (ipc)
+_ipc      =   ipc_ptr
+
+;==========================
 ; oricexos extension board
 ;
 ; note: the code below can 

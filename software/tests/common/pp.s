@@ -1,18 +1,24 @@
-;--------------------------
+;==========================
 #include <defasm.h>
 #include <oricexos.h>
 
-;--------------------------
+;==========================
 ;--- parallel port xfer ---
 ;--------------------------
+#ifndef PP_MASTER
+#ifndef PP_SLAVE
+#warning PP_MASTER and PP_SLAVE not defined. Both code included.
+#define PP_MASTER
+#define PP_SLAVE
+#endif
+#endif
 
-;--------------------------
+;==========================
 .zero
 
 ;--------------------------
 ; NOTE: 
 ; change zpp if needed
-;
 zpp     =     $80
 zptr    =     zpp+0
 zcmd    =     zpp+2
@@ -21,10 +27,8 @@ zdst    =     zpp+4
 zsiz    =     zpp+6
 zsrc    =     zpp+8
 
-;--------------------------
+;==========================
 .text
-;--------------------------
-id_mask byt   $00,$01,$02,$04
 
 ;--------------------------
 __pp_cmd_ptr
@@ -50,52 +54,8 @@ pp_save_via_b
 pp_save_y 
         byt   0
         
-;--------------------------
-pp_setup_master
-        lda   via_ier
-        sta   pp_save_via_ier
-        ; disable via irq
-        lda   #%01111111
-        sta   via_ier
-        sta   via_ifr
-
-        ; set pb4(stb) to 1
-        lda   via_b
-        sta   pp_save_via_b
-        ora   #%00010000
-        sta   via_b
-
-        ; set pb4 as output
-        lda   via_ddrb
-        sta   pp_save_via_ddrb
-        ora   #%00010000
-        sta   via_ddrb
-
-        ; set ca1 active pos edge
-        lda   via_pcr
-        sta   pp_save_via_pcr
-        ora   #via_ca1_rise
-        sta   via_pcr
-
-        ; set port a as output
-        lda   via_a
-        sta   pp_save_via_a
-        lda   via_ddra
-        sta   pp_save_via_ddra
-        lda   #%11111111
-        sta   via_ddra
-        sta   via_a
-
-        ; disable port a+b latch
-        lda   via_acr
-        sta   pp_save_via_acr
-        and   #%11111100
-        sta   via_acr
-        
-        jsr   _set_pp_out
-        jsr   _set_pp_on
-        rts
-
+;==========================
+#ifdef PP_MASTER
 ;--------------------------
 __pp_send
         php
@@ -164,6 +124,52 @@ txs_2
         rts
 
 ;--------------------------
+pp_setup_master
+        lda   via_ier
+        sta   pp_save_via_ier
+        ; disable via irq
+        lda   #%01111111
+        sta   via_ier
+        sta   via_ifr
+
+        ; set pb4(stb) to 1
+        lda   via_b
+        sta   pp_save_via_b
+        ora   #%00010000
+        sta   via_b
+
+        ; set pb4 as output
+        lda   via_ddrb
+        sta   pp_save_via_ddrb
+        ora   #%00010000
+        sta   via_ddrb
+
+        ; set ca1 active pos edge
+        lda   via_pcr
+        sta   pp_save_via_pcr
+        ora   #via_ca1_rise
+        sta   via_pcr
+
+        ; set port a as output
+        lda   via_a
+        sta   pp_save_via_a
+        lda   via_ddra
+        sta   pp_save_via_ddra
+        lda   #%11111111
+        sta   via_ddra
+        sta   via_a
+
+        ; disable port a+b latch
+        lda   via_acr
+        sta   pp_save_via_acr
+        and   #%11111100
+        sta   via_acr
+        
+        jsr   _set_pp_out
+        jsr   _set_pp_on
+        rts
+
+;--------------------------
 pp_out_put_byte
         pha
         
@@ -195,45 +201,11 @@ pp_out_get_byte
         ; ToDo ....
         rts
 
+#endif ; PP_MASTER
 
-;--------------------------
-pp_setup_slave
-        ; disable via irq
-        lda   #%01111111
-        sta   via_ier
-        sta   via_ifr
 
-        ; set pb4(stb) to 0
-        lda   via_b
-        and   #%11101111
-        sta   via_b
-
-        ; set pb4 as output
-        lda   via_ddrb
-        ora   #%00010000
-        sta   via_ddrb
-
-        ; set ca1 active neg edge
-        lda   via_pcr
-        and   #via_ca1_fall
-        sta   via_pcr
-
-        ; set port a as input
-        lda   #%00000000
-        sta   via_ddra
-        sta   via_a
-
-        lda   via_acr
-        ; disable port b latch
-        and   #%11111101
-        ; enable port a latch
-        ora   #%00000001
-        sta   via_acr
-
-        jsr   _set_pp_in
-        jsr   _set_pp_on
-        rts
-
+;==========================
+#ifdef PP_SLAVE
 ;--------------------------
 __pp_receive
         php
@@ -321,6 +293,47 @@ rxs_2
         rts
 
 ;--------------------------
+id_mask byt   $00,$01,$02,$04
+
+;--------------------------
+pp_setup_slave
+        ; disable via irq
+        lda   #%01111111
+        sta   via_ier
+        sta   via_ifr
+
+        ; set pb4(stb) to 0
+        lda   via_b
+        and   #%11101111
+        sta   via_b
+
+        ; set pb4 as output
+        lda   via_ddrb
+        ora   #%00010000
+        sta   via_ddrb
+
+        ; set ca1 active neg edge
+        lda   via_pcr
+        and   #via_ca1_fall
+        sta   via_pcr
+
+        ; set port a as input
+        lda   #%00000000
+        sta   via_ddra
+        sta   via_a
+
+        lda   via_acr
+        ; disable port b latch
+        and   #%11111101
+        ; enable port a latch
+        ora   #%00000001
+        sta   via_acr
+
+        jsr   _set_pp_in
+        jsr   _set_pp_on
+        rts
+
+;--------------------------
 pp_in_setup_send
         ; ToDo ....
         rts
@@ -362,7 +375,9 @@ lp_igbw
 
         pla
         rts
+#endif ; PP_SLAVE
 
+;==========================
 ;--------------------------
 pp_reset
         jsr   _set_pp_off

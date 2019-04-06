@@ -94,8 +94,7 @@ finalize: hxc
 # use atmos config to run as master
 gom: all
 	@oric -ma -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym master.dsk
+        -s $(PROJECT_DIR)/$(PROJECT).sym master.dsk
 
 # use oric-1 config to run as slave 1
 gos1: all

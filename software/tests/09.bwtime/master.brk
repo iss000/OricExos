@@ -1,1 +1,2 @@
-bs $1000 c
+bs __pp_send
+

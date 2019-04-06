@@ -5624,21 +5624,20 @@ zsiz    =     zpp+6
 zsrc    =     zpp+8
 
 ; ---------------------------------
-; the value on address is 
-; used as ID of every oric
+; the value at address $EDB0
+; is ID of every slave oric
 ; PEEK(#EDB0) AND 3
-
-; #define id_addr       $edb0
 
 ; ---------------------------------
 #define r_via_reset   $e93d
-#define r_searching   $e57d
 
 ; =================================
 PPLOAD
         sei
         cld
+; ---------------------------------
         sta   $380          ; $380 : rom|off|out|A
+        jsr   setup_slave
 ; ---------------------------------
 reload
         ; setup id mask
@@ -5648,13 +5647,11 @@ reload
         lda   id_mask,x
         sta   zsrc
 
-        jsr   setup_slave
         sta   $386          ; $386 : rom|on |in |A
-        jsr   r_searching
+        jsr   PrintSearching
         jsr   receive
         sta   $384          ; $384 : rom|off|in |A
-        jsr   r_via_reset
-        
+
         ; not for this slave
         lda   zsrc
         beq   reload
@@ -5710,7 +5707,10 @@ receive
         sta   zptr
         lda   #$>zcmd
         sta   zptr+1
-        
+
+        ; clear pendig interrupt
+        lda   via_a
+
         ; receive synchro
 rx_55
         jsr   receive_byte

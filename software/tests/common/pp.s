@@ -53,7 +53,7 @@ pp_setup_master
 
         ; set ca1 active pos edge
         lda   via_pcr
-        ora   #via_ca1_rise
+        and   #via_ca1_fall
         sta   via_pcr
 
         ; set port a as output
@@ -65,7 +65,7 @@ pp_setup_master
         lda   via_acr
         and   #%11111100
         sta   via_acr
-
+        
         jsr   _set_pp_out
         jsr   _set_pp_on
         rts
@@ -93,8 +93,8 @@ txl_1
         bne   txl_1
 
         ; send synchro
-        ; 55 55 55 AA
-        ldy   #$03
+        ; 55 55 ... 55 AA
+        ldy   #$07
         lda   #$55
 tx_syn
         jsr   pp_out_put_byte
@@ -129,6 +129,7 @@ txs_1
         dec   zsiz+1
         jmp   tx_cont
 txs_2
+
         jsr   pp_reset
 
         ldy   ppsavey

@@ -21,10 +21,9 @@ void main(void)
   
   ppc.cmd = 0;
   ppc.flags = 0x87; // autoexec + 3 slaves;
-  ppc.dst_addr = (void*)START_ADDRESS;
+  ppc.dst_addr = ppc.src_addr = slave_buffer;
   ppc.length = len;
-  ppc.src_addr = slave_buffer;
-
+  
   printf("\nSending SLAVE.BIN (%d bytes)", len);
   pp_send(&ppc);
   printf("\nMaster done.");

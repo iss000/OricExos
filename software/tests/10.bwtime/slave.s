@@ -13,6 +13,14 @@ id_addr = $edb0
 
 _start
         sei
+        cld
+        
+        ldx   #39
+        lda   #$20
+loop0
+        sta   $bb80,x
+        dex
+        bpl   loop0
         
         jsr   r_cls
         lda   id_addr
@@ -70,5 +78,5 @@ loop_wait
 id     .byt  0
 crlf   .byt  $0d, $0a, 0
 msg    .byt  $1b,$00,"ORIC #"
-msgn   .byt  "X READY.",$0d,$0a,0
+msgn   .byt  "X READY.",$0d,$0a,17,0
 tmp    .byt  0

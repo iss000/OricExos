@@ -5669,8 +5669,16 @@ setup_slave
         ; disable via irq
         lda   #%01111111
         sta   via_ier
-        lda   #%00000000
         sta   via_ifr
+
+        ; set ca1 active neg edge
+        lda   #%11011100
+        sta   via_pcr
+
+        ; disable port b latch
+        ; enable port a latch
+        lda   #%01000001
+        sta   via_acr
 
         ; set pb4(stb) to 0
         lda   via_b
@@ -5682,30 +5690,18 @@ setup_slave
         ora   #%00010000
         sta   via_ddrb
 
-        ; set ca1 active neg edge
-        lda   via_pcr
-        and   #via_ca1_fall
-        sta   via_pcr
-
         ; set port a as input
         lda   #%00000000
         sta   via_ddra
         sta   via_a
 
-        lda   via_acr
-        ; disable port b latch
-        and   #%11111101
-        ; enable port a latch
-        ora   #%00000001
-        sta   via_acr
-
         rts
 
 ; ---------------------------------
 receive
-        lda   #$<zcmd
+        lda   #<zcmd
         sta   zptr
-        lda   #$>zcmd
+        lda   #>zcmd
         sta   zptr+1
 
         ; clear pendig interrupt
@@ -5762,8 +5758,7 @@ rxs_1
         lda   zsiz+1
         beq   rxs_2
         dec   zsiz+1
-        clc
-        bcc   rx_cont
+        jmp   rx_cont
 rxs_2
         rts
 

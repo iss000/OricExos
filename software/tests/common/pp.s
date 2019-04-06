@@ -38,7 +38,6 @@ pp_setup_master
         ; disable via irq
         lda   #%01111111
         sta   via_ier
-        lda   #%00000000
         sta   via_ifr
 
         ; set pb4(stb) to 1
@@ -51,7 +50,7 @@ pp_setup_master
         ora   #%00010000
         sta   via_ddrb
 
-        ; set ca1 active pos edge
+        ; set ca1 active neg edge - fix?
         lda   via_pcr
         and   #via_ca1_fall
         sta   via_pcr
@@ -170,7 +169,6 @@ pp_setup_slave
         ; disable via irq
         lda   #%01111111
         sta   via_ier
-        lda   #%00000000
         sta   via_ifr
 
         ; set pb4(stb) to 0
@@ -344,6 +342,7 @@ pp_reset
         sta   via_pcr
         lda   #$7f
         sta   via_ier
+        sta   via_ifr
         lda   #$40
         sta   via_acr
         lda   #$c0

@@ -1,6 +1,6 @@
 # # #
 DEMO_NUMBER             := 09
-DEMO_NAME               := bwtime
+DEMO_NAME               := pp-xfer-v2
 
 # # #
 PROJECT                 := master
@@ -34,7 +34,7 @@ $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 
 slave_SRC               := slave.s pp.s oricexos.s
 slave_AUTORUN           := 0
-slave_ADDRESS           := $(START_ADDRESS)
+slave_ADDRESS           := $(shell echo $$((0x2000)))
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
@@ -67,11 +67,13 @@ include $($(TOOLCHAIN))/atmos.make
 AFLAGS			+= $(addprefix -I,$(VPATH))
 AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
+AFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
 AFLAGS			+= -DUSE_TEXT
 $(PROJECT)_AFLAGS 	:= 
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
+CFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
 $(PROJECT)_CFLAGS 	:=
 
 LFLAGS			+=

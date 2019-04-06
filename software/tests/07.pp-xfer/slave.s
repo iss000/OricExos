@@ -170,7 +170,7 @@ oric_0
         jsr   test_pp_master
 
         jsr   wait
-        lda   #$14
+        lda   #$10
         sta   b_paper
         jsr   r_cls
         

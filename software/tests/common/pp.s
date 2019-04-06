@@ -31,10 +31,29 @@ __pp_cmd_ptr
         wrd   0
 
 ;--------------------------
-ppsavey byt   0
+pp_save_via_ier
+        byt   0
+pp_save_via_acr
+        byt   0
+pp_save_via_pcr
+        byt   0
+pp_save_via_ddra
+        byt   0
+pp_save_via_ddrb
+        byt   0
+pp_save_via_a
+        byt   0
+pp_save_via_b
+        byt   0
+
+;--------------------------
+pp_save_y 
+        byt   0
         
 ;--------------------------
 pp_setup_master
+        lda   via_ier
+        sta   pp_save_via_ier
         ; disable via irq
         lda   #%01111111
         sta   via_ier
@@ -42,26 +61,34 @@ pp_setup_master
 
         ; set pb4(stb) to 1
         lda   via_b
+        sta   pp_save_via_b
         ora   #%00010000
         sta   via_b
 
         ; set pb4 as output
         lda   via_ddrb
+        sta   pp_save_via_ddrb
         ora   #%00010000
         sta   via_ddrb
 
-        ; set ca1 active neg edge - fix?
+        ; set ca1 active pos edge
         lda   via_pcr
-        and   #via_ca1_fall
+        sta   pp_save_via_pcr
+        ora   #via_ca1_rise
         sta   via_pcr
 
         ; set port a as output
+        lda   via_a
+        sta   pp_save_via_a
+        lda   via_ddra
+        sta   pp_save_via_ddra
         lda   #%11111111
         sta   via_ddra
         sta   via_a
 
         ; disable port a+b latch
         lda   via_acr
+        sta   pp_save_via_acr
         and   #%11111100
         sta   via_acr
         
@@ -74,7 +101,7 @@ __pp_send
         php
         sei
 
-        sty   ppsavey
+        sty   pp_save_y
         
         jsr   pp_setup_master
         
@@ -128,10 +155,10 @@ txs_1
         dec   zsiz+1
         jmp   tx_cont
 txs_2
-
+        ; restore via registers
         jsr   pp_reset
 
-        ldy   ppsavey
+        ldy   pp_save_y
         
         plp
         rts
@@ -158,6 +185,11 @@ lp_opb
         pla
         rts
 
+;--------------------------
+pp_out_setup_receive
+        ; ToDo ....
+        rts
+        
 ;--------------------------
 pp_out_get_byte
         ; ToDo ....
@@ -207,7 +239,7 @@ __pp_receive
         php
         sei
 
-        sty   ppsavey
+        sty   pp_save_y
         
         jsr   pp_setup_slave
         
@@ -280,13 +312,19 @@ rxs_1
         dec   zsiz+1
         jmp   rx_cont
 rxs_2
+        ; restore via registers
         jsr   pp_reset
 
-        ldy   ppsavey
+        ldy   pp_save_y
         
         plp
         rts
 
+;--------------------------
+pp_in_setup_send
+        ; ToDo ....
+        rts
+        
 ;--------------------------
 pp_in_put_byte
         ; ToDo ....
@@ -326,31 +364,33 @@ lp_igbw
         rts
 
 ;--------------------------
-; restore VIA defaults
 pp_reset
         jsr   _set_pp_off
         jsr   _set_pp_out
 
-        ; this code is from Atmos ROM
-        lda   #$ff
-        sta   via_ddra
-        lda   #$f7
-        sta   via_ddrb
-        lda   #$b7
+        lda   pp_save_via_b
         sta   via_b
-        lda   #$dd
+        
+        lda   pp_save_via_ddrb
+        sta   via_ddrb
+
+        lda   pp_save_via_a
+        sta   via_a
+
+        lda   pp_save_via_ddra
+        sta   via_ddra
+
+        lda   pp_save_via_pcr
         sta   via_pcr
-        lda   #$7f
+
+        lda   pp_save_via_acr
+        sta   via_acr
+
+        lda   #%01111111
         sta   via_ier
         sta   via_ifr
-        lda   #$40
-        sta   via_acr
-        lda   #$c0
+        lda   pp_save_via_ier
+        ora   #$80
         sta   via_ier
-        lda   #$10
-        sta   via_t1ll
-        sta   via_t1cl
-        lda   #$27
-        sta   via_t1lh
-        sta   via_t1ch
+
         rts

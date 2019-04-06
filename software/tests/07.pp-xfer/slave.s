@@ -97,37 +97,30 @@ cmd_src
 ;--- test-pp-out ----------
 ;--------------------------
 test_pp_master
-        jsr   _pp_setup_master
-        ; A:X command ptr
+        lda   #<test_cmd
+        sta   __pp_cmd_ptr
         lda   #>test_cmd
-        ldx   #<test_cmd
-        jsr   pp_send
-        jsr   _pp_reset
+        sta   __pp_cmd_ptr+1
+        jsr   __pp_send
         rts
 
 ;--------------------------
 ;--- test-pp-in -----------
 ;--------------------------
 test_pp_slave
-        jsr   _pp_setup_slave
-        ; Y - slave
-        ldy   id
-        ; A:X command ptr
+        ; slave
+        lda   id
+        sta   cmd_src
+        
+        lda   #<test_cmd
+        sta   __pp_cmd_ptr
         lda   #>test_cmd
-        ldx   #<test_cmd
-        jsr   pp_receive
-        jsr   _pp_reset
+        sta   __pp_cmd_ptr+1
+        jsr   __pp_receive
 
         lda   cmd_flg
         ; no autoexec
-        bpl   nope
-
-        and   #%00000011
-        ldx   id
-        and   id_mask,x
-        ; not for this slave
         beq   nope
-        
         jmp   (cmd_dst)
 nope
         rts

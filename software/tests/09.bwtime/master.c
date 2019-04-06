@@ -8,8 +8,7 @@ static void* heap = (void*)(0x4000);
 static void* scrn = (void*)(0xbb80);
 static int rc, len;
 
-// static t_ppcmd ppc;
-#define ppc _pp_cmd_buf
+static t_ppcmd ppc;
 
 void main(void)
 {
@@ -29,11 +28,7 @@ void main(void)
 
   printf("\nSending SLAVE.BIN (%d bytes)", len);
   
-  sei();
-  pp_setup_master();
-  _pp_send(); // pp_send(&ppc);
-  pp_reset();  
-  cli();
+  pp_send(ppc);
   
   paper(0);
   ink(7);

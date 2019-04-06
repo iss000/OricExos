@@ -4,4 +4,4 @@
 .text
         sei
         jsr   r_hires
-        jmp   (0)
+        jmp   *

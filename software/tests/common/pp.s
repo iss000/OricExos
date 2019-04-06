@@ -14,7 +14,7 @@
 ; change zpp if needed
 ;
 zpp     =     $80
-zptr    =     zpp
+zptr    =     zpp+0
 zcmd    =     zpp+2
 zflg    =     zpp+3
 zdst    =     zpp+4
@@ -27,26 +27,14 @@ zsrc    =     zpp+8
 id_mask byt   $00,$01,$02,$04
 
 ;--------------------------
-__pp_cmd_buf
-pp_cmd_buf_cmd
-        byt   0
-pp_cmd_buf_flags
-        byt   0
-pp_cmd_buf_dst_addr
+__pp_cmd_ptr
         wrd   0
-pp_cmd_buf_length
-        wrd   0
-pp_cmd_buf_src_addr
-        wrd   0
-pp_cmd_buf_slave_id = pp_cmd_buf_src_addr
 
 ;--------------------------
 ppsavey byt   0
         
 ;--------------------------
-_pp_setup_master
-        sty   ppsavey
-        
+pp_setup_master
         ; disable via irq
         lda   #%01111111
         sta   via_ier
@@ -80,38 +68,29 @@ _pp_setup_master
 
         jsr   _set_pp_out
         jsr   _set_pp_on
-
-        ldy   ppsavey
         rts
 
 ;--------------------------
 __pp_send
+        php
+        sei
+
         sty   ppsavey
-
-        lda   #>__pp_cmd_buf
-        ldx   #<__pp_cmd_buf
-
-;--------------------------
-pp_send
-        ; A:X command ptr
+        
+        jsr   pp_setup_master
+        
+        lda   __pp_cmd_ptr
+        sta   zptr
+        lda   __pp_cmd_ptr+1
         sta   zptr+1
-        stx   zptr
 
-        ldy   #$07
-        ; setup source buffer ptr
+        ldy   #$00
+txl_1
         lda   (zptr),y
-        sta   zsrc+1
-        dey
-        lda   (zptr),y
-        sta   zsrc
-        dey
-
-        ; setup size counter
-        lda   (zptr),y
-        sta   zsiz+1
-        dey
-        lda   (zptr),y
-        sta   zsiz
+        sta   zcmd,y
+        iny
+        cpy   #$08
+        bne   txl_1
 
         ; send synchro
         ; 55 55 55 AA
@@ -150,7 +129,11 @@ txs_1
         dec   zsiz+1
         jmp   tx_cont
 txs_2
+        jsr   pp_reset
+
         ldy   ppsavey
+        
+        plp
         rts
 
 ;--------------------------
@@ -182,9 +165,7 @@ pp_out_get_byte
 
 
 ;--------------------------
-_pp_setup_slave
-        sty   ppsavey
-
+pp_setup_slave
         ; disable via irq
         lda   #%01111111
         sta   via_ier
@@ -220,26 +201,28 @@ _pp_setup_slave
 
         jsr   _set_pp_in
         jsr   _set_pp_on
-
-        ldy   ppsavey
         rts
 
 ;--------------------------
 __pp_receive
+        php
+        sei
+
         sty   ppsavey
         
-        lda   #>__pp_cmd_buf
-        ldx   #<__pp_cmd_buf
-        ldy   pp_cmd_buf_slave_id
-
-;--------------------------
-pp_receive
-        ; A:X command ptr
+        jsr   pp_setup_slave
+        
+        lda   __pp_cmd_ptr
+        sta   zptr
+        lda   __pp_cmd_ptr+1
         sta   zptr+1
-        stx   zptr
-        ; Y - slave
+
+        ; zflg holds slave number
+        ldy   #(zflg-zcmd)
+        lda   (zptr),y
+        tay
         lda   id_mask,y
-        sta   zflg
+        sta   zsrc
 
         ; receive synchro
 rx_55
@@ -258,43 +241,32 @@ rx_AA
 rx_hdr
         jsr   pp_in_get_byte
         sta   (zptr),y
+        sta   zcmd,y
         iny
         cpy   #$06
         bne   rx_hdr
 
-        ldy   #$05
-        ; setup size counter
-        lda   (zptr),y
-        sta   zsiz+1
-        dey
-        lda   (zptr),y
-        sta   zsiz
-        dey
-
-        ; setup destination buffer ptr
-        lda   (zptr),y
-        sta   zdst+1
-        dey
-        lda   (zptr),y
-        sta   zdst
-        dey
-
-        ; get flags
-        lda   (zptr),y
-        and   zflg
+        ; mask slave
+        lda   zflg
+        and   zsrc
+        sta   zsrc
+        ; if not for this slave
+        ; no store, no autoexec
+        beq   rxs_0
+        lda   zflg
+        and   #$80        
+rxs_0
+        ; autoexec flag
+        ldy   #(zflg-zcmd)
+        sta   (zptr),y
         sta   zflg
-
-        ; save jump pointer
-        lda   zdst
-        sta   zptr
-        lda   zdst+1
-        sta   zptr+1
         
         ; receive content
         ldy   #$00
 rx_cont
         jsr   pp_in_get_byte
-        ldx   zflg
+        ; not for this slave
+        ldx   zsrc
         beq   rxs_1
         
         sta   (zdst),y
@@ -307,16 +279,13 @@ rxs_1
         lda   zsiz+1
         beq   rxs_2
         dec   zsiz+1
-        clc
-        bcc   rx_cont
+        jmp   rx_cont
 rxs_2
-        ; restore jump pointer
-        lda   zptr
-        sta   zdst
-        lda   zptr+1
-        sta   zdst+1
+        jsr   pp_reset
 
         ldy   ppsavey
+        
+        plp
         rts
 
 ;--------------------------
@@ -359,9 +328,7 @@ lp_igbw
 
 ;--------------------------
 ; restore VIA defaults
-_pp_reset
-        sty   ppsavey
-
+pp_reset
         jsr   _set_pp_off
         jsr   _set_pp_out
 
@@ -386,6 +353,4 @@ _pp_reset
         lda   #$27
         sta   via_t1lh
         sta   via_t1ch
-        
-        ldy   ppsavey
         rts

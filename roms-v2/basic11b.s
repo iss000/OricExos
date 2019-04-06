@@ -5616,12 +5616,12 @@ sEA9E   CLC
 
 ; =================================
 zpp     =     0
-zcmd    =     zpp
-zflg    =     zpp+1
-zdst    =     zpp+2
-zsiz    =     zpp+4
-zptr    =     zpp+6
-zsid    =     zpp+8
+zptr    =     zpp+0
+zcmd    =     zpp+2
+zflg    =     zpp+3
+zdst    =     zpp+4
+zsiz    =     zpp+6
+zsrc    =     zpp+8
 
 ; ---------------------------------
 ; the value on address is 
@@ -5636,19 +5636,19 @@ zsid    =     zpp+8
 
 ; =================================
 PPLOAD
-; ---------------------------------
-reload
         sei
         cld
+        sta   $380          ; $380 : rom|off|out|A
+; ---------------------------------
+reload
         ; setup id mask
         lda   id_addr
         and   #%00000011
         tax
         lda   id_mask,x
-        sta   zsid
+        sta   zsrc
 
         jsr   setup_slave
-        sta   $384          ; $384 : rom|off|in |A
         sta   $386          ; $386 : rom|on |in |A
         jsr   r_searching
         jsr   receive
@@ -5656,11 +5656,11 @@ reload
         jsr   r_via_reset
         
         ; not for this slave
-        lda   zsid
+        lda   zsrc
         beq   reload
         ; not autoexec
         lda   zflg
-        bpl   reload
+        beq   reload
 ; ---------------------------------
         jmp   (zptr)
 
@@ -5706,6 +5706,11 @@ setup_slave
 
 ; ---------------------------------
 receive
+        lda   #$<zcmd
+        sta   zptr
+        lda   #$>zcmd
+        sta   zptr+1
+        
         ; receive synchro
 rx_55
         jsr   receive_byte
@@ -5722,14 +5727,18 @@ rx_AA
         ldy   #$00
 rx_hdr
         jsr   receive_byte
-        sta   zpp,y
+        sta   (zptr),y
         iny
         cpy   #$06
         bne   rx_hdr
 
-        lda   zsid
+        lda   zsrc
         and   zflg
-        sta   zsid
+        sta   zsrc
+
+        lda   zflg
+        and   #$80
+        sta   zflg
         
         lda   zdst
         sta   zptr
@@ -5740,7 +5749,7 @@ rx_hdr
         ldy   #$00
 rx_cont
         jsr   receive_byte
-        ldx   zsid
+        ldx   zsrc
         beq   rxs_1
         
         sta   (zdst),y

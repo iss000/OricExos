@@ -30,12 +30,12 @@ _start
         sta   b_ink
         jsr   r_cls
         
-        ldx   #$40
+        ldx   #39
         lda   #$20
 loop_1
-        sta   _scrn_ptr-1,x
+        sta   _scrn_ptr,x
         dex
-        bne   loop_1
+        bpl   loop_1
 
         lda   id_addr
         and   #$07

@@ -64,6 +64,8 @@
 // 
 #define r_cls         $ccce
 #define r_print       $ccb0
+#define r_pstat       $e5ea
+#define r_cstat       $e5f5
 #define r_cload       $e874
 #define r_text        $ec21
 #define r_lores0      $d9ed

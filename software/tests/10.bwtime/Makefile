@@ -83,7 +83,7 @@ AFLAGS			+= -DUSE_HIRES
 $(PROJECT)_AFLAGS 	:= -DPP_MASTER
 pplink_AFLAGS		:= -DPP_SLAVE
 slave-01_AFLAGS		:=
-slave_AFLAGS		:= -DNO_ROM
+# slave_AFLAGS		:= -DNO_ROM
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
@@ -94,7 +94,7 @@ CFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)
 $(PROJECT)_CFLAGS 	:=
 pplink_CFLAGS		:=
 slave-01_CFLAGS		:=
-slave_CFLAGS		:= -DNO_ROM
+# slave_CFLAGS		:= -DNO_ROM
 
 LFLAGS			+=
 

@@ -67,6 +67,6 @@ static void send_item(const char* name, void* dst, void* src, unsigned char flag
   ppc.length = len;
   
   memset(statline, 0x20, 40);
-  sprintf(statline, "\x03Sending\x07%s (%d%d bytes) -> ", name, len/100, len%100);
+  sprintf(statline, "\x03Sending\x07%s %d%d bytes ->", name, len/100, len%100);
   pp_send(&ppc);
 }

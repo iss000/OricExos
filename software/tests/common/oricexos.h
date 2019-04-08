@@ -91,6 +91,7 @@
 // inter process common area (ipc)
 #define ipc_ptr       $bfe0
 #define ipc_id        ipc_ptr+0
+#define ipc_vsync     ipc_ptr+1
 
 #else
 
@@ -104,6 +105,7 @@
 // inter process common area (ipc)
 typedef struct s_ipc {
   unsigned char id;
+  unsigned char ipc_vsync[3];
 } t_ipc,*p_ipc;
 
 extern t_ipc ipc;

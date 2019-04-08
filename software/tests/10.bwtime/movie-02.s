@@ -11,3 +11,29 @@
 #include "res/out/2/cc00008.bmp.s"
 #include "res/out/2/cc00009.bmp.s"
 #include "res/out/2/cc00010.bmp.s"
+
+_tab_ftames_lo
+.byt <pic2cc00000
+.byt <pic2cc00001
+.byt <pic2cc00002
+.byt <pic2cc00003
+.byt <pic2cc00004
+.byt <pic2cc00005
+.byt <pic2cc00006
+.byt <pic2cc00007
+.byt <pic2cc00008
+.byt <pic2cc00009
+.byt <pic2cc00010
+
+_tab_ftames_hi
+.byt >pic2cc00000
+.byt >pic2cc00001
+.byt >pic2cc00002
+.byt >pic2cc00003
+.byt >pic2cc00004
+.byt >pic2cc00005
+.byt >pic2cc00006
+.byt >pic2cc00007
+.byt >pic2cc00008
+.byt >pic2cc00009
+.byt >pic2cc00010

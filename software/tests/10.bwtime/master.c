@@ -19,6 +19,7 @@ static t_item slave_items[] =
   { "MOVIE02.BIN", MOVIE_ADDRESS, 0x02 },
   { "MOVIE03.BIN", MOVIE_ADDRESS, 0x04 },
   { "SLAVE01.BIN", SLAVE_01_ADDRESS, 0x87 },
+  { "SPLAYER.BIN", SPLAYER_ADDRESS, 0x87 },
 };
 
 static const void* buffer = (const void*)MOVIE_ADDRESS;
@@ -37,13 +38,14 @@ void main(void)
     send_item(slave_items[i].name, (void*)slave_items[i].address, buffer, slave_items[i].flags);
   }
 
+  rc = loadfile("MOVIE00.BIN", (void*)MOVIE_ADDRESS, &len);
+  rc = loadfile("MPLAYER.BIN", (void*)MPLAYER_ADDRESS, &len);
   printf("\nMaster done.");
   for(rc=0;rc<10000;rc++);
   
-  rc = loadfile("MOVIE00.BIN", (void*)MOVIE_ADDRESS, &len);
-
+  hires();
   // jump to slave code
-  //((void (*)(void))SLAVE_ADDRESS)();
+  sei(); ((void (*)(void))MPLAYER_ADDRESS)();
 }
 
 static void send_item(const char* name, void* dst, void* src, unsigned char flags)
@@ -51,6 +53,7 @@ static void send_item(const char* name, void* dst, void* src, unsigned char flag
   len = 0;
   printf("\nLoading %s", name);
   rc = loadfile(name, src, &len);
+  printf(" (%d%d bytes)", len/100, len%100);
   
   ppc.cmd = 0;
   ppc.flags = flags;
@@ -58,6 +61,6 @@ static void send_item(const char* name, void* dst, void* src, unsigned char flag
   ppc.src_addr = src;
   ppc.length = len;
   
-  printf("\nSending %s (%d bytes)", name, len);
+  printf("\nSending %s", name);
   pp_send(&ppc);
 }

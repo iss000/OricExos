@@ -11,3 +11,29 @@
 #include "res-1/out/3/cc00019.bmp.s"
 #include "res-1/out/3/cc00020.bmp.s"
 #include "res-1/out/3/cc00021.bmp.s"
+
+_tab_ftames_lo
+.byt <pic3cc00011
+.byt <pic3cc00012
+.byt <pic3cc00013
+.byt <pic3cc00014
+.byt <pic3cc00015
+.byt <pic3cc00016
+.byt <pic3cc00017
+.byt <pic3cc00018
+.byt <pic3cc00019
+.byt <pic3cc00020
+.byt <pic3cc00021
+
+_tab_ftames_hi
+.byt >pic3cc00011
+.byt >pic3cc00012
+.byt >pic3cc00013
+.byt >pic3cc00014
+.byt >pic3cc00015
+.byt >pic3cc00016
+.byt >pic3cc00017
+.byt >pic3cc00018
+.byt >pic3cc00019
+.byt >pic3cc00020
+.byt >pic3cc00021

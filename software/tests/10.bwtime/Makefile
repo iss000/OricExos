@@ -20,7 +20,7 @@ PROJECT_QUITDOS		:= 0
 
 START_ADDRESS           := $(shell echo $$((0x0500)))
 
-ATAPS			:= pplink slave-01 slave movie-00 movie-01 movie-02 movie-03 movie-10 movie-11 movie-12 movie-13
+ATAPS			:= pplink slave-01 splayer mplayer movie-00 movie-01 movie-02 movie-03 movie-10 movie-11 movie-12 movie-13
 BTAPS			:= 
 CTAPS			:= $(PROJECT)
 
@@ -40,11 +40,19 @@ slave-01_SRC            := slave-01.s oricexos.s
 slave-01_AUTORUN        := 0
 slave-01_ADDRESS        := $(shell echo $$((0x0680)))
 
-slave_SRC               := slave.s
-slave_AUTORUN           := 0
-slave_ADDRESS           := $(shell echo $$((0x2000)))
+# 
+PLAYER_ADDRESS          := $(shell echo $$((0x0800)))
 
-MOVIE_ADDRESS           := $(shell echo $$((0x1718)))
+splayer_SRC             := splayer.s
+splayer_AUTORUN         := 0
+splayer_ADDRESS         := $(PLAYER_ADDRESS)
+
+mplayer_SRC             := mplayer.s
+mplayer_AUTORUN         := 0
+mplayer_ADDRESS         := $(PLAYER_ADDRESS)
+
+# 
+MOVIE_ADDRESS           := $(shell echo $$((0x1680)))
 
 movie-00_SRC            := movie-00.s
 movie-00_AUTORUN        := 0
@@ -82,7 +90,7 @@ movie-13_ADDRESS        := $(MOVIE_ADDRESS)
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
-TOOLCHAIN		:= OSDK
+TOOLCHAIN		:= CC65
 
 EMU 			:= ./oricutron
 EMUDIR 			:= ${HOME}/work/projects/8Bit/emulators/oricutron-build
@@ -95,7 +103,8 @@ EMUARG 			+= --rendermode opengl
 
 # EMUPARAM              += -r $(shell echo $$(($(START_ADDRESS))))
 EMUPARAM                += -s $(PROJECT_DIR)/$(PROJECT).sym 
-EMUPARAM                += -s $(PROJECT_DIR)/slave.sym
+EMUPARAM                += -s $(PROJECT_DIR)/mplayer.sym
+EMUPARAM                += -s $(PROJECT_DIR)/splayer.sym
 EMUPARAM                += -r:$(PROJECT_DIR)/$(PROJECT).brk
 
 COMMON                  := ../common
@@ -113,33 +122,38 @@ AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 AFLAGS			+= -DMOVIE_ADDRESS=$(MOVIE_ADDRESS)
 AFLAGS			+= -DSLAVE_01_ADDRESS=$(slave-01_ADDRESS)
-AFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
+AFLAGS			+= -DSPLAYER_ADDRESS=$(splayer_ADDRESS)
+AFLAGS			+= -DMPLAYER_ADDRESS=$(mplayer_ADDRESS)
 AFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)
 AFLAGS			+= -DUSE_HIRES
 
 $(PROJECT)_AFLAGS 	:= -DPP_MASTER
 pplink_AFLAGS		:= -DPP_SLAVE
 slave-01_AFLAGS		:=
-# slave_AFLAGS		:= -DNO_ROM
+splayer_AFLAGS		:= -DNO_ROM
+mplayer_AFLAGS		:= -DNO_ROM
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 CFLAGS			+= -DMOVIE_ADDRESS=$(MOVIE_ADDRESS)
 CFLAGS			+= -DSLAVE_01_ADDRESS=$(slave-01_ADDRESS)
-CFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
+CFLAGS			+= -DSPLAYER_ADDRESS=$(splayer_ADDRESS)
+CFLAGS			+= -DMPLAYER_ADDRESS=$(mplayer_ADDRESS)
 CFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)
 
 $(PROJECT)_CFLAGS 	:=
 pplink_CFLAGS		:=
 slave-01_CFLAGS		:=
-# slave_CFLAGS		:= -DNO_ROM
+splayer_CFLAGS		:= -DNO_ROM
+mplayer_CFLAGS		:= -DNO_ROM
 
 LFLAGS			+=
 
 $(PROJECT)_LFLAGS 	:=
 pplink_LFLAGS		:=
 slave-01_LFLAGS		:=
-slave_LFLAGS		:=
+splayer_LFLAGS		:=
+mplayer_LFLAGS		:=
 
 TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap tools/bmpsplitter res/out res-1/out
 
@@ -150,10 +164,13 @@ finalize: hxc
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
 	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
+	@ echo ""
 	@printf "[MEM]   master   : #%.4X .. #%.4X\\n" $$(($(master_ADDRESS))) $$(expr `cat master | wc -c` + $$(($(master_ADDRESS))))
 	@printf "[MEM]   pplink   : #%.4X .. #%.4X\\n" $$(($(pplink_ADDRESS))) $$(expr `cat pplink | wc -c` + $$(($(pplink_ADDRESS))))
-	@printf "[MEM]   slave-01 : #%.4X .. #%.4X\\n" $$(($(slave-01_ADDRESS))) $$(expr `cat slave | wc -c` + $$(($(slave-01_ADDRESS))))
-	@printf "[MEM]   slave    : #%.4X .. #%.4X\\n" $$(($(slave_ADDRESS))) $$(expr `cat slave | wc -c` + $$(($(slave_ADDRESS))))
+	@printf "[MEM]   slave-01 : #%.4X .. #%.4X\\n" $$(($(slave-01_ADDRESS))) $$(expr `cat slave-01 | wc -c` + $$(($(slave-01_ADDRESS))))
+	@printf "[MEM]   splayer  : #%.4X .. #%.4X\\n" $$(($(splayer_ADDRESS))) $$(expr `cat splayer | wc -c` + $$(($(splayer_ADDRESS))))
+	@printf "[MEM]   mplayer  : #%.4X .. #%.4X\\n" $$(($(mplayer_ADDRESS))) $$(expr `cat mplayer | wc -c` + $$(($(mplayer_ADDRESS))))
+	@printf "[MEM]   movie    : #%.4X .. #%.4X\\n" $$(($(MOVIE_ADDRESS))) $$(expr `cat movie-00 | wc -c` + $$(($(MOVIE_ADDRESS))))
 	@echo "Done"
 
 # 
@@ -223,3 +240,5 @@ gos2: all
 # no more config to run as slave 3
 gos3:
 	@echo "no more config to run as slave 3"
+	
+# 0x97E8 - frames tab

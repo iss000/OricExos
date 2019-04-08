@@ -18,7 +18,7 @@ PROJECT_AUTORUN		:= 1
 # # # Leave DOS
 PROJECT_QUITDOS		:= 0
 
-START_ADDRESS           := $(shell echo $$((0x0700)))
+START_ADDRESS           := $(shell echo $$((0x0500)))
 
 ATAPS			:= pplink slave-01 slave movie-00 movie-01 movie-02 movie-03 movie-10 movie-11 movie-12 movie-13
 BTAPS			:= 
@@ -44,37 +44,39 @@ slave_SRC               := slave.s
 slave_AUTORUN           := 0
 slave_ADDRESS           := $(shell echo $$((0x2000)))
 
+MOVIE_ADDRESS           := $(shell echo $$((0x1718)))
+
 movie-00_SRC            := movie-00.s
 movie-00_AUTORUN        := 0
-movie-00_ADDRESS        := $(shell echo $$((0x1718)))
+movie-00_ADDRESS        := $(MOVIE_ADDRESS)
 
 movie-01_SRC            := movie-01.s
 movie-01_AUTORUN        := 0
-movie-01_ADDRESS        := $(shell echo $$((0x1718)))
+movie-01_ADDRESS        := $(MOVIE_ADDRESS)
 
 movie-02_SRC            := movie-02.s
 movie-02_AUTORUN        := 0
-movie-02_ADDRESS        := $(shell echo $$((0x1718)))
+movie-02_ADDRESS        := $(MOVIE_ADDRESS)
 
 movie-03_SRC            := movie-03.s
 movie-03_AUTORUN        := 0
-movie-03_ADDRESS        := $(shell echo $$((0x1718)))
+movie-03_ADDRESS        := $(MOVIE_ADDRESS)
 
 movie-10_SRC            := movie-10.s
 movie-10_AUTORUN        := 0
-movie-10_ADDRESS        := $(shell echo $$((0x1718)))
+movie-10_ADDRESS        := $(MOVIE_ADDRESS)
 
 movie-11_SRC            := movie-11.s
 movie-11_AUTORUN        := 0
-movie-11_ADDRESS        := $(shell echo $$((0x1718)))
+movie-11_ADDRESS        := $(MOVIE_ADDRESS)
 
 movie-12_SRC            := movie-12.s
 movie-12_AUTORUN        := 0
-movie-12_ADDRESS        := $(shell echo $$((0x1718)))
+movie-12_ADDRESS        := $(MOVIE_ADDRESS)
 
 movie-13_SRC            := movie-13.s
 movie-13_AUTORUN        := 0
-movie-13_ADDRESS        := $(shell echo $$((0x1718)))
+movie-13_ADDRESS        := $(MOVIE_ADDRESS)
 
 
 
@@ -109,6 +111,7 @@ include $($(TOOLCHAIN))/atmos.make
 AFLAGS			+= $(addprefix -I,$(VPATH))
 AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
+AFLAGS			+= -DMOVIE_ADDRESS=$(MOVIE_ADDRESS)
 AFLAGS			+= -DSLAVE_01_ADDRESS=$(slave-01_ADDRESS)
 AFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
 AFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)
@@ -121,6 +124,7 @@ slave-01_AFLAGS		:=
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
+CFLAGS			+= -DMOVIE_ADDRESS=$(MOVIE_ADDRESS)
 CFLAGS			+= -DSLAVE_01_ADDRESS=$(slave-01_ADDRESS)
 CFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
 CFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)

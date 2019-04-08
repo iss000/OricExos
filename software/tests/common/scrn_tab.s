@@ -4,12 +4,10 @@
 ; ----------------------------------------------------------------------------
 #ifdef USE_HIRES
 _scrn_ptr = $a000
-#else
+#endif
+
 #ifdef USE_TEXT
 _scrn_ptr = $bb80
-#else
-#error USE_HIRES or USE_TEXT not defined
-#endif
 #endif
 
 _scrn_lo

@@ -207,10 +207,20 @@ pp_out_get_byte
 ;==========================
 #ifdef PP_SLAVE
 ;--------------------------
+__pp_defprogress
+        lda   #<__pp_defprogress
+        ldx   #>__pp_defprogress
+__pp_setprogress
+        sta   pp_progress_1+1
+        sta   pp_progress_2+1
+        stx   pp_progress_1+2
+        stx   pp_progress_2+2
+        rts
+
+;--------------------------
 __pp_receive
         php
         sei
-
         sty   pp_save_y
         
         jsr   pp_setup_slave
@@ -264,6 +274,14 @@ rxs_0
         sta   (zptr),y
         sta   zflg
         
+        ; signal client
+        lda   zsrc
+        bne   rx_go
+        
+pp_progress_1
+        jsr   __pp_defprogress
+        
+rx_go
         ; receive content
         ldy   #$00
 rx_cont
@@ -287,8 +305,10 @@ rxs_2
         ; restore via registers
         jsr   pp_reset
 
-        ldy   pp_save_y
+pp_progress_2
+        jsr   __pp_defprogress
         
+        ldy   pp_save_y
         plp
         rts
 
@@ -407,5 +427,4 @@ pp_reset
         lda   pp_save_via_ier
         ora   #$80
         sta   via_ier
-
         rts

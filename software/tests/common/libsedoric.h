@@ -8,6 +8,13 @@ extern void* sed_end;
 extern unsigned int sed_size;
 extern int sed_err;
 
+void execfile(const char* fname)
+{
+  extern void sed_execfile(void);
+  sed_fname = fname;
+  sed_execfile();    
+}
+
 int savefile(const char* fname, void* buf, unsigned int len) 
 {
     extern void sed_savefile(void);

@@ -19,6 +19,8 @@ pp_link_siz = pp_link+5
 ;--------------------------
 ; this space is reused
 first_start
+        jsr   _reset_exos
+
         lda   #<_start
         sta   _entry+1
         lda   #>_start
@@ -37,6 +39,8 @@ lp_1
         lda   #$07
         sta   b_ink
         jsr   r_cls
+        
+        jsr   r_hires
         
         lda   id_addr
         and   #$03
@@ -63,13 +67,14 @@ _start
         lda   #>pp_link_cmd
         sta   __pp_cmd_ptr+1
         
+        lda   #<hide_indicator
+        ldx   #>hide_indicator
+        jsr   __pp_setprogress
         jsr   __pp_receive
 
         lda   pp_link_flg
         beq   _start
-                
-        jsr   hide_indicator
-        
+
         lda   #>(_start-1)
         pha
         lda   #<(_start-1)
@@ -78,11 +83,11 @@ _start
         jmp   (pp_link_dst)
 
 show_indicator
-        lda   id_addr
-        ora   #$80
-hide_indicator  
+        lda   ipc_id
+        ora   #$30
         ; bit op-code
         byt   $2c
+hide_indicator  
         lda   #$20
 __auto_indptr
         sta   $1234

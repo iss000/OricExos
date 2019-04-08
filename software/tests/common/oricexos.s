@@ -24,7 +24,7 @@ extadr    =   $380
 ; bit 2 - in/out pp buffer
 ; bit 3 - mixer switch
 
-extstat   byt 0
+extstat   =   ipc_exos
 
 ;--------------------------
 #define f_ram_off   %11111110
@@ -65,6 +65,13 @@ _pli
         ora   irqflag
         pha
         plp
+        rts
+
+;==========================
+_reset_exos
+        lda   #0
+        sta   extstat
+        sta   extadr
         rts
 
 ;==========================

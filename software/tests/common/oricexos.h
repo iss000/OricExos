@@ -50,13 +50,23 @@
 #define via_irq_t1    (1<<via_bit_t1)
 #define via_mask_t1   ($7f ^ via_irq_t1)
 
-#ifndef NO_ROM
 // --------------------------
 //  the value on address is 
 //  used as ID of every oric
 //  PEEK(#EDB0) AND 7
 //  
 #define id_addr       $edb0
+
+
+// --------------------------
+// interrupt vectors
+#define irq_addrlo $fffe
+#define irq_addrhi $ffff
+#define rst_addrlo $fffc
+#define rst_addrhi $fffd
+#define nmi_addrlo $fffa
+#define nmi_addrhi $fffb
+
 
 // --------------------------
 //  some useful atmos rom 
@@ -85,26 +95,22 @@
 #define b_paper       $026b
 #define b_ink         $026c
 
-#endif /* NO_ROM */
-
 // --------------------------
 // inter process common area (ipc)
 #define ipc_ptr       $bfe0
 #define ipc_id        ipc_ptr+0
-#define ipc_vsync     ipc_ptr+1
+#define ipc_exos      ipc_ptr+1
+#define ipc_vsync     ipc_ptr+2
 
 #else
 
-#ifndef NO_ROM
-
 #define id_addr       0xedb0
-
-#endif /* NO_ROM */
 
 // --------------------------
 // inter process common area (ipc)
 typedef struct s_ipc {
   unsigned char id;
+  unsigned char exos;
   unsigned char ipc_vsync[3];
 } t_ipc,*p_ipc;
 
@@ -115,6 +121,8 @@ void cli(void);
 
 void phi(void);
 void pli(void);
+
+void reset_exos(void);
 
 void set_ram_on(void);
 void set_rom_off(void);

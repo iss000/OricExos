@@ -1,6 +1,9 @@
-;
-#include "libsedoric.h"
+; ======================================
+#include <compat.h>
+#include <libsedoric.h>
 
+; next token
+_next_token = $00e2
 ; '!' vector
 _exvec      = $02f5
 ; toggle rom on/off
@@ -24,6 +27,38 @@ _sed_size   .byt 0,0
 _sed_err    .byt 0,0
 
 savebuf_zp  .dsb 256 ;$b400
+
+
+; ======================================
+; void sed_execfile(const char* fname);
+; ======================================
+_sed_execfile
+.(
+            lda _sed_fname
+            sta __auto_exec_ptr+1
+            lda _sed_fname+1
+            sta __auto_exec_ptr+2
+
+            ; copy the string to #35..#84
+            ldy #$0
+__auto_exec_ptr = *
+loop
+            lda $f00d,y
+            sta $35,y
+            iny
+            ora #$00
+            bne loop
+
+            ; update the line start pointer
+            sta $ea         
+            lda #$35
+            sta $e9
+
+            ; get next token
+            jsr _next_token
+            ; call the ! command handler
+            jmp (_exvec)
+.)
 
 ; ======================================
 ; bool sed_savefile(const char* fname, void* buf, int len);

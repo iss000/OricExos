@@ -33,23 +33,21 @@ $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 
 pplink_SRC              := pplink.s pp.s oricexos.s
-pplink_AUTORUN          := 0
+pplink_AUTORUN          := 1
 pplink_ADDRESS          := $(shell echo $$((0x0400)))
 
 slave-01_SRC            := slave-01.s oricexos.s
-slave-01_AUTORUN        := 0
+slave-01_AUTORUN        := 1
 slave-01_ADDRESS        := $(shell echo $$((0x0680)))
 
 # 
-PLAYER_ADDRESS          := $(shell echo $$((0x0800)))
-
 splayer_SRC             := splayer.s
-splayer_AUTORUN         := 0
-splayer_ADDRESS         := $(PLAYER_ADDRESS)
+splayer_AUTORUN         := 1
+splayer_ADDRESS         := $(shell echo $$((0x0800)))
 
 mplayer_SRC             := mplayer.s
-mplayer_AUTORUN         := 0
-mplayer_ADDRESS         := $(PLAYER_ADDRESS)
+mplayer_AUTORUN         := 1
+mplayer_ADDRESS         := $(shell echo $$((0x0500)))
 
 # 
 MOVIE_ADDRESS           := $(shell echo $$((0x1680)))
@@ -130,8 +128,8 @@ AFLAGS			+= -DUSE_HIRES
 $(PROJECT)_AFLAGS 	:= -DPP_MASTER
 pplink_AFLAGS		:= -DPP_SLAVE
 slave-01_AFLAGS		:=
-splayer_AFLAGS		:= -DNO_ROM
-mplayer_AFLAGS		:= -DNO_ROM
+splayer_AFLAGS		:= 
+mplayer_AFLAGS		:= 
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
@@ -144,8 +142,8 @@ CFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)
 $(PROJECT)_CFLAGS 	:=
 pplink_CFLAGS		:=
 slave-01_CFLAGS		:=
-splayer_CFLAGS		:= -DNO_ROM
-mplayer_CFLAGS		:= -DNO_ROM
+splayer_CFLAGS		:= 
+mplayer_CFLAGS		:= 
 
 LFLAGS			+=
 

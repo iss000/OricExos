@@ -12,7 +12,7 @@
 #include "res/out/3/cc00009.bmp.s"
 #include "res/out/3/cc00010.bmp.s"
 
-_tab_ftames_lo
+_tab_frames_lo
 .byt <pic3cc00000
 .byt <pic3cc00001
 .byt <pic3cc00002
@@ -25,7 +25,7 @@ _tab_ftames_lo
 .byt <pic3cc00009
 .byt <pic3cc00010
 
-_tab_ftames_hi
+_tab_frames_hi
 .byt >pic3cc00000
 .byt >pic3cc00001
 .byt >pic3cc00002

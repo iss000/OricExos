@@ -135,6 +135,9 @@ void set_pp_out(void);
 void set_mix_a(void);
 void set_mix_b(void);
 
+void set_vsync_on(void);
+void set_vsync_off(void);
+
 #endif /* ASSEMBLER */
 
 #endif /* __ORIC_EXOS_H__ */

@@ -16,21 +16,23 @@ typedef struct s_item {
 
 static t_item slave_items[] = 
 {
-  { "PPLINK.COM", PPLINK_ADDRESS, 0x87 },
-  { "MOVIE01.BIN", MOVIE_ADDRESS, 0x01 },
-  { "MOVIE02.BIN", MOVIE_ADDRESS, 0x02 },
-  { "MOVIE03.BIN", MOVIE_ADDRESS, 0x04 },
-  { "SPLAYER.COM", SPLAYER_ADDRESS, 0x87 },
+  { "PPLINK.COM", PPLINK_ADDRESS, PP_SLAVEALL|PP_AUTO },
+  { "MOVIE03.BIN", MOVIE_ADDRESS, PP_SLAVE3 },
+  { "MOVIE02.BIN", MOVIE_ADDRESS, PP_SLAVE2 },
+  { "MOVIE01.BIN", MOVIE_ADDRESS, PP_SLAVE1 },
+  { "SPLAYER.COM", SPLAYER_ADDRESS, PP_SLAVEALL|PP_AUTO },
 };
 
 static const void* buffer = (const void*)MOVIE_ADDRESS;
 static unsigned int len;
 static int i, rc;
 
+static void load_item(const char* name, void* src);
 static void send_item(const char* name, void* dst, void* src, unsigned char flags);
 
 void main(void)
 {
+  set_vsync_off();
   reset_exos();
   
   paper(0);
@@ -43,21 +45,22 @@ void main(void)
     send_item(slave_items[i].name, (void*)slave_items[i].address, buffer, slave_items[i].flags);
   }
   
-  memset(statline, 0x20, 40);
-  sprintf(statline, "\x02Loading\x07MOVIE00.BIN");
-  rc = loadfile("MOVIE00.BIN", (void*)MOVIE_ADDRESS, &len);
+  load_item("MOVIE00.BIN", (void*)MOVIE_ADDRESS);
   
-  memset(statline, 0x20, 40);
-  sprintf(statline, "\x06Running\x07MPLAYER.COM");
+  sprintf(statline, "\x06RUNNING\x07MPLAYER.COM");
   execfile("!MPLAYER.COM");
+}
+
+static void load_item(const char* name, void* src)
+{
+  sprintf(statline, "\x02LOADING\x07%s", name);
+  loadfile(name, src, &len);
+  memset(statline, 0x20, 40);
 }
 
 static void send_item(const char* name, void* dst, void* src, unsigned char flags)
 {
-  len = 0;
-  memset(statline, 0x20, 40);
-  sprintf(statline, "\x02Loading\x07%s", name);
-  rc = loadfile(name, src, &len);
+  load_item(name, src);
   
   ppc.cmd = 0;
   ppc.flags = flags;
@@ -65,7 +68,7 @@ static void send_item(const char* name, void* dst, void* src, unsigned char flag
   ppc.src_addr = src;
   ppc.length = len;
   
-  memset(statline, 0x20, 40);
-  sprintf(statline, "\x03Sending\x07%s %d%d bytes ->", name, len/100, len%100);
+  sprintf(statline, "\x03SENDING\x07%s %d%d bytes >", name, len/100, len%100);
   pp_send(&ppc);
+  memset(statline, 0x20, 40);
 }

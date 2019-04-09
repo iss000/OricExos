@@ -88,7 +88,17 @@ _player
         
 ;--------------------------
 _player_vsync
+        inc   framet
+        lda   framet
+        cmp   #framett
+        beq   flp_0
+        rts
+flp_0
+        lda   #$00
+        sta   framet
+        
         jsr   blit
+        
         ldx   frame
         inx
         cpx   #frames
@@ -107,6 +117,9 @@ _tab_frames_lo = MOVIE_ADDRESS+(framew*frameh*frames)
 _tab_frames_hi = _tab_frames_lo+frames 
 
 frame   byt   0
+
+framett =     10
+framet  byt   0
         
 blit
         ldy   frame

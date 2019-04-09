@@ -177,3 +177,19 @@ br_mix
         pla
         rts
 
+;==========================
+_set_vsync_on
+        pha
+        lda   via_b
+        ora   #%01000000
+        sta   via_b
+        pla
+        rts
+;--------------------------
+_set_vsync_off
+        pha
+        lda   via_b
+        and   #%10111111
+        sta   via_b
+        pla
+        rts

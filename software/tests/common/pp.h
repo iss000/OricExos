@@ -18,6 +18,15 @@ typedef struct s_ppcmd {
 extern p_ppcmd _pp_cmd_ptr;
 
 // --------------------------
+// pp flags
+#define PP_AUTO     (0x80)
+#define PP_SLAVE1   (1<<0)
+#define PP_SLAVE2   (1<<2)
+#define PP_SLAVE3   (1<<3)
+#define PP_SLAVEALL (PP_SLAVE1|PP_SLAVE2|PP_SLAVE3)
+
+
+// --------------------------
 void _pp_send(void);
 #define pp_send(ppcmd) (_pp_cmd_ptr=(p_ppcmd)ppcmd,_pp_send())
 

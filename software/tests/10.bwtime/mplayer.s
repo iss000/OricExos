@@ -50,7 +50,8 @@ slp_1
 
 ;--------------------------
         ; show time
-        jsr   wait_vsync
+        jsr   _set_vsync_on
+        jsr   _wait_vsync
         cli
         
 ;--------------------------
@@ -58,7 +59,7 @@ slp_1
         jmp   *
         
 ;--------------------------
-wait_vsync
+_wait_vsync
         lda   via_b
         lda   #via_irq_cb1
 wvlp_1

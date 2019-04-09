@@ -25,7 +25,7 @@ static t_item slave_items[] =
 
 static const void* buffer = (const void*)MOVIE_ADDRESS;
 static unsigned int len;
-static int i, rc;
+static int i;
 
 static void load_item(const char* name, void* src);
 static void send_item(const char* name, void* dst, void* src, unsigned char flags);

@@ -7,7 +7,8 @@
 static t_ppcmd ppc;
 
 static void* slave_buffer = (void*)SLAVE_ADDRESS;
-static int rc, len;
+static unsigned int len;
+static int rc;
 
 void main(void)
 {

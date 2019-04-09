@@ -178,18 +178,20 @@ br_mix
         rts
 
 ;==========================
+; tape relay off = vsync on
 _set_vsync_on
         pha
         lda   via_b
-        ora   #%01000000
+        and   #%10111111
         sta   via_b
         pla
         rts
 ;--------------------------
+; tape relay on = vsync off
 _set_vsync_off
         pha
         lda   via_b
-        and   #%10111111
+        ora   #%01000000
         sta   via_b
         pla
         rts

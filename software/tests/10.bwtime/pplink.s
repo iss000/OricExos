@@ -17,15 +17,10 @@ pp_link_dst = pp_link+3
 pp_link_siz = pp_link+5
 
 ;--------------------------
-; this space is reused
+; this code is executed once
+; and its space is reused
+; with the variables above
 first_start
-        jsr   _reset_exos
-
-        lda   #<_start
-        sta   _entry+1
-        lda   #>_start
-        sta   _entry+2
-
         ; clear status line
         lda   #$20
         ldx   #39
@@ -33,14 +28,20 @@ lp_1
         sta   $bb80,x
         dex
         bpl   lp_1
-        
+        ; paper 0
         lda   #$10
         sta   b_paper
+        ; ink 7
         lda   #$07
         sta   b_ink
         jsr   r_cls
-        
-        jsr   r_hires
+
+        jsr   _reset_exos
+
+        lda   #<_start
+        sta   _entry+1
+        lda   #>_start
+        sta   _entry+2
         
         lda   id_addr
         and   #$03
@@ -53,6 +54,8 @@ lp_1
         lda   #0
         adc   #>($bfdf-4)
         sta   __auto_indptr+2
+        
+        jsr   r_hires
         
 ;--------------------------
 ; fall trough here

@@ -20,7 +20,6 @@ static t_item slave_items[] =
   { "MOVIE01.BIN", MOVIE_ADDRESS, 0x01 },
   { "MOVIE02.BIN", MOVIE_ADDRESS, 0x02 },
   { "MOVIE03.BIN", MOVIE_ADDRESS, 0x04 },
-  { "SLAVE01.COM", SLAVE_01_ADDRESS, 0x87 },
   { "SPLAYER.COM", SPLAYER_ADDRESS, 0x87 },
 };
 
@@ -37,9 +36,9 @@ void main(void)
   paper(0);
   ink(7);
   cls();
-
+  
   hires();
- 
+  
   for(i=0; i<sizeof(slave_items)/sizeof(t_item); i++) {
     send_item(slave_items[i].name, (void*)slave_items[i].address, buffer, slave_items[i].flags);
   }
@@ -47,7 +46,7 @@ void main(void)
   memset(statline, 0x20, 40);
   sprintf(statline, "\x02Loading\x07MOVIE00.BIN");
   rc = loadfile("MOVIE00.BIN", (void*)MOVIE_ADDRESS, &len);
-
+  
   memset(statline, 0x20, 40);
   sprintf(statline, "\x06Running\x07MPLAYER.COM");
   execfile("!MPLAYER.COM");

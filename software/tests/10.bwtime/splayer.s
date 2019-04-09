@@ -18,35 +18,24 @@
 ;--------------------------
 _start
         sei
-        jsr   _set_ram_on
+        jsr   _reset_exos
+
+        ; ligth the led
+;         jsr   _set_ram_on
+        
         jsr   _set_irq_handler
 
         ; hook nmi and reset
-        lda   #<PPLINK_ADDRESS
-        sta   nmi_addrlo        
-        sta   rst_addrlo        
-        lda   #>PPLINK_ADDRESS
-        sta   nmi_addrhi        
-        sta   rst_addrhi        
+;         lda   #<_irq_handler
+;         sta   nmi_ram_addrlo        
+;         sta   rst_ram_addrlo        
+;         lda   #>_irq_handler
+;         sta   nmi_ram_addrhi        
+;         sta   rst_ram_addrhi        
 
 ;--------------------------
-        ; show time
-        jsr   wait_vsync
-        cli
-        
-;--------------------------
-        ; loop forever
-        jmp   *
-        
-;--------------------------
-wait_vsync
-        lda   via_b
-        lda   #via_irq_cb1
-wvlp_1
-        bit   via_ifr
-        beq   wvlp_1
-        rts
-        
+        jmp   _player
+
 ;--------------------------
 ; hires line addresses
 #include "scrn_tab.s"

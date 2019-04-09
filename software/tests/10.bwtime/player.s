@@ -21,9 +21,9 @@ _set_irq_handler
         
         ; hook interrupt
         lda   #<_irq_handler
-        sta   irq_addrlo
+        sta   irq_ram_addrlo
         lda   #>_irq_handler
-        sta   irq_addrhi
+        sta   irq_ram_addrhi
         
         lda   #$7f
         sta   via_ier
@@ -84,30 +84,56 @@ skip
 
 ;--------------------------
 _player
-        jmp   _player
+;--------------------------
+        ; show time
+        jsr   _set_vsync_on
+        
+        ; is this master
+        lda   ipc_id
+        beq   _send_kick
         
 ;--------------------------
+_wait_kick
+        lda   via_a
+        lda   #via_irq_ca1
+wkl_1
+        bit   via_ifr
+        beq   wkl_1
+        jsr   _wait_vsync
+        cli
+        jmp   *
+;--------------------------
+_send_kick
+        lda   via_b
+        and   #%11101111
+        sta   via_b
+        ora   #%00010000
+        sta   via_b
+        jsr   _wait_vsync
+        cli
+        jmp   *
+
+;--------------------------
 _player_vsync
-        inc   framet
-        lda   framet
-        cmp   #framett
-        beq   flp_0
-        rts
-flp_0
-        lda   #$00
-        sta   framet
-        
         jsr   blit
-        
-        ldx   frame
-        inx
-        cpx   #frames
+        inc   frame
+        lda   frame
+        cmp   #frames
         bne   flp_1
-        ldx   #$00
+        lda   #$00
+        sta   frame
 flp_1
-        stx   frame
+;--------------------------
+; fall trough
+;--------------------------
+_wait_vsync
+        lda   via_b
+        lda   #via_irq_cb1
+wvlp_1
+        bit   via_ifr
+        beq   wvlp_1
         rts
-        
+
 ;--------------------------
 framew  =     (150/6)
 frameh  =     (120)
@@ -118,8 +144,9 @@ _tab_frames_hi = _tab_frames_lo+frames
 
 frame   byt   0
 
-framett =     10
+framett =     8
 framet  byt   0
+framec  byt   0
         
 blit
         ldy   frame
@@ -128,12 +155,16 @@ blit
         lda   _tab_frames_hi,y
         sta   __auto_src+2
 
-        ldy   #0
+        ldy   #((200-frameh)/2)
 blp_y
+        clc
         lda   _scrn_lo-1,y
+        adc   #<((40-framew)/2)
         sta   __auto_dst+1
         lda   _scrn_hi-1,y
+        adc   #>((40-framew)/2)
         sta   __auto_dst+2
+        
         ldx   #0
 blp_x
 ;
@@ -156,7 +187,7 @@ __auto_dst
         sta   __auto_src+2
         
         iny
-        cpy   #frameh
+        cpy   #(((200-frameh)/2)+frameh)
         bne   blp_y
 
         rts

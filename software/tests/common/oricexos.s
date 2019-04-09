@@ -69,9 +69,16 @@ _pli
 
 ;==========================
 _reset_exos
+        ; reset extension
         lda   #0
         sta   extstat
         sta   extadr
+        ; disable vsync
+        jsr   _set_vsync_off
+        ; set oric id
+        lda   id_addr
+        and   #$03
+        sta   ipc_id
         rts
 
 ;==========================
@@ -181,6 +188,9 @@ br_mix
 ; tape relay off = vsync on
 _set_vsync_on
         pha
+        lda   via_ddrb
+        ora   #%01000000
+        sta   via_ddrb
         lda   via_b
         and   #%10111111
         sta   via_b
@@ -190,6 +200,9 @@ _set_vsync_on
 ; tape relay on = vsync off
 _set_vsync_off
         pha
+        lda   via_ddrb
+        ora   #%01000000
+        sta   via_ddrb
         lda   via_b
         ora   #%01000000
         sta   via_b

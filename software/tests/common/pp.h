@@ -20,9 +20,9 @@ extern p_ppcmd _pp_cmd_ptr;
 // --------------------------
 // pp flags
 #define PP_AUTO     (0x80)
-#define PP_SLAVE1   (1<<0)
-#define PP_SLAVE2   (1<<2)
-#define PP_SLAVE3   (1<<3)
+#define PP_SLAVE1   (0x01)
+#define PP_SLAVE2   (0x02)
+#define PP_SLAVE3   (0x04)
 #define PP_SLAVEALL (PP_SLAVE1|PP_SLAVE2|PP_SLAVE3)
 
 

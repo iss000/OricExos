@@ -59,13 +59,23 @@
 
 
 // --------------------------
-// interrupt vectors
-#define irq_addrlo $fffe
-#define irq_addrhi $ffff
-#define rst_addrlo $fffc
-#define rst_addrhi $fffd
-#define nmi_addrlo $fffa
-#define nmi_addrhi $fffb
+// interrupt vectors when 
+// overlay enabled
+#define irq_rom_addrlo $fffe
+#define irq_rom_addrhi $ffff
+#define nmi_rom_addrlo $fffa
+#define nmi_rom_addrhi $fffb
+#define rst_rom_addrlo $fffc
+#define rst_rom_addrhi $fffd
+
+// interrupt vectors when 
+// rom enabled
+#define irq_ram_addrlo $0245
+#define irq_ram_addrhi $0246
+#define nmi_ram_addrlo $0248
+#define nmi_ram_addrhi $0249
+#define rst_ram_addrlo nmi_ram_addrlo
+#define rst_ram_addrhi nmi_ram_addrhi
 
 
 // --------------------------

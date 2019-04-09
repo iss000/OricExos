@@ -16,11 +16,11 @@ typedef struct s_item {
 
 static t_item slave_items[] = 
 {
-  { "PPLINK.COM", PPLINK_ADDRESS, PP_SLAVEALL|PP_AUTO },
+  { "PPLINK.COM", PPLINK_ADDRESS, PP_AUTO|PP_SLAVEALL },
   { "MOVIE03.BIN", MOVIE_ADDRESS, PP_SLAVE3 },
   { "MOVIE02.BIN", MOVIE_ADDRESS, PP_SLAVE2 },
   { "MOVIE01.BIN", MOVIE_ADDRESS, PP_SLAVE1 },
-  { "SPLAYER.COM", SPLAYER_ADDRESS, PP_SLAVEALL|PP_AUTO },
+  { "SPLAYER.COM", SPLAYER_ADDRESS, PP_AUTO|PP_SLAVEALL },
 };
 
 static const void* buffer = (const void*)MOVIE_ADDRESS;
@@ -32,7 +32,6 @@ static void send_item(const char* name, void* dst, void* src, unsigned char flag
 
 void main(void)
 {
-  set_vsync_off();
   reset_exos();
   
   paper(0);

@@ -91,7 +91,7 @@ EMUARG 			:= -m a
 EMUARG 			+= -k m
 EMUARG 			+= --serial none
 EMUARG 			+= --vsynchack on
-EMUARG 			+= --scanlines off
+EMUARG 			+= --scanlines on
 EMUARG 			+= --rendermode opengl
 
 # EMUPARAM              += -r $(shell echo $$(($(START_ADDRESS))))

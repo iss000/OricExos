@@ -21,13 +21,17 @@ pp_link_siz = pp_link+5
 ; and its space is reused
 ; with the variables above
 first_start
+        sei
+        jsr   _reset_exos
+
         ; clear status line
+        ldx   #40
         lda   #$20
-        ldx   #39
 lp_1
-        sta   $bb80,x
+        sta   $bb80-1,x
         dex
-        bpl   lp_1
+        bne   lp_1
+        
         ; paper 0
         lda   #$10
         sta   b_paper
@@ -36,19 +40,14 @@ lp_1
         sta   b_ink
         jsr   r_cls
 
-        jsr   _reset_exos
-
         lda   #<_start
         sta   _entry+1
         lda   #>_start
         sta   _entry+2
         
-        lda   id_addr
-        and   #$03
-        sta   ipc_id
-        
         ; setup indicator
         clc
+        lda   ipc_id
         adc   #<($bfdf-4)
         sta   __auto_indptr+1
         lda   #0

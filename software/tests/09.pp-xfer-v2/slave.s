@@ -7,18 +7,23 @@
 ;--------------------------
 *       = SLAVE_ADDRESS
 
+;--------------------------
+; reuse space for variables
+tmp     =     _start
+
+;--------------------------
 _start
         sei
         cld
         jsr   _reset_exos
-        
+
         lda   #$20
         ldx   #39
 loop0
         sta   $bb80,x
         dex
         bpl   loop0
-        
+
         lda   ipc_id
         sta   tmp
         sec
@@ -27,20 +32,20 @@ loop0
         lda   ipc_id
         ora   #$30
         sta   msgn
-       
+
         ; hide cursor
         lda   $251
         and   #$fe
         sta   $251
         jsr   $f6fe
-       
+
         ; pos cursor
-        lda   #$00  
-        sta   $0269 
-        lda   ipc_id    
-        sta   $0268 
-        jsr   $da0c 
-        lda   $1f   
+        lda   #$01
+        sta   $0269
+        lda   ipc_id
+        sta   $0268
+        jsr   $da0c
+        lda   $1f
         ldy   $20
         sta   $12
         sty   $13
@@ -53,7 +58,7 @@ loop0
 
 _stop
         jmp   _stop
-        
+
 ;--------------------------
 wait
         lda   #$00
@@ -74,12 +79,8 @@ loop_wait
         dex
         bne   loop_wait
         rts
-        
+
 
 ;--------------------------
-msg     byt   $1b,$00,"ORIC #X READY.",$0d,$0a,0
+msg     byt   $1b,$00,"ORIC #X READY.",17,0
 msgn    =     msg + 8
-
-;--------------------------
-; reuse space
-tmp     =     _start

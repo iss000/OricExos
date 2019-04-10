@@ -12,6 +12,8 @@ static int rc;
 
 void main(void)
 {
+  reset_exos();
+  
   paper(0);
   ink(7);
   cls();
@@ -21,15 +23,13 @@ void main(void)
   rc = loadfile("SLAVE.COM", slave_buffer, &len);
   
   ppc.cmd = 0;
-  ppc.flags = 0x87; // autoexec + 3 slaves;
+  ppc.flags = (PP_AUTO|PP_SLAVEALL); // autoexec + 3 slaves;
   ppc.dst_addr = ppc.src_addr = slave_buffer;
   ppc.length = len;
   
   printf("\nSending SLAVE.COM (%d%d bytes)", len/100, len%100);
   pp_send(&ppc);
   printf("\nMaster done.");
-  
-  for(rc=0;rc<10000;rc++);
   
   // jump to slave code
   ((void (*)(void))slave_buffer)();

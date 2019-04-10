@@ -123,4 +123,3 @@ gos3: all
 	@oric -mt -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
         -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/slave.tap
-

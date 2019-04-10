@@ -8,11 +8,21 @@
 ;--------------------------
 *       = START_ADDRESS
 
+;--------------------------
+; toggle rom on/off
+_dosrom = $04f2
+
+;--------------------------
+tmp     =    _start
+
+;--------------------------
 _start
         sei
         cld
         ldx   #$ff
         txs
+        
+        jsr   _reset_exos
 
         lda   #$10
         sta   b_paper
@@ -20,14 +30,12 @@ _start
         sta   b_ink
         jsr   r_cls
         
-        lda   id_addr
-        and   #$07
-        sta   id
+        lda   ipc_id
         sta   tmp
         clc
         adc   #'@'
         sta   msg+1
-        lda   id
+        lda   ipc_id
         ora   #$30
         sta   msgn
         
@@ -42,7 +50,7 @@ loop1
         ldy   #>(msg)
         jsr   r_print
 
-        lda   id
+        lda   ipc_id
         asl
         tay
         lda   jump_tab,y
@@ -118,20 +126,20 @@ loop_wait
         
 
 ;--------------------------
-id      byt  0
-tmp     byt  0
-crlf    byt  $0d, $0a, 0
-msg     byt  $1b,$00,"ORIC #"
-msgn    byt  "X READY.",$0d,$0a,0
-
-oricx   byt  "Oric0"
+crlf    byt   $0d, $0a, 0
+msg     byt   $1b,$00,"ORIC #X READY.",$0d,$0a,0
+msgn    =     msg + 8
+oricx   byt   "Oric0"
+btng    byt   "Booting  ",0
 
 ;--------------------------
 
 copy_rom_to_ram
         ;
+        lda ipc_id
+        beq skpm
         jsr _set_rom_on
-
+skpm
         lda #<$c000
         sta $00
         lda #>$c000
@@ -153,8 +161,13 @@ lp1
         bne lp1
 
         ;
+        lda ipc_id
+        beq skpm_1
         jsr _set_rom_off
-
+        jmp skpm_2
+skpm_1
+        jsr _dosrom
+skpm_2
         lda #<$c000
         sta $00
         lda #>$c000
@@ -177,7 +190,7 @@ lp2
         
         ; patch Ready to OricX
         ldy #5
-        lda id
+        lda ipc_id
 lp3
         clc
         adc oricx-1,y
@@ -185,4 +198,14 @@ lp3
         lda #0
         dey
         bne lp3
+        
+        ; y = 0
+lp4
+        lda btng,y
+        beq lp5
+        sta $e50d,y
+        iny
+        bne lp4
+lp5        
         rts
+

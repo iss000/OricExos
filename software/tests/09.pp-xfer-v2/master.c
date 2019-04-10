@@ -17,7 +17,7 @@ void main(void)
   cls();
   
   len = 0;
-  printf("\n\n\n\n\n\nLoading SLAVE.BIN");
+  printf("\n\n\n\n\n\n\n\n\n\nLoading SLAVE.BIN");
   rc = loadfile("SLAVE.BIN", slave_buffer, &len);
   
   ppc.cmd = 0;
@@ -25,7 +25,7 @@ void main(void)
   ppc.dst_addr = ppc.src_addr = slave_buffer;
   ppc.length = len;
   
-  printf("\nSending SLAVE.BIN (%d bytes)", len);
+  printf("\nSending SLAVE.BIN (%d%d bytes)", len/100, len%100);
   pp_send(&ppc);
   printf("\nMaster done.");
   

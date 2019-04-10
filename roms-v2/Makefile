@@ -3,7 +3,7 @@ PROJECT 		:= basic11b
 PROJECT_DIR		:= $(shell pwd)
 
 # # # Only if floppybuilder
-# PROJECT_DSK		:= $(PROJECT).dsk
+PROJECT_DSK		:= $(PROJECT).dsk
 
 # # #
 # CPU			:= 65816
@@ -89,10 +89,19 @@ finalize: #hxc
 # 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@if [ 'c3a92bef' = `crc32 $(PROJECT)` ]; then echo "[CRC]   OK!"; else echo -n; fi
-	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' > slave-1.rom
-	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' > slave-2.rom
-	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' > slave-3.rom
-# 	@cat slave.pch > slave-1.pch
-# 	@cat slave.pch > slave-2.pch
-# 	@cat slave.pch > slave-3.pch
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' > slave-v2-1.rom
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' > slave-v2-2.rom
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' > slave-v2-3.rom
 	@echo "Done"
+	cat slave.pch > slave-v2-1.pch && echo '$$2DB0:31'>> slave-v2-1.pch 
+	cat slave.pch > slave-v2-2.pch && echo '$$2DB0:32'>> slave-v2-2.pch 
+	cat slave.pch > slave-v2-3.pch && echo '$$2DB0:33'>> slave-v2-3.pch 
+	cp -f $(PROJECT) $(EMUDIR)/roms/slave-v2-1.rom 
+	cp -f $(PROJECT) $(EMUDIR)/roms/slave-v2-2.rom 
+	cp -f $(PROJECT) $(EMUDIR)/roms/slave-v2-3.rom 
+	cp -f slave-v2-1.pch slave-v2-2.pch slave-v2-3.pch $(EMUDIR)/roms/
+	rm -f slave-v2-1.pch slave-v2-2.pch slave-v2-3.pch
+
+.PHONY: $(PROJECT).dsk
+$(PROJECT).dsk: $(TAPS)
+	@echo -n

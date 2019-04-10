@@ -32,8 +32,8 @@ $(PROJECT)_SRC		:= $(common_SRC) libsedoric.s $(PROJECT).c
 $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 
-slave_SRC               := slave.s pp.s oricexos.s
-slave_AUTORUN           := 0
+slave_SRC               := slave.s $(common_SRC)
+slave_AUTORUN           := 1
 slave_ADDRESS           := $(shell echo $$((0x2000)))
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
@@ -103,20 +103,24 @@ finalize: hxc
 # use atmos config to run as master
 gom: all
 	@oric -ma -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym master.dsk
+        -s $(PROJECT_DIR)/$(PROJECT).sym \
+        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/master.dsk
 
 # use oric-1 config to run as slave 1
 gos1: all
 	@oric -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym slave.tap
+        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/slave.tap
 
 # use pravetz config to run as slave 2
 gos2: all
 	@oric -mp -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym slave.tap
+        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/slave.tap
 
-# no more config to run as slave 3
-gos3:
-	@echo "no more config to run as slave 3"
+# use telestrat config to run as slave 3
+gos3: all
+	@oric -mt -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
+        -s $(PROJECT_DIR)/$(PROJECT).sym \
+        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/slave.tap
+

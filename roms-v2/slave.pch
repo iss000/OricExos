@@ -72,3 +72,134 @@ tt_store_end_pc = $e9d0
 ; (so we can write a shorter one)
 tt_writeleader_pc = $e75a
 tt_writeleader_end_pc = $e769
+
+
+;=====================================================================
+;
+; OricExos patches
+;
+;=====================================================================
+
+; cls intead of free bytes print
+$2D73:20CECC
+
+; jmp to cload $E874
+$2D76:A974A0E8
+
+; symbol (C) as slave number 1,2,3
+$2DB0:31
+
+; hide cursor
+$2DB6:11
+
+; default ink white
+$3914:A907
+
+; default paper black
+$3919:A900
+
+; no caps
+$3770:101010101000101010101000
+
+; ===========
+; After reset all VIA registers are set to 00000000
+; PB5 patches
+; -----------
+; $277D 40 -> 60
+; $39B0 F7 -> В7
+; $39B2 02 -> 00
+; $39B5 В7 -> F7
+; $39B7 00 -> 02
+
+; ===========
+; OLD:
+; E76A  20 1A EE    JSR     $EE1A     SET 6522 FOR CASSETTE SYSTEM
+; E76D  A0 06       LDY     #$06      Disable timer 1 interrupts and
+; E76F  78          SEI               then load up the 6522's
+; E770  BE 82 E7    LDX     $E782,Y   registers with data in the
+; E773  B9 89 E7    LDA     $E789,Y   table below.
+; E776  9D 00 03    STA     $0300,X
+; E779  88          DEY     
+; E77A  10 F4       BPL     $E770
+; E77C  A9 40       LDA     #$40
+; E77E  8D 00 03    STA     $0300
+; E781  60          RTS
+; E782  05 04 0B 02 0C 08 0E          List of registers and data for
+; E789  00 D0 C0 FF 10 F4 7F          the routine above.
+; -----------
+; NEW:
+; E76A  20 1A EE    JSR     $EE1A     SET 6522 FOR CASSETTE SYSTEM
+; E76D  A0 06       LDY     #$06      Disable timer 1 interrupts and
+; E76F  78          SEI               then load up the 6522's
+; E770  BE 82 E7    LDX     $E782,Y   registers with data in the
+; E773  B9 89 E7    LDA     $E789,Y   table below.
+; E776  9D 00 03    STA     $0300,X
+; E779  88          DEY     
+; E77A  10 F4       BPL     $E770
+; E77C  A9 60       LDA     #$60  (!) PB5 = H
+; E77E  8D 00 03    STA     $0300
+; E781  60          RTS
+; E782  05 04 0B 02 0C 08 0E          List of registers and data for
+; E789  00 D0 C0 F7 10 F4 7F      (!) the routine above.
+; -----------
+$277C:A960
+$2789:00D0C0F710F47F
+
+; ===========
+; OLD:
+; EE62 20 95 F4      JSR    $F495
+
+; -----------
+; NEW
+; EE62 A2 00         LDX    #$00 
+; EE64 EA            NOP 
+; -----------
+$2E62:A200EA
+
+; ===========
+; OLD:
+; F56E 09 B8         ORA    #$B8
+; -----------
+; NEW:
+; F56E 09 A8         ORA    #$A8  (!) PB4 = L
+; -----------
+$356E:09A8
+
+; ===========
+; OLD:
+; F9AA  A9 FF        LDA    #$FF      RESET 6522
+; F9AC  8D 03 03     STA    $0303     Port A all output.
+; F9AF  A9 F7        LDA    #$F7      Port B all output except bit 3.
+; F9B1  8D 02 03     STA    $0302
+; F9B4  A9 B7        LDA    #$B7
+; F9B6  8D 00 03     STA    $0300     Turn off cassette motor.
+; F9B9  A9 DD        LDA    #$DD      Set CA2 and CB2 to 0 and set
+; F9BB  8D 0C 03     STA    $030C     CA1 and CB1 active L to H.
+; F9BE  A9 7F        LDA    #$7F
+; F9C0  8D 0E 03     STA    $030E     Disable all interrupts.
+; F9C3  A9 00        LDA    #$00
+; F9C5  8D 0B 03     STA    $030B     Set the ACR.
+; F9C8  60           RTS
+; -----------
+; NEW:
+; F9AA  A9 00        LDA    #$00  (!) RESET 6522
+; F9AC  8D 03 03     STA    $0303     Port A all input.
+; F9AF  A9 A7        LDA    #$A7  (!) Turn off cassette motor. PB4 = L
+; F9B1  8D 00 03     STA    $0300 (!)
+; F9B4  A9 F7        LDA    #$F7  (!)
+; F9B6  8D 02 03     STA    $0302 (!) Port B all output except bit 3.
+; F9B9  A9 DC        LDA    #$DC  (!) Set CA2 and CB2 to 0 and set
+; F9BB  8D 0C 03     STA    $030C     CA1 active H to L and CB1 active L to H.
+; F9BE  A9 7F        LDA    #$7F
+; F9C0  8D 0E 03     STA    $030E     Disable all interrupts.
+; F9C3  A9 01        LDA    #$01  (!) Enable port A latch with CA1
+; F9C5  8D 0B 03     STA    $030B     Set the ACR.
+; F9C8  60           RTS
+; -----------
+$39AA:A900
+$39AF:A9A7
+$39B1:8D0003
+$39B4:A9F7
+$39B6:8D0203
+$39B9:A9DC
+$39C3:A901

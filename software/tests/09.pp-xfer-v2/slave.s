@@ -1,12 +1,8 @@
 ;--------------------------
-.text
-
+#include <defasm.h>
+#include <oricexos.h>
 ;--------------------------
-r_cls   = $ccce
-r_print = $ccb0
-r_cload = $e874
-
-id_addr = $edb0
+.text
 
 ;--------------------------
 *       = SLAVE_ADDRESS
@@ -14,33 +10,41 @@ id_addr = $edb0
 _start
         sei
         cld
+        jsr   _reset_exos
         
-        ldx   #39
         lda   #$20
+        ldx   #39
 loop0
         sta   $bb80,x
         dex
         bpl   loop0
         
-        jsr   r_cls
-        lda   id_addr
-        and   #$07
-        sta   id
+        lda   ipc_id
         sta   tmp
         sec
         adc   #'@'
         sta   msg+1
-        lda   id
+        lda   ipc_id
         ora   #$30
         sta   msgn
-        
-loop1
-        lda   #<(crlf)
-        ldy   #>(crlf)
-        jsr   r_print
-        dec   tmp
-        bpl   loop1
-        
+       
+        ; hide cursor
+        lda   $251
+        and   #$fe
+        sta   $251
+        jsr   $f6fe
+       
+        ; pos cursor
+        lda   #$00  
+        sta   $0269 
+        lda   ipc_id    
+        sta   $0268 
+        jsr   $da0c 
+        lda   $1f   
+        ldy   $20
+        sta   $12
+        sty   $13
+
         lda   #<(msg)
         ldy   #>(msg)
         jsr   r_print
@@ -49,8 +53,6 @@ loop1
 
 _stop
         jmp   _stop
-        
-;       jmp   r_cload
         
 ;--------------------------
 wait
@@ -75,8 +77,9 @@ loop_wait
         
 
 ;--------------------------
-id     .byt  0
-crlf   .byt  $0d, $0a, 0
-msg    .byt  $1b,$00,"ORIC #"
-msgn   .byt  "X READY.",$0d,$0a,17,0
-tmp    .byt  0
+msg     byt   $1b,$00,"ORIC #X READY.",$0d,$0a,0
+msgn    =     msg + 8
+
+;--------------------------
+; reuse space
+tmp     =     _start

@@ -3,14 +3,19 @@
 #include <oricexos.h>
 
 ;--------------------------
+.zero
+zsrc    =   0
+zdst    =   zsrc+2
+
+;--------------------------
 .text
 
 ;--------------------------
-*       = START_ADDRESS
+*       =   START_ADDRESS
 
 ;--------------------------
 ; toggle rom on/off
-_dosrom = $04f2
+_dosrom =   $04f2
 
 ;--------------------------
 tmp     =    _start
@@ -21,21 +26,25 @@ _start
         cld
         jsr   _reset_exos
 
+        lda   #$20
+        ldy   #$28
+slp_1
+        sta   $bb80-1,y
+        dey
+        bne   slp_1
+        
         lda   #$10
         sta   b_paper
         lda   #$07
         sta   b_ink
         jsr   r_cls
 
+        lda   #<(memmsg)
+        ldy   #>(memmsg)
+        jsr   r_print
+
         lda   ipc_id
         sta   tmp
-        clc
-        adc   #'@'
-        sta   msg+1
-        lda   ipc_id
-        ora   #$30
-        sta   msgn
-
 loop1
         lda   #<(crlf)
         ldy   #>(crlf)
@@ -43,21 +52,114 @@ loop1
         dec   tmp
         bpl   loop1
 
-        lda   #<(msg)
-        ldy   #>(msg)
+        jsr   test_memory
+        jmp   *
+
+;--------------------------
+test_memory
+        lda   ipc_id
+        bne   sktm_1
+        jsr   _dosrom
+sktm_1
+        jsr   _set_ram_on
+
+        lda   #<($c000)
+        sta   zsrc
+        lda   #>($c000)
+        sta   zsrc+1
+
+        ldy   #$00
+        ldx   #$04
+tm_lp1
+        lda   #$55
+        sta   (zsrc),y
+        lda   (zsrc),y
+        eor   #$ff
+        cmp   #$aa
+        bne   tm_err1
+        dey
+        bne   tm_lp1
+        inc   zsrc+1
+        dex
+        bne   tm_lp1
+        lda   #$00
+tm_err1
+        pha
+        lda   ipc_id
+        bne   sktm_2
+        jsr   _dosrom
+sktm_2
+        jsr   _set_ram_off
+        pla
+        bne   tm_err2
+        lda   #<(memok)
+        ldy   #>(memok)
+        jmp   r_print
+tm_err2
+        lda   zsrc
+        sta   badadr
+        lda   zsrc+1
+        sta   badadr+1
+        
+        lda   #<(memerr)
+        ldy   #>(memerr)
         jsr   r_print
+        ; light led
+        lda   ipc_id
+        bne   sktm_3
+        jsr   _dosrom
+sktm_3
+        jsr   _set_ram_on
+        
+        lda   ipc_id
+        asl
+        tay
+        lda   errline,y
+        sta   zsrc
+        lda   errline+1,y
+        sta   zsrc+1
+
+        ldy   #$00
+        lda   badadr+1
+        jsr   hexprint
+        lda   badadr
+hexprint
+        pha
+        lsr
+        lsr
+        lsr
+        lsr
+        tax
+        lda   hexchr,x
+        sta   (zsrc),y
+        iny
+
+        pla
+        and   #$0f
+        tax
+        lda   hexchr,x
+        sta   (zsrc),y
+        iny
+        rts
+
+badadr  wrd   0
+
+errline wrd   $bb80+2*40+10
+        wrd   $bb80+3*40+10
+        wrd   $bb80+4*40+10
+        wrd   $bb80+5*40+10
+
 
         lda   ipc_id
         asl
         tay
         lda   jump_tab,y
-        sta   go_ptr
-        lda   jump_tab+1,y
         sta   go_ptr+1
+        lda   jump_tab+1,y
+        sta   go_ptr+2
 
-go_ptr  = *+1
+go_ptr  =     *
         jmp   $1234
-
 
 jump_tab
         wrd   oric_0
@@ -65,34 +167,10 @@ jump_tab
         wrd   oric_2
         wrd   oric_3
 
-;--------------------------
-;--- test-map-master
-;--------------------------
-test_ext_map_master
-        jsr   copy_rom_to_ram
-        jmp   $f88f
-
-;--------------------------
-;--- test-map-slave
-;--------------------------
-test_ext_map_slave
-        jsr   copy_rom_to_ram
-        jmp   $f88f
-
 oric_0
-        jsr   test_ext_map_master
-        jmp   _stop
-
 oric_1
-        jsr   test_ext_map_slave
-        jmp   _stop
-
 oric_2
-        jsr   test_ext_map_slave
-        jmp   _stop
-
 oric_3
-        jsr   test_ext_map_slave
         jmp   _stop
 
 _stop
@@ -121,97 +199,8 @@ loop_wait
 
 
 ;--------------------------
+hexchr  byt   "0123456789ABCDEF"
+memmsg  byt   "Testing RAM overlay",0
+memerr  byt   $1b,"AFAIL",0
+memok   byt   $1b,"BPASS",0
 crlf    byt   $0d, $0a, 0
-msg     byt   $1b,$00,"ORIC #X READY.",$0d,$0a,0
-msgn    =     msg + 8
-oricx   byt   "Oric0"
-btng    byt   "Booting  ",0
-ptch    byt   $20,$B0,$CC,$A9,$B0,$A0,$CC
-;--------------------------
-
-copy_rom_to_ram
-        ;
-        lda   ipc_id
-        beq   skpm
-        jsr   _set_rom_on
-        nop
-        nop
-        nop
-skpm
-        lda   #<$c000
-        sta   $00
-        lda   #>$c000
-        sta   $01
-
-        lda   #<$3000
-        sta   $02
-        lda   #>$3000
-        sta   $03
-
-        ldy   #0
-lp1
-        lda   ($00),y
-        sta   ($02),y
-        dey
-        bne   lp1
-        inc   $03
-        inc   $01
-        bne   lp1
-
-        ;
-        lda   ipc_id
-        beq   skpm_1
-        jsr   _set_rom_off
-        nop
-        nop
-        nop
-        jmp   skpm_2
-skpm_1
-        jsr   _dosrom
-skpm_2
-        lda   #<$c000
-        sta   $00
-        lda   #>$c000
-        sta   $01
-
-        lda   #<$3000
-        sta   $02
-        lda   #>$3000
-        sta   $03
-
-        ldy   #0
-lp2
-        lda   ($02),y
-        sta   ($00),y
-        dey
-        bne   lp2
-        inc   $03
-        inc   $01
-        bne   lp2
-
-        ; patch Ready to OricX
-        ldy   #5
-        lda   ipc_id
-lp3
-        clc
-        adc   oricx-1,y
-        sta   $c3b4-1,y
-        lda   #0
-        dey
-        bne   lp3
-        ; y = 0
-lp4
-        lda   btng,y
-        beq   lp5
-        sta   $e50d,y
-        iny
-        bne   lp4
-lp5
-        ldy   #$7
-lp6
-        lda   ptch-1,y
-        sta   $ed73-1
-        dey
-        bpl   lp6
-
-        rts

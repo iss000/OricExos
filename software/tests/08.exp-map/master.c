@@ -24,7 +24,8 @@ void main(void)
   
   ppc.cmd = 0;
   ppc.flags = (PP_AUTO|PP_SLAVEALL); // autoexec + 3 slaves;
-  ppc.dst_addr = ppc.src_addr = slave_buffer;
+  ppc.dst_addr = slave_buffer;
+  ppc.src_addr = slave_buffer;
   ppc.length = len;
   
   printf("\nSending SLAVE.COM (%d%d bytes)", len/100, len%100);

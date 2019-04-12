@@ -26,9 +26,9 @@ CTAPS			:= $(PROJECT)
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 
-common_SRC 		:= compat.s pp.s oricexos.s
+common_SRC 		:= pp.s oricexos.s
 
-$(PROJECT)_SRC		:= $(common_SRC) libsedoric.s $(PROJECT).c
+$(PROJECT)_SRC		:= $(common_SRC) compat.s libsedoric.s $(PROJECT).c
 $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 

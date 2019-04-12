@@ -1,6 +1,6 @@
 # # #
-DEMO_NUMBER             := 08
-DEMO_NAME               := exp-map
+DEMO_NUMBER             := 12
+DEMO_NAME               := morebars
 
 # # #
 PROJECT                 := master

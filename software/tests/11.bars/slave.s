@@ -20,7 +20,6 @@ id_addr = $edb0
 
 _start
         sei
-        cld
 
         ; paper black
         lda   #$10+0
@@ -30,12 +29,12 @@ _start
         sta   b_ink
         jsr   r_cls
         
-        ldx   #39
+        ldx   #$40
         lda   #$20
 loop_1
-        sta   _scrn_ptr,x
+        sta   _scrn_ptr-1,x
         dex
-        bpl   loop_1
+        bne   loop_1
 
         lda   id_addr
         and   #$07
@@ -93,25 +92,27 @@ jmptab .byt   >(_master-1),<(_master-1)
 
 ;--------------------------
 _master
-        jsr   wait
-        jsr   wait
-        jsr   wait
-        lda   #$10
+        ldy   #$00
+        ldx   #$11
+        lda   #$04
+        sta   tmp
 m_loop
-        sta   b_paper
-        jsr   r_cls
-        jsr   wait
-        jsr   wait
-        jsr   wait
-        inc   b_paper
-        lda   b_paper
-        cmp   #$18
+        lda   _scrn_lo,y
+        sta   m_ptr+1
+        lda   _scrn_hi,y
+        sta   m_ptr+2
+        txa
+m_ptr
+        sta   $1234
+        iny
+        dec   tmp
+        bne   m_loop
+        lda   #$04
+        sta   tmp
+        inx
+        cpx   #$18
         bne   m_loop
 
-        lda   #$10
-        sta   b_paper
-        jsr   r_cls
-        
 ;       jmp   _stop
         jmp   *
 
@@ -119,7 +120,7 @@ m_loop
 ;--------------------------
 _slave_1
         ldy   #$01
-        ldx   #$10
+        ldx   #$11
         lda   #$03
         sta   tmp
 s1_loop
@@ -133,72 +134,71 @@ s1_ptr
         iny
         dec   tmp
         bne   s1_loop
+        iny
         lda   #$03
         sta   tmp
         inx
         cpx   #$18
         bne   s1_loop
 
-        lda   #28
-        sta   tmp
-s1_loopw
-        jsr   wait
-        dec   tmp
-        bne   s1_loopw
-        
-        lda   #$10
-        sta   b_paper
-        jsr   r_cls
-
 ;       jmp   _stop
         jmp   *
+
 
 ;--------------------------
 _slave_2
-        ldy   #$00
-s2_loopy
-        lda   _scrn_lo+1,y
-        sta   s2_ptr+1
-        lda   _scrn_hi+1,y
-        sta   s2_ptr+2
-        ldx   #$00
-s2_loopx
-        lda   s2_div8,x
-s2_ptr
-        sta   $1234,x
-        inx
-        cpx   #$28
-        bne   s2_loopx
-        iny
-        cpy   #$18
-        bne   s2_loopy
-
-        lda   #28
+        ldy   #$02
+        ldx   #$11
+        lda   #$02
         sta   tmp
-s2_loopw
-        jsr   wait
+s2_loop
+        lda   _scrn_lo,y
+        sta   s2_ptr+1
+        lda   _scrn_hi,y
+        sta   s2_ptr+2
+        txa
+s2_ptr
+        sta   $1234
+        iny
         dec   tmp
-        bne   s2_loopw
-
-        lda   #$10
-        sta   b_paper
-        jsr   r_cls
+        bne   s2_loop
+        iny
+        iny
+        lda   #$02
+        sta   tmp
+        inx
+        cpx   #$18
+        bne   s2_loop
 
 ;       jmp   _stop
         jmp   *
-        
-s2_div8 
-       .byt  $10,$10,$10,$10,$10
-       .byt  $11,$11,$11,$11,$11
-       .byt  $12,$12,$12,$12,$12
-       .byt  $13,$13,$13,$13,$13
-       .byt  $14,$14,$14,$14,$14
-       .byt  $15,$15,$15,$15,$15
-       .byt  $16,$16,$16,$16,$16
-       .byt  $17,$17,$17,$17,$17
+
 
 ;--------------------------
 _slave_3
+        ldy   #$03
+        ldx   #$11
+        lda   #$01
+        sta   tmp
+s3_loop
+        lda   _scrn_lo,y
+        sta   s3_ptr+1
+        lda   _scrn_hi,y
+        sta   s3_ptr+2
+        txa
+s3_ptr
+        sta   $1234
+        iny
+        dec   tmp
+        bne   s3_loop
+        iny
+        iny
+        iny
+        lda   #$01
+        sta   tmp
+        inx
+        cpx   #$18
+        bne   s3_loop
 
 ;       jmp   _stop
         jmp   *

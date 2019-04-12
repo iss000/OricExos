@@ -9,11 +9,13 @@ DEMOS := \
 	07.pp-xfer \
 	08.exp-map \
 	09.pp-xfer-v2 \
-	10.bwtime
+	10.bwtime \
+	11.bars \
+	12.morebars
 
 # 
 all: remove-bin
-	@for i in $(DEMOS); do make -C $$i all && make -C $$i clean; done
+	@for i in $(DEMOS); do (make -C $$i all && make -C $$i clean) || exit 1; done
 
 clean: remove-bin
 	@for i in $(DEMOS); do make -C $$i clean; done

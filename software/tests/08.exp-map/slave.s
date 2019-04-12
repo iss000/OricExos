@@ -33,9 +33,9 @@ slp_1
         dey
         bne   slp_1
         
-        lda   #$10
+        lda   #$17
         sta   b_paper
-        lda   #$07
+        lda   #$00
         sta   b_ink
         jsr   r_cls
 

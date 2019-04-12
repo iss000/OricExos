@@ -197,6 +197,11 @@ _sed_loadfile
             adc _sed_begin+1
             sta _sed_end+1 ; End Address Lo
 
+            ; adjust size+1
+            inc _sed_size
+            bne skip
+            inc _sed_size+1
+skip
             jsr _dosrom ; disable OverlayRAM
             ; -- cli ; re-enable interrupts
 

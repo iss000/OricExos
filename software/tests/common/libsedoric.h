@@ -20,7 +20,7 @@ int savefile(const char* fname, void* buf, unsigned int len)
     extern void sed_savefile(void);
     sed_fname = fname;
     sed_begin = buf;
-    sed_end = (char*)sed_begin+len;
+    sed_end = (char*)sed_begin+len-1;
     sed_size = len;
     sed_savefile();    
     return sed_err;

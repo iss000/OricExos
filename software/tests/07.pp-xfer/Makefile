@@ -78,6 +78,9 @@ AFLAGS			+= $(addprefix -I,$(VPATH))
 AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 AFLAGS			+= -DUSE_TEXT
+AFLAGS			+= -DPP_MASTER
+AFLAGS			+= -DPP_SLAVE
+
 $(PROJECT)_AFLAGS 	:= 
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
@@ -100,27 +103,13 @@ finalize: hxc
 	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
 	@echo "Done"
 
-# 
-.PHONY: gom gos1 gos2 gos3
 
-# use atmos config to run as master
-gom: all
-	@oric -ma -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym master.dsk $(DEMO_NAME).tap
+# # # 
+# Oricutron callers
+# make gom - go master
+# make gos1 - go slave 1
+# make gos2 - go slave 4
+# make gos3 - go slave 3
 
-# use oric-1 config to run as slave 1
-gos1: all
-	@oric -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym slave-debug.tap
-
-# use pravetz config to run as slave 2
-gos2: all
-	@oric -mp -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym slave-debug.tap
-
-# no more config to run as slave 3
-gos3:
-	@echo "no more config to run as slave 3"
+SLAVE_TAP=slave-debug.tap
+include ../../emulator.rules

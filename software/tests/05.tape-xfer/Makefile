@@ -73,14 +73,14 @@ FINALIZE		:= finalize
 # # #
 include $($(TOOLCHAIN))/atmos.make
 
-AFLAGS			+= -I$(COMMON)
+AFLAGS			+= $(addprefix -I,$(VPATH))
 AFLAGS			+= -DASSEMBLER
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 AFLAGS 			+= -DUSE_HIRES
 
 $(PROJECT)_AFLAGS 	:=
 
-CFLAGS			+= -I$(COMMON)
+CFLAGS			+= $(addprefix -I,$(VPATH))
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 $(PROJECT)_CFLAGS 	:=
 
@@ -100,20 +100,13 @@ finalize: hxc
 	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
 	@echo "Done"
 
-# 
-.PHONY: gom gos1 gos2
 
-gom: all
-	@oric -ma -r:$(PROJECT_DIR)/$(PROJECT).brk \
-	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym $(DEMO_NAME).tap
+# # # 
+# Oricutron callers
+# make gom - go master
+# make gos1 - go slave 1
+# make gos2 - go slave 4
+# make gos3 - go slave 3
 
-gos1: all
-	@oric -m1 -r:$(PROJECT_DIR)/$(PROJECT).brk \
-	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym slave-debug.tap
-
-gos2: all
-	@oric -mp -r:$(PROJECT_DIR)/$(PROJECT).brk \
-	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym slave-debug.tap
+SLAVE_TAP=slave-debug.tap
+include ../../emulator.rules

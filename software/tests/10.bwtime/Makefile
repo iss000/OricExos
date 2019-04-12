@@ -208,25 +208,12 @@ gopplink: all
 	@oric -ma -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/pplink.sym pplink.tap
 
-# use atmos config to run as master
-gom: all
-	@oric -ma -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym master.dsk
+# # # 
+# Oricutron callers
+# make gom - go master
+# make gos1 - go slave 1
+# make gos2 - go slave 4
+# make gos3 - go slave 3
 
-# use oric-1 config to run as slave 1
-gos1: all
-	@oric -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym slave.tap
-
-# use pravetz config to run as slave 2
-gos2: all
-	@oric -mp -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym slave.tap
-
-# no more config to run as slave 3
-gos3:
-	@echo "no more config to run as slave 3"
-	
-# 0x97E8 - frames tab
+SLAVE_TAP=slave.tap
+include ../../emulator.rules

@@ -1,5 +1,5 @@
 ;--------------------------
-#include <defasm.s>
+#include <defasm.h>
 
 ;--------------------------
 #define dsb             .dsb

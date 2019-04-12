@@ -97,29 +97,13 @@ finalize: hxc
 	@printf "[MEM]   slave : #%.4X .. #%.4X\\n" $$(($(slave_ADDRESS))) $$(expr `cat slave | wc -c` + $$(($(slave_ADDRESS))))
 	@echo "Done"
 
-# 
-.PHONY: gom gos1 gos2 gos3
 
-# use atmos config to run as master
-gom: all
-	@oric -ma -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/master.dsk
+# # # 
+# Oricutron callers
+# make gom - go master
+# make gos1 - go slave 1
+# make gos2 - go slave 4
+# make gos3 - go slave 3
 
-# use oric-1 config to run as slave 1
-gos1: all
-	@oric -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/slave.tap
-
-# use pravetz config to run as slave 2
-gos2: all
-	@oric -mp -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/slave.tap
-
-# use telestrat config to run as slave 3
-gos3: all
-	@oric -mt -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
-        -s $(PROJECT_DIR)/$(PROJECT).sym \
-        -s $(PROJECT_DIR)/slave.sym $(PROJECT_DIR)/slave.tap
+SLAVE_TAP=slave.tap
+include ../../emulator.rules

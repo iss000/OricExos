@@ -33,6 +33,16 @@ _set_irq_handler
         ora   #via_irq_t1
         ora   #via_irq_cb1
         sta   via_ier
+
+        ; set cb1 active edge
+#if 1
+        lda   #via_cb1_rise
+        ora   via_pcr
+#else
+        lda   #via_cb1_fall
+        and   via_pcr
+#endif
+        sta   via_pcr
         
         rts
 
@@ -114,7 +124,20 @@ _send_kick
         jmp   *
 
 ;--------------------------
+; this value is empirical
+; on it depends where image
+; looks cut from the vertical
+; retrace
+#define DELAY 80
+
+;--------------------------
 _player_vsync
+        ; wait retrace
+        ldx   #DELAY
+dlp_1
+        dex
+        bne   dlp_1
+        
         jsr   blit
         inc   frame
         lda   frame

@@ -39,10 +39,13 @@ master-helper_ADDRESS	:= $(shell echo $$((0x0f00)))
 slave_SRC 		:= main.c charmap.s draw.s random.s inlay.s
 slave_AUTORUN		:= 0
 slave_ADDRESS		:= $(shell echo $$((0x1000)))
+slave_ACPP		:= 1
 
 slave-debug_SRC 	:= main.c charmap.s draw.s random.s inlay.s
 slave-debug_AUTORUN	:= 1
 slave-debug_ADDRESS	:= $(shell echo $$((0x1000)))
+slave_ACPP		:= 1
+
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65

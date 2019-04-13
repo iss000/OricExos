@@ -71,12 +71,12 @@ sktm_1
         ldy   #$00
         ldx   #$04
 tm_lp1
-        lda   #$55
-        sta   (zsrc),y
         lda   (zsrc),y
         eor   #$ff
-        cmp   #$aa
+        sta   (zsrc),y
+        cmp   (zsrc),y
         bne   tm_err1
+        
         dey
         bne   tm_lp1
         inc   zsrc+1
@@ -201,6 +201,6 @@ loop_wait
 ;--------------------------
 hexchr  byt   "0123456789ABCDEF"
 memmsg  byt   "Testing RAM overlay",0
-memerr  byt   $1b,"AFAIL",0
-memok   byt   $1b,"BPASS",0
+memerr  byt   $0d, $1b,"AFAIL",0
+memok   byt   $0d, $1b,"BPASS",0
 crlf    byt   $0d, $0a, 0

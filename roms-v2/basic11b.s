@@ -5648,7 +5648,12 @@ reload
         sta   zsrc
 
         sta   $386          ; $386 : rom|on |in |A
-        jsr   PrintSearching
+        
+;       jsr   PrintSearching
+        lda   #<exos_logo
+        ldy   #>exos_logo
+        jsr   ClrStatus
+
         jsr   receive
         sta   $384          ; $384 : rom|off|in |A
 
@@ -5662,7 +5667,11 @@ reload
         jmp   (zptr)
 
 ; ---------------------------------
-id_mask byt   $00,$01,$02,$04
+id_mask 
+        byt   $00,$01,$02,$04
+        
+exos_logo
+        byt   "RGB OricExos 123 BGR",0
 
 ; ---------------------------------
 setup_slave

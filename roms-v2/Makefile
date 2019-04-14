@@ -9,10 +9,10 @@ PROJECT_DSK		:= $(PROJECT).dsk
 # CPU			:= 65816
 
 # # # Autorun main project file
-PROJECT_AUTORUN		:= 1
+PROJECT_AUTORUN		:= 0
 
 # # # Leave DOS
-PROJECT_QUITDOS		:= 1
+PROJECT_QUITDOS		:= 0
 
 ATAPS			:= $(PROJECT) $(PROJECT)-slave
 BTAPS			:=
@@ -25,12 +25,12 @@ START_ADDRESS		:= $(shell echo $$((0xc000)))
 common_SRC 		:=
 
 $(PROJECT)_SRC 		:= $(PROJECT).s
-$(PROJECT)_AUTORUN	:= 1
+$(PROJECT)_AUTORUN	:= 0
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 $(PROJECT)_ACPP		:= 1
 
 $(PROJECT)-slave_SRC 	:= $(PROJECT).s
-$(PROJECT)-slave_AUTORUN:= 1
+$(PROJECT)-slave_AUTORUN:= 0
 $(PROJECT)-slave_ADDRESS:= $(START_ADDRESS)
 $(PROJECT)-slave_ACPP	:= 1
 
@@ -79,6 +79,7 @@ $(PROJECT)-slave_CFLAGS := -DORICEXOS
 LFLAGS			+=
 
 $(PROJECT)_LFLAGS 	:=
+$(PROJECT)-slave_LFLAGS := -DORICEXOS
 
 TEMP_FILES 		+= DSKA0*.HFE
 
@@ -89,9 +90,9 @@ finalize: #hxc
 # 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@if [ 'c3a92bef' = `crc32 $(PROJECT)` ]; then echo "[CRC]   OK!"; else echo -n; fi
-	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' > slave-v2-1.rom
-	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' > slave-v2-2.rom
-	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' > slave-v2-3.rom
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' -e 's/RGB OricExos 123 BGR/\x11\x10\x10\x10OricExos 1  \x10\x10\x10\x11/g' > slave-v2-1.rom
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x12\x10\x10OricExos  2 \x10\x10\x12\x10/g' > slave-v2-2.rom
+	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x10\x14\x10OricExos   3\x10\x14\x10\x10/g' > slave-v2-3.rom
 	@echo "Done"
 	cat slave.pch > slave-v2-1.pch && echo '$$2DB0:31'>> slave-v2-1.pch 
 	cat slave.pch > slave-v2-2.pch && echo '$$2DB0:32'>> slave-v2-2.pch 

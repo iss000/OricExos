@@ -13,26 +13,28 @@
 # 
 .PHONY: gom gos1 gos2 gos3
 
+ORIC_PARAM := --vsynchack on
+
 # use telestrat config to run as master
 gom: all
-	@oric -mt -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	@export ORIC_PARAM='$(ORIC_PARAM)'; oric -mt -km -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
 	-s $(PROJECT_DIR)/slave.sym master.dsk
 
 # use atmos config to run as slave 1
 gos1: all
-	@oric -ma -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	@export ORIC_PARAM='$(ORIC_PARAM)'; oric -ma -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
         -s $(PROJECT_DIR)/slave.sym $(SLAVE_TAP)
 
 # use oric-1 config to run as slave 2
 gos2: all
-	@oric -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	@export ORIC_PARAM='$(ORIC_PARAM)'; oric -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
         -s $(PROJECT_DIR)/slave.sym $(SLAVE_TAP)
 
 # use pravetz config to run as slave 2
 gos3: all
-	@oric -mp -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	@export ORIC_PARAM='$(ORIC_PARAM)'; oric -mp -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
         -s $(PROJECT_DIR)/$(PROJECT).sym \
         -s $(PROJECT_DIR)/slave.sym $(SLAVE_TAP)

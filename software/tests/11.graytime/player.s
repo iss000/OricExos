@@ -133,11 +133,12 @@ _send_kick
 ;--------------------------
 _player_vsync
         ; wait retrace
+#if 0
         ldx   #DELAY
 dlp_1
         dex
         bne   dlp_1
-        
+#endif   
         jsr   blit
         inc   frame
         lda   frame
@@ -178,7 +179,7 @@ blit
         lda   _tab_frames_hi,y
         sta   __auto_src+2
 
-        ldy   #((200-frameh)/2)
+        ldy   #(((200-frameh)/2)+30)
 blp_y
         clc
         lda   _scrn_lo-1,y
@@ -210,7 +211,7 @@ __auto_dst
         sta   __auto_src+2
         
         iny
-        cpy   #(((200-frameh)/2)+frameh)
+        cpy   #(((200-frameh)/2)+frameh+30)
         bne   blp_y
 
         rts

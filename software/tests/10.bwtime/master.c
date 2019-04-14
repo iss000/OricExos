@@ -67,7 +67,7 @@ static void send_item(const char* name, void* dst, void* src, unsigned char flag
   ppc.src_addr = src;
   ppc.length = len;
   
-  sprintf(statline, "\x03SENDING\x07%s %d%d bytes >", name, len/100, len%100);
+  sprintf(statline, "\x03SENDING\x07%s %d bytes >", name, len);
   pp_send(&ppc);
   memset(statline, 0x20, 40);
 }

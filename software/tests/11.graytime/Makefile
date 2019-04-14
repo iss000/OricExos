@@ -199,7 +199,7 @@ resources: tools/bmpslicer
 		tools/bmpslicer res-1/out/$$(basename $$i) res-1/out/3/$$(basename $$i) 3 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic3$$label  res-1/out/3/$$(basename $$i) res-1/out/3/$$(basename $$i).s ; \
 	done
-	@rm -f res/out/{0,1,2,3}/*.bmp
+	@rm -f res/out/{0,1,2,3}/*.bmp res-1/out/{0,1,2,3}/*.bmp
 
 tools/bmpslicer:
 	@gcc -o $@ tools/bmpslicer.c

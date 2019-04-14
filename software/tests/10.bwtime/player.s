@@ -98,6 +98,13 @@ _player
         ; show time
         jsr   _set_vsync_on
         
+        lda   ipc_id
+        tay
+        lda   framey,y
+        sta   framey0
+        lda   framey+1,y
+        sta   framey1
+        
         ; is this master
         lda   ipc_id
         beq   _send_kick
@@ -128,16 +135,11 @@ _send_kick
 ; on it depends where image
 ; looks cut from the vertical
 ; retrace
-#define DELAY 80
+#define DELAY 5
 
 ;--------------------------
 _player_vsync
-        ; wait retrace
-        ldx   #DELAY
-dlp_1
-        dex
-        bne   dlp_1
-        
+        ;        
         jsr   blit
         inc   frame
         lda   frame
@@ -146,8 +148,13 @@ dlp_1
         lda   #$00
         sta   frame
 flp_1
-;--------------------------
-; fall trough
+        ldx   #DELAY
+flp_2
+        jsr   _wait_vsync
+        dex
+        bne   flp_2
+        rts
+        
 ;--------------------------
 _wait_vsync
         lda   via_b
@@ -158,9 +165,9 @@ wvlp_1
         rts
 
 ;--------------------------
-framew  =     (150/6)
-frameh  =     (120)
-frames  =     (11)
+framew  =     (240/6)
+frameh  =     (50)
+frames  =     (4)
 
 _tab_frames_lo = MOVIE_ADDRESS+(framew*frameh*frames)
 _tab_frames_hi = _tab_frames_lo+frames 
@@ -170,6 +177,10 @@ frame   byt   0
 framett =     8
 framet  byt   0
 framec  byt   0
+
+framey0 byt   0
+framey1 byt   0
+framey  byt   0,50,100,150,200
         
 blit
         ldy   frame
@@ -178,7 +189,7 @@ blit
         lda   _tab_frames_hi,y
         sta   __auto_src+2
 
-        ldy   #((200-frameh)/2)
+        ldy   framey0
 blp_y
         clc
         lda   _scrn_lo-1,y
@@ -210,7 +221,7 @@ __auto_dst
         sta   __auto_src+2
         
         iny
-        cpy   #(((200-frameh)/2)+frameh)
+        cpy   framey1
         bne   blp_y
 
         rts

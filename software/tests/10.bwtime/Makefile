@@ -20,7 +20,7 @@ PROJECT_QUITDOS		:= 0
 
 START_ADDRESS           := $(shell echo $$((0x0500)))
 
-ATAPS			:= pplink splayer mplayer movie-00 movie-01 movie-02 movie-03 movie-10 movie-11 movie-12 movie-13
+ATAPS			:= pplink splayer mplayer movie-00 movie-01 movie-02 movie-03
 BTAPS			:= 
 CTAPS			:= $(PROJECT)
 
@@ -62,23 +62,6 @@ movie-02_ADDRESS        := $(MOVIE_ADDRESS)
 movie-03_SRC            := movie-03.s
 movie-03_AUTORUN        := 0
 movie-03_ADDRESS        := $(MOVIE_ADDRESS)
-
-movie-10_SRC            := movie-10.s
-movie-10_AUTORUN        := 0
-movie-10_ADDRESS        := $(MOVIE_ADDRESS)
-
-movie-11_SRC            := movie-11.s
-movie-11_AUTORUN        := 0
-movie-11_ADDRESS        := $(MOVIE_ADDRESS)
-
-movie-12_SRC            := movie-12.s
-movie-12_AUTORUN        := 0
-movie-12_ADDRESS        := $(MOVIE_ADDRESS)
-
-movie-13_SRC            := movie-13.s
-movie-13_AUTORUN        := 0
-movie-13_ADDRESS        := $(MOVIE_ADDRESS)
-
 
 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
@@ -144,7 +127,7 @@ pplink_LFLAGS		:=
 splayer_LFLAGS		:=
 mplayer_LFLAGS		:=
 
-TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap tools/bmpsplitter res/out res-1/out
+TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap res/out
 
 prepare: resources
 	@echo "Building..."
@@ -162,47 +145,27 @@ finalize: hxc
 	@echo "Done"
 
 # 
-.PHONY: tools/bmpsplitter resources gom gos1 gos2 gos3 goplink 
+.PHONY: resources gom gos1 gos2 gos3 goplink 
 
-resources: tools/bmpsplitter
-	@rm -rf res/out/* res-1/out/*
-	@mkdir -p res/out/{0,1,2,3} res-1/out/{0,1,2,3}
+resources:
+	@rm -rf res/out/*
+	@mkdir -p res/out/{0,1,2,3}
 	@for i in res/*.bmp; do \
 		label=`echo $$(basename $$i)|sed -e 's/.bmp//g'` && \
-		convert $$i -crop 150x120+40+30 +repage +dither -posterize 6 -type truecolor bmp3:res/out/$$(basename $$i) && \
 		\
-		tools/bmpsplitter res/out/$$(basename $$i) res/out/0/$$(basename $$i) 0 && \
+		convert $$i -crop 240x50+0+0 +repage -type truecolor bmp3:res/out/0/$$(basename $$i) && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic0$$label res/out/0/$$(basename $$i) res/out/0/$$(basename $$i).s && \
 		\
-		tools/bmpsplitter res/out/$$(basename $$i) res/out/1/$$(basename $$i) 1 && \
+		convert $$i -crop 240x50+0+50 +repage -type truecolor bmp3:res/out/1/$$(basename $$i) && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic1$$label  res/out/1/$$(basename $$i) res/out/1/$$(basename $$i).s && \
 		\
-		tools/bmpsplitter res/out/$$(basename $$i) res/out/2/$$(basename $$i) 2 && \
+		convert $$i -crop 240x50+0+100 +repage -type truecolor bmp3:res/out/2/$$(basename $$i) && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic2$$label  res/out/2/$$(basename $$i) res/out/2/$$(basename $$i).s && \
 		\
-		tools/bmpsplitter res/out/$$(basename $$i) res/out/3/$$(basename $$i) 3 && \
+		convert $$i -crop 240x50+0+150 +repage -type truecolor bmp3:res/out/3/$$(basename $$i) && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic3$$label  res/out/3/$$(basename $$i) res/out/3/$$(basename $$i).s ; \
 	done
-	@for i in res-1/*.bmp; do \
-		label=`echo $$(basename $$i)|sed -e 's/.bmp//g'` && \
-		convert $$i -crop 150x120+40+30 +repage +dither -posterize 6 -type truecolor bmp3:res-1/out/$$(basename $$i) && \
-		\
-		tools/bmpsplitter res-1/out/$$(basename $$i) res-1/out/0/$$(basename $$i) 0 && \
-		$(OSDK)/bin/pictconv -f0 -d0 -o4pic0$$label res-1/out/0/$$(basename $$i) res-1/out/0/$$(basename $$i).s && \
-		\
-		tools/bmpsplitter res-1/out/$$(basename $$i) res-1/out/1/$$(basename $$i) 1 && \
-		$(OSDK)/bin/pictconv -f0 -d0 -o4pic1$$label  res-1/out/1/$$(basename $$i) res-1/out/1/$$(basename $$i).s && \
-		\
-		tools/bmpsplitter res-1/out/$$(basename $$i) res-1/out/2/$$(basename $$i) 2 && \
-		$(OSDK)/bin/pictconv -f0 -d0 -o4pic2$$label  res-1/out/2/$$(basename $$i) res-1/out/2/$$(basename $$i).s && \
-		\
-		tools/bmpsplitter res-1/out/$$(basename $$i) res-1/out/3/$$(basename $$i) 3 && \
-		$(OSDK)/bin/pictconv -f0 -d0 -o4pic3$$label  res-1/out/3/$$(basename $$i) res-1/out/3/$$(basename $$i).s ; \
-	done
 	@rm -f res/out/{0,1,2,3}/*.bmp
-
-tools/bmpsplitter:
-	@gcc -o $@ tools/bmpsplitter.c
 
 gopplink: all
 	@oric -ma -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \

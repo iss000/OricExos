@@ -10,8 +10,9 @@ DEMOS := \
 	08.exp-map \
 	09.pp-xfer-v2 \
 	10.bwtime \
-	11.bars \
-	12.morebars
+	11.graytime \
+	12.bars \
+	13.morebars
 
 # 
 all: remove-bin

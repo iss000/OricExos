@@ -1,6 +1,6 @@
 # # #
 DEMO_NUMBER             := 12
-DEMO_NAME               := morebars
+DEMO_NAME               := bars
 
 # # #
 PROJECT                 := master

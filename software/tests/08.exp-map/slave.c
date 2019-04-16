@@ -8,7 +8,7 @@ static const char title[] = "Testing RAM Overlay";
 static char* stat;
 static unsigned char b;
 static unsigned int i;
-
+static unsigned int bad;
 
 void main(void)
 {
@@ -23,12 +23,16 @@ void main(void)
   stat[0] = '0' + ipc.id;
   stat[1] = '.';
   stat[2] = ' ';
+  stat[16] = '>';
+  stat[39] = '<';
   
-  if(0<ipc.id)
-    set_ram_on();
-  else
+  // light the led
+  set_ram_on();
+  // if master use fdc
+  if(0==ipc.id)
     dosrom();
 
+  bad = 0;
   while(1)
   {
     for(i=0x0000; i<0x4000; i++)
@@ -37,7 +41,18 @@ void main(void)
       b ^= 0xff;
       ovl[i] = b;
       stat[4] = b == ovl[i]? 0x02 : 0x01;
-      sprintf(stat+5,"%s $%x", b == ovl[i]? "PASS":"FAIL", ovl+i);
+      if( b == ovl[i] )
+      {
+        sprintf(stat+5,"PASS $%x", ovl+i);
+      }
+      else
+      {
+        sprintf(stat+5,"FAIL $%x", ovl+i);
+        stat[17+bad] ^= 0x80;
+        bad++;
+        if(bad == 39-17)
+          bad = 0;
+      }
     }
   }
 }

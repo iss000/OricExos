@@ -97,12 +97,9 @@ finalize: #hxc
 	cat slave.pch > slave-v2-1.pch && echo '$$2DB0:31'>> slave-v2-1.pch 
 	cat slave.pch > slave-v2-2.pch && echo '$$2DB0:32'>> slave-v2-2.pch 
 	cat slave.pch > slave-v2-3.pch && echo '$$2DB0:33'>> slave-v2-3.pch 
-	cp -f slave-v2-1.pch slave-v2-2.pch slave-v2-3.pch $(EMUDIR)/roms/
-	rm -f slave-v2-1.pch slave-v2-2.pch slave-v2-3.pch
-	cp -f slave-v2-1.rom slave-v2-2.rom slave-v2-3.rom $(EMUDIR)/roms/
-# 	cp -f $(PROJECT) $(EMUDIR)/roms/slave-v2-1.rom 
-# 	cp -f $(PROJECT) $(EMUDIR)/roms/slave-v2-2.rom 
-# 	cp -f $(PROJECT) $(EMUDIR)/roms/slave-v2-3.rom 
+	mv -f slave-v2-1.pch slave-v2-2.pch slave-v2-3.pch $(EMUDIR)/roms/
+	cp -f master.pch slave-v2-1.rom slave-v2-2.rom slave-v2-3.rom $(EMUDIR)/roms/
+	cp -f $(PROJECT) $(EMUDIR)/roms/master.rom 
 
 .PHONY: $(PROJECT).dsk
 $(PROJECT).dsk: $(TAPS)

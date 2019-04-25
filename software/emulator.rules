@@ -11,9 +11,15 @@
 # pravetzrom = 'roms/slave-v2-3'
 
 # 
-.PHONY: gom gos1 gos2 gos3
+.PHONY: exos gom gos1 gos2 gos3
 
+EXOS_PARAM := 
 ORIC_PARAM := --vsynchack on
+
+exos: all
+	@export ORIC_PARAM='$(EXOS_PARAM)'; exos -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	-s $(PROJECT_DIR)/$(PROJECT).sym \
+	-s $(PROJECT_DIR)/slave.sym master.dsk
 
 # use telestrat config to run as master
 gom: all

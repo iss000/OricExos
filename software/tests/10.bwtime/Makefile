@@ -38,14 +38,14 @@ pplink_ADDRESS          := $(shell echo $$((0x0400)))
 
 splayer_SRC            := splayer.s oricexos.s
 splayer_AUTORUN        := 1
-splayer_ADDRESS        := $(shell echo $$((0x0680)))
+splayer_ADDRESS        := $(shell echo $$((0x0700)))
 
 mplayer_SRC             := mplayer.s oricexos.s
 mplayer_AUTORUN         := 1
-mplayer_ADDRESS         := $(shell echo $$((0x0500)))
+mplayer_ADDRESS         := $(shell echo $$((0x0700)))
 
 # 
-MOVIE_ADDRESS           := $(shell echo $$((0x1680)))
+MOVIE_ADDRESS           := $(shell echo $$((0x1700)))
 
 movie-00_SRC            := movie-00.s
 movie-00_AUTORUN        := 0

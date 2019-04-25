@@ -1,5 +1,5 @@
 # # #
-PROJECT 		:= basic11b
+PROJECT 		:= master
 PROJECT_DIR		:= $(shell pwd)
 
 # # # Only if floppybuilder
@@ -88,18 +88,17 @@ prepare:
 
 finalize: #hxc
 # 	@cp -f $(PROJECT)_dsk.hfe DSKA0000.HFE
-	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
-	@if [ 'c3a92bef' = `crc32 $(PROJECT)` ]; then echo "[CRC]   OK!"; else echo -n; fi
+# 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
+	@mv -f $(PROJECT) $(PROJECT).rom 
+	@if [ 'c3a92bef' = `crc32 $(PROJECT).rom` ]; then echo "[CRC]   OK!"; else echo -n; fi
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' -e 's/RGB OricExos 123 BGR/\x11\x10\x10\x10OricExos 1  \x10\x10\x10\x11/g' > slave-v2-1.rom
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x12\x10\x10OricExos  2 \x10\x10\x12\x10/g' > slave-v2-2.rom
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x10\x14\x10OricExos   3\x10\x14\x10\x10/g' > slave-v2-3.rom
 	@echo "Done"
-	cat slave.pch > slave-v2-1.pch && echo '$$2DB0:31'>> slave-v2-1.pch 
-	cat slave.pch > slave-v2-2.pch && echo '$$2DB0:32'>> slave-v2-2.pch 
-	cat slave.pch > slave-v2-3.pch && echo '$$2DB0:33'>> slave-v2-3.pch 
-	mv -f slave-v2-1.pch slave-v2-2.pch slave-v2-3.pch $(EMUDIR)/roms/
-	cp -f master.pch slave-v2-1.rom slave-v2-2.rom slave-v2-3.rom $(EMUDIR)/roms/
-	cp -f $(PROJECT) $(EMUDIR)/roms/master.rom 
+	cp -f $(PROJECT).rom $(PROJECT).pch slave-v2-1.rom slave-v2-2.rom slave-v2-3.rom $(EMUDIR)/roms/
+	cat master.pch > $(EMUDIR)/roms/slave-v2-1.pch 
+	cat master.pch > $(EMUDIR)/roms/slave-v2-2.pch 
+	cat master.pch > $(EMUDIR)/roms/slave-v2-3.pch 
 
 .PHONY: $(PROJECT).dsk
 $(PROJECT).dsk: $(TAPS)

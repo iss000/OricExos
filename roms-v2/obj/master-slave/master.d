@@ -1,1 +1,0 @@
-master.o: master.s

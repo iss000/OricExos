@@ -33,6 +33,7 @@ static void send_item(const char* name, void* dst, void* src, unsigned char flag
 void main(void)
 {
   reset_exos();
+  sleep(32767);
   
   paper(0);
   ink(7);

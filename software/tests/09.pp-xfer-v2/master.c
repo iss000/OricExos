@@ -7,12 +7,15 @@
 static t_ppcmd ppc;
 
 static void* slave_buffer = (void*)SLAVE_ADDRESS;
+static void(*slave_code)(void) = (void(*)(void))SLAVE_ADDRESS;
+
 static unsigned int len;
 static int rc;
 
 void main(void)
 {
   reset_exos();
+  sleep(32767);
   
   paper(0);
   ink(7);
@@ -32,5 +35,5 @@ void main(void)
   printf("\nMaster done.");
   
   // jump to slave code
-  ((void (*)(void))slave_buffer)();
+  slave_code();
 }

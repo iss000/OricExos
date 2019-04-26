@@ -36,8 +36,12 @@ slave_SRC               := slave.s $(common_SRC)
 slave_AUTORUN           := 1
 slave_ADDRESS           := $(shell echo $$((0x2000)))
 
+# # # 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
+OSDK_OPT65		:= 0
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
+CC65_ALIGNED		:= 0
+# 
 TOOLCHAIN		:= CC65
 
 EMU 			:= ./oricutron

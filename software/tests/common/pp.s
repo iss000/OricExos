@@ -19,7 +19,7 @@
 ;--------------------------
 ; NOTE: 
 ; change zpp if needed
-zpp     =     $80
+zpp     =     $90
 zptr    =     zpp+0
 zcmd    =     zpp+2
 zflg    =     zpp+3

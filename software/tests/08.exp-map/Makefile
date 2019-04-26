@@ -31,15 +31,22 @@ common_SRC 		:= pp.s oricexos.s
 $(PROJECT)_SRC		:= $(common_SRC) compat.s libsedoric.s $(PROJECT).c
 $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
+$(PROJECT)_ACPP		:= 1
 
 slave_SRC               := oricexos.s slave.s
 slave_AUTORUN           := 1
 slave_ADDRESS           := $(shell echo $$((0x2000)))
+slave_ACPP              := 1
 
+# # # 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
+OSDK_OPT65		:= 0
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
+CC65_ALIGNED		:= 0
+# 
 TOOLCHAIN		:= OSDK
 
+# # # 
 EMU 			:= ./oricutron
 EMUDIR 			:= ${HOME}/work/projects/8Bit/emulators/oricutron-build
 EMUARG 			:= -m a
@@ -87,7 +94,7 @@ slave_LFLAGS 		:=
 TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap
 
 prepare:
-	@echo "Building..."
+	@echo "Building with $(TOOLCHAIN) ..."
 
 finalize: hxc
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk

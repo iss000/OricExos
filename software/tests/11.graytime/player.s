@@ -162,6 +162,7 @@ wvlp_1
 framew  =     (150/6)
 frameh  =     (120)
 frames  =     (11)
+frameo  =     (0)
 
 _tab_frames_lo = MOVIE_ADDRESS+(framew*frameh*frames)
 _tab_frames_hi = _tab_frames_lo+frames 
@@ -179,7 +180,7 @@ blit
         lda   _tab_frames_hi,y
         sta   __auto_src+2
 
-        ldy   #(((200-frameh)/2)+30)
+        ldy   #(((200-frameh)/2)+frameo)
 blp_y
         clc
         lda   _scrn_lo-1,y
@@ -211,7 +212,7 @@ __auto_dst
         sta   __auto_src+2
         
         iny
-        cpy   #(((200-frameh)/2)+frameh+30)
+        cpy   #(((200-frameh)/2)+frameh+frameo)
         bne   blp_y
 
         rts

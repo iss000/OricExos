@@ -79,10 +79,12 @@ movie-13_SRC            := movie-13.s
 movie-13_AUTORUN        := 0
 movie-13_ADDRESS        := $(MOVIE_ADDRESS)
 
-
-
+# # # 
 OSDK			:= ${HOME}/work/projects/8Bit/devtools/osdk
+OSDK_OPT65		:= 0
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
+CC65_ALIGNED		:= 0
+# 
 TOOLCHAIN		:= CC65
 
 EMU 			:= ./oricutron

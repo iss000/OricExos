@@ -43,7 +43,8 @@ EMUDIR 			:= ~/work/projects/8Bit/emulators/oricutron-build
 EMUARG 			:= -m a
 EMUARG 			+= -k n
 # EMUARG 		+= --serial com:19200,8,N,1,/dev/pts/2
-EMUARG 			+= --serial modem:65020
+# EMUARG 		+= --serial modem:65020
+EMUARG 			+= --serial none
 EMUARG 			+= --vsynchack off
 EMUARG 			+= --scanlines on
 EMUARG 			+= --rendermode opengl
@@ -94,11 +95,11 @@ finalize: #hxc
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/1 1983/g' -e 's/RGB OricExos 123 BGR/\x11\x10\x10\x10OricExos 1  \x10\x10\x10\x11/g' > slave-v2-1.rom
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x12\x10\x10OricExos  2 \x10\x10\x12\x10/g' > slave-v2-2.rom
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x10\x14\x10OricExos   3\x10\x14\x10\x10/g' > slave-v2-3.rom
+	@cp -f $(PROJECT).rom $(PROJECT).pch slave-v2-1.rom slave-v2-2.rom slave-v2-3.rom $(EMUDIR)/roms/
+	@cat master.pch > $(EMUDIR)/roms/slave-v2-1.pch 
+	@cat master.pch > $(EMUDIR)/roms/slave-v2-2.pch 
+	@cat master.pch > $(EMUDIR)/roms/slave-v2-3.pch 
 	@echo "Done"
-	cp -f $(PROJECT).rom $(PROJECT).pch slave-v2-1.rom slave-v2-2.rom slave-v2-3.rom $(EMUDIR)/roms/
-	cat master.pch > $(EMUDIR)/roms/slave-v2-1.pch 
-	cat master.pch > $(EMUDIR)/roms/slave-v2-2.pch 
-	cat master.pch > $(EMUDIR)/roms/slave-v2-3.pch 
 
 .PHONY: $(PROJECT).dsk
 $(PROJECT).dsk: $(TAPS)

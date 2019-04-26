@@ -67,6 +67,23 @@ _pli
         plp
         rts
 
+;--------------------------
+__sleept 
+        wrd   0
+__sleep
+        lda   __sleept
+        bne   slskp_1
+        lda   __sleept+1
+        bne   slskp_2
+        rts
+slskp_2
+        dec   __sleept+1
+slskp_1
+        dec   __sleept
+        clc
+        nop
+        bcc   __sleep
+      
 ;==========================
 _reset_exos
         ; reset extension

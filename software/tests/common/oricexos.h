@@ -132,6 +132,10 @@ void cli(void);
 void phi(void);
 void pli(void);
 
+extern unsigned int _sleept;
+void _sleep(void);
+#define sleep(x)  {_sleept=(x),_sleep();}
+
 void reset_exos(void);
 
 void set_ram_on(void);

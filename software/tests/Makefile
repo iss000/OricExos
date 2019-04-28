@@ -12,7 +12,8 @@ DEMOS := \
 	10.bwtime \
 	11.graytime \
 	12.bars \
-	13.morebars
+	13.morebars \
+	14.tesseract
 
 # 
 all: remove-bin

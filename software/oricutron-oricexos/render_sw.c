@@ -376,6 +376,24 @@ void render_video_sw_16bpp( struct machine *oric, SDL_bool doublesize )
   }
 }
 
+static Uint8 mix32_correction(Uint32 x)
+{
+  switch(x)
+  {
+    case 4*255:
+      return 255;
+    case 3*255:
+      return 255-32;
+    case 2*255:
+      return 255-32-32;
+    case 1*255:
+      return 255-32-32-32;
+    default:
+      break;
+  }
+  return 0;
+}
+
 static Uint32 mix32( struct machine *oric, Uint32 c0, Uint32 c1, Uint32 c2, Uint32 c3 )
 {
   Uint8 r0, g0, b0;
@@ -389,9 +407,9 @@ static Uint32 mix32( struct machine *oric, Uint32 c0, Uint32 c1, Uint32 c2, Uint
   SDL_GetRGB(c3, screen->format, &r3, &g3, &b3);
   
   return SDL_MapRGB( screen->format, 
-                     (r0+r1+r2+r3)/4,
-                     (g0+g1+g2+g3)/4,
-                     (b0+b1+b2+b3)/4);
+                     mix32_correction(r0+r1+r2+r3),
+                     mix32_correction(g0+g1+g2+g3),
+                     mix32_correction(b0+b1+b2+b3));
 }
 
 static SDL_bool isdirty( struct machine *oric, int y )

@@ -953,7 +953,7 @@ void preinit_machine( struct machine *oric )
   oric->tapelen = 0;
   oric->tapemotor = SDL_FALSE;
   oric->vsynchack = SDL_FALSE;
-  oric->tapeturbo = SDL_TRUE;
+  oric->tapeturbo = SDL_FALSE;
   oric->tapeturbo_forceoff = SDL_FALSE;
   oric->autorewind = SDL_FALSE;
   oric->autoinsert = SDL_TRUE;

@@ -1,0 +1,185 @@
+;
+; Generated with ap65 v 1.00
+;
+.setcpu     "65816"
+.smart      on
+.autoimport on
+.case       on
+.importzp   sp, sreg, regsave, regbank
+.importzp   tmp1, tmp2, tmp3, tmp4
+.importzp   ptr1, ptr2, ptr3, ptr4
+;
+_ipc =  $bfe0
+extadr =  $380
+extstat =  $bfe0+1
+_sei:
+sei
+rts
+_cli:
+cli
+rts
+irqflag: .byte 0
+_phi:
+php
+pla
+and #%00000100
+sta irqflag
+sei
+rts
+_pli:
+php
+pla
+ora irqflag
+pha
+plp
+rts
+__sleept: 
+.word 0
+__sleep:
+lda __sleept
+bne slskp_1
+lda __sleept+1
+bne slskp_2
+rts
+slskp_2:
+dec __sleept+1
+slskp_1:
+dec __sleept
+clc
+nop
+bcc __sleep
+_reset_exos:
+lda #0
+sta extstat
+sta extadr
+jsr _set_vsync_off
+lda $edb0
+and #$03
+sta $bfe0+0
+rts
+_set_ram_on:
+_set_rom_off:
+pha
+txa
+pha
+lda extstat
+ora #%00000001
+bne br_rm
+_set_rom_on:
+_set_ram_off:
+pha
+txa
+pha
+lda extstat
+and #%11111110
+br_rm:
+sta extstat 
+tax 
+sta extadr,x
+pla
+tax
+pla
+rts
+_set_pp_on:
+pha
+txa
+pha
+lda extstat
+ora #%00000010
+bne br_ppoff
+_set_pp_off:
+pha
+txa
+pha
+lda extstat
+and #%11111101
+br_ppoff:
+sta extstat 
+tax
+sta extadr,x
+pla
+tax
+pla
+rts
+_set_pp_in:
+pha
+txa
+pha
+lda extstat
+ora #%00000100
+bne br_ppout
+_set_pp_out:
+pha
+txa
+pha
+lda extstat
+and #%11111011
+br_ppout:
+sta extstat 
+tax
+sta extadr,x
+pla
+tax
+pla
+rts
+_set_mix_b:
+pha
+txa
+pha
+lda extstat
+ora #%00001000
+bne br_mix
+_set_mix_a:
+pha
+txa
+pha
+lda extstat
+and #%11110111
+br_mix:
+sta extstat 
+tax
+sta extadr,x
+pla
+tax
+pla
+rts
+_set_vsync_on:
+pha
+lda $0302
+ora #%01000000
+sta $0302
+lda $0300
+and #%10111111
+sta $0300
+pla
+rts
+_set_vsync_off:
+pha
+lda $0302
+ora #%01000000
+sta $0302
+lda $0300
+ora #%01000000
+sta $0300
+pla
+rts
+.export _ipc
+.export _sei
+.export _cli
+.export _phi
+.export _pli
+.export __sleept
+.export __sleep
+.export _reset_exos
+.export _set_ram_on
+.export _set_rom_off
+.export _set_rom_on
+.export _set_ram_off
+.export _set_pp_on
+.export _set_pp_off
+.export _set_pp_in
+.export _set_pp_out
+.export _set_mix_b
+.export _set_mix_a
+.export _set_vsync_on
+.export _set_vsync_off

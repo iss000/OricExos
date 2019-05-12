@@ -177,21 +177,21 @@ br_ppout
         rts
 
 ;==========================
-_set_mix_a
-        pha
-        txa
-        pha
-        lda   extstat
-        ora   #f_mix_a
-        ; forced branch
-        bne   br_mix
-;--------------------------
 _set_mix_b
         pha
         txa
         pha
         lda   extstat
-        and   #f_mix_b
+        ora   #f_mix_b
+        ; forced branch
+        bne   br_mix
+;--------------------------
+_set_mix_a
+        pha
+        txa
+        pha
+        lda   extstat
+        and   #f_mix_a
 br_mix
         sta   extstat        
         tax

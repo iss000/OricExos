@@ -1,0 +1,189 @@
+;
+; Generated with ap65 v 1.00
+;
+.setcpu     "65816"
+.smart      on
+.autoimport on
+.case       on
+.importzp   sp, sreg, regsave, regbank
+.importzp   tmp1, tmp2, tmp3, tmp4
+.importzp   ptr1, ptr2, ptr3, ptr4
+;
+.zeropage
+zpp =  $90
+zptr =  zpp+0
+zcmd =  zpp+2
+zflg =  zpp+3
+zdst =  zpp+4
+zsiz =  zpp+6
+zsrc =  zpp+8
+.code
+__pp_cmd_ptr:
+.word 0
+pp_save_via_ier:
+.byte 0
+pp_save_via_acr:
+.byte 0
+pp_save_via_pcr:
+.byte 0
+pp_save_via_ddra:
+.byte 0
+pp_save_via_ddrb:
+.byte 0
+pp_save_via_a:
+.byte 0
+pp_save_via_b:
+.byte 0
+pp_save_y: 
+.byte 0
+__pp_defprogress:
+lda #<__pp_defprogress
+ldx #>__pp_defprogress
+__pp_setprogress:
+sta pp_progress_1+1
+sta pp_progress_2+1
+stx pp_progress_1+2
+stx pp_progress_2+2
+rts
+__pp_receive:
+php
+sei
+sty pp_save_y
+jsr pp_setup_slave
+lda __pp_cmd_ptr
+sta zptr
+lda __pp_cmd_ptr+1
+sta zptr+1
+ldy #(zflg-zcmd)
+lda (zptr),y
+tay
+lda id_mask,y
+sta zsrc
+rx_55:
+jsr pp_in_get_byte
+cmp #$55
+bne rx_55
+rx_AA:
+jsr pp_in_get_byte
+cmp #$55
+beq rx_AA
+cmp #$aa
+bne rx_55
+ldy #$00
+rx_hdr:
+jsr pp_in_get_byte
+sta (zptr),y
+sta zcmd,y
+iny
+cpy #$06
+bne rx_hdr
+lda zflg
+and zsrc
+sta zsrc
+beq rxs_0
+lda zflg
+and #$80 
+rxs_0:
+ldy #(zflg-zcmd)
+sta (zptr),y
+sta zflg
+lda zsrc
+bne rx_go
+pp_progress_1:
+jsr __pp_defprogress
+rx_go:
+ldy #$00
+rx_cont:
+jsr pp_in_get_byte
+ldx zsrc
+beq rxs_1
+sta (zdst),y
+inc zdst
+bne rxs_1
+inc zdst+1
+rxs_1:
+dec zsiz
+bne rx_cont
+lda zsiz+1
+beq rxs_2
+dec zsiz+1
+jmp rx_cont
+rxs_2:
+jsr pp_reset
+pp_progress_2:
+jsr __pp_defprogress
+ldy pp_save_y
+plp
+rts
+id_mask: .byte $00,$01,$02,$04
+pp_setup_slave:
+lda #%01111111
+sta $030e
+sta $030d
+lda $0300
+and #%11101111
+sta $0300
+lda $0302
+ora #%00010000
+sta $0302
+lda $030c
+and #($ff ^ %00000001)
+sta $030c
+lda #%00000000
+sta $0303
+sta $0301
+lda $030b
+and #%11111101
+ora #%00000001
+sta $030b
+jsr _set_pp_in
+jsr _set_pp_on
+rts
+pp_in_setup_send:
+rts
+pp_in_put_byte:
+rts
+pp_in_get_byte:
+lda #(1<<1)
+lp_igb:
+bit $030d
+beq lp_igb
+lda $0301
+pha
+lda #%11101111
+and $0302
+sta $0302
+lp_igbw:
+lda $0300
+and #%00010000
+beq lp_igbw
+ora $0302
+sta $0302
+pla
+rts
+pp_reset:
+jsr _set_pp_off
+jsr _set_pp_out
+lda pp_save_via_b
+sta $0300
+lda pp_save_via_ddrb
+sta $0302
+lda pp_save_via_a
+sta $0301
+lda pp_save_via_ddra
+sta $0303
+lda pp_save_via_pcr
+sta $030c
+lda pp_save_via_acr
+sta $030b
+lda #%01111111
+sta $030e
+sta $030d
+lda pp_save_via_ier
+ora #$80
+sta $030e
+rts
+.export __pp_cmd_ptr
+.export __pp_defprogress
+.export __pp_setprogress
+.export __pp_receive

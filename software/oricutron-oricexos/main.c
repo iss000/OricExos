@@ -395,7 +395,9 @@ static void load_config( struct start_opts *sto, struct machine *oric )
     if( oric->exos_id==1 && read_config_string( &sto->lctmp[i], "atmosrom1",     atmosromfile, 1024 ) ) continue;
     if( oric->exos_id==2 && read_config_string( &sto->lctmp[i], "atmosrom2",     atmosromfile, 1024 ) ) continue;
     if( oric->exos_id==3 && read_config_string( &sto->lctmp[i], "atmosrom3",     atmosromfile, 1024 ) ) continue;
-
+    
+    if( read_config_bool( &sto->lctmp[i], "gammacorrection", &oric->exos_gammacorrection ) ) continue;
+    
     if( read_config_option( &sto->lctmp[i], "machine",      &sto->start_machine, machtypes ) ) continue;
     if( read_config_option( &sto->lctmp[i], "disktype",     &sto->start_disktype, disktypes ) ) continue;
     if( read_config_bool(   &sto->lctmp[i], "debug",        &sto->start_debug ) ) continue;

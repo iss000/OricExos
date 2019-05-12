@@ -1,0 +1,194 @@
+ca65 V2.17 - Git 9299e550a
+Main file   : obj/slave/pp.s1
+Current file: obj/slave/pp.s1
+
+000000r 1               ;
+000000r 1               ; Generated with ap65 v 1.00
+000000r 1               ;
+000000r 1               .setcpu     "65816"
+000000r 1               .smart      on
+000000r 1               .autoimport on
+000000r 1               .case       on
+000000r 1               .importzp   sp, sreg, regsave, regbank
+000000r 1               .importzp   tmp1, tmp2, tmp3, tmp4
+000000r 1               .importzp   ptr1, ptr2, ptr3, ptr4
+000000r 1               ;
+000000r 1               .zeropage
+000000r 1               zpp =  $90
+000000r 1               zptr =  zpp+0
+000000r 1               zcmd =  zpp+2
+000000r 1               zflg =  zpp+3
+000000r 1               zdst =  zpp+4
+000000r 1               zsiz =  zpp+6
+000000r 1               zsrc =  zpp+8
+000000r 1               .code
+000000r 1               __pp_cmd_ptr:
+000000r 1  00 00        .word 0
+000002r 1               pp_save_via_ier:
+000002r 1  00           .byte 0
+000003r 1               pp_save_via_acr:
+000003r 1  00           .byte 0
+000004r 1               pp_save_via_pcr:
+000004r 1  00           .byte 0
+000005r 1               pp_save_via_ddra:
+000005r 1  00           .byte 0
+000006r 1               pp_save_via_ddrb:
+000006r 1  00           .byte 0
+000007r 1               pp_save_via_a:
+000007r 1  00           .byte 0
+000008r 1               pp_save_via_b:
+000008r 1  00           .byte 0
+000009r 1               pp_save_y:
+000009r 1  00           .byte 0
+00000Ar 1               __pp_defprogress:
+00000Ar 1  A9 rr        lda #<__pp_defprogress
+00000Cr 1  A2 rr        ldx #>__pp_defprogress
+00000Er 1               __pp_setprogress:
+00000Er 1  8D rr rr     sta pp_progress_1+1
+000011r 1  8D rr rr     sta pp_progress_2+1
+000014r 1  8E rr rr     stx pp_progress_1+2
+000017r 1  8E rr rr     stx pp_progress_2+2
+00001Ar 1  60           rts
+00001Br 1               __pp_receive:
+00001Br 1  08           php
+00001Cr 1  78           sei
+00001Dr 1  8C rr rr     sty pp_save_y
+000020r 1  20 rr rr     jsr pp_setup_slave
+000023r 1  AD rr rr     lda __pp_cmd_ptr
+000026r 1  85 90        sta zptr
+000028r 1  AD rr rr     lda __pp_cmd_ptr+1
+00002Br 1  85 91        sta zptr+1
+00002Dr 1  A0 01        ldy #(zflg-zcmd)
+00002Fr 1  B1 90        lda (zptr),y
+000031r 1  A8           tay
+000032r 1  B9 rr rr     lda id_mask,y
+000035r 1  85 98        sta zsrc
+000037r 1               rx_55:
+000037r 1  20 rr rr     jsr pp_in_get_byte
+00003Ar 1  C9 55        cmp #$55
+00003Cr 1  D0 F9        bne rx_55
+00003Er 1               rx_AA:
+00003Er 1  20 rr rr     jsr pp_in_get_byte
+000041r 1  C9 55        cmp #$55
+000043r 1  F0 F9        beq rx_AA
+000045r 1  C9 AA        cmp #$aa
+000047r 1  D0 EE        bne rx_55
+000049r 1  A0 00        ldy #$00
+00004Br 1               rx_hdr:
+00004Br 1  20 rr rr     jsr pp_in_get_byte
+00004Er 1  91 90        sta (zptr),y
+000050r 1  99 92 00     sta zcmd,y
+000053r 1  C8           iny
+000054r 1  C0 06        cpy #$06
+000056r 1  D0 F3        bne rx_hdr
+000058r 1  A5 93        lda zflg
+00005Ar 1  25 98        and zsrc
+00005Cr 1  85 98        sta zsrc
+00005Er 1  F0 04        beq rxs_0
+000060r 1  A5 93        lda zflg
+000062r 1  29 80        and #$80
+000064r 1               rxs_0:
+000064r 1  A0 01        ldy #(zflg-zcmd)
+000066r 1  91 90        sta (zptr),y
+000068r 1  85 93        sta zflg
+00006Ar 1  A5 98        lda zsrc
+00006Cr 1  D0 03        bne rx_go
+00006Er 1               pp_progress_1:
+00006Er 1  20 rr rr     jsr __pp_defprogress
+000071r 1               rx_go:
+000071r 1  A0 00        ldy #$00
+000073r 1               rx_cont:
+000073r 1  20 rr rr     jsr pp_in_get_byte
+000076r 1  A6 98        ldx zsrc
+000078r 1  F0 08        beq rxs_1
+00007Ar 1  91 94        sta (zdst),y
+00007Cr 1  E6 94        inc zdst
+00007Er 1  D0 02        bne rxs_1
+000080r 1  E6 95        inc zdst+1
+000082r 1               rxs_1:
+000082r 1  C6 96        dec zsiz
+000084r 1  D0 ED        bne rx_cont
+000086r 1  A5 97        lda zsiz+1
+000088r 1  F0 05        beq rxs_2
+00008Ar 1  C6 97        dec zsiz+1
+00008Cr 1  4C rr rr     jmp rx_cont
+00008Fr 1               rxs_2:
+00008Fr 1  20 rr rr     jsr pp_reset
+000092r 1               pp_progress_2:
+000092r 1  20 rr rr     jsr __pp_defprogress
+000095r 1  AC rr rr     ldy pp_save_y
+000098r 1  28           plp
+000099r 1  60           rts
+00009Ar 1  00 01 02 04  id_mask: .byte $00,$01,$02,$04
+00009Er 1               pp_setup_slave:
+00009Er 1  A9 7F        lda #%01111111
+0000A0r 1  8D 0E 03     sta $030e
+0000A3r 1  8D 0D 03     sta $030d
+0000A6r 1  AD 00 03     lda $0300
+0000A9r 1  29 EF        and #%11101111
+0000ABr 1  8D 00 03     sta $0300
+0000AEr 1  AD 02 03     lda $0302
+0000B1r 1  09 10        ora #%00010000
+0000B3r 1  8D 02 03     sta $0302
+0000B6r 1  AD 0C 03     lda $030c
+0000B9r 1  29 FE        and #($ff ^ %00000001)
+0000BBr 1  8D 0C 03     sta $030c
+0000BEr 1  A9 00        lda #%00000000
+0000C0r 1  8D 03 03     sta $0303
+0000C3r 1  8D 01 03     sta $0301
+0000C6r 1  AD 0B 03     lda $030b
+0000C9r 1  29 FD        and #%11111101
+0000CBr 1  09 01        ora #%00000001
+0000CDr 1  8D 0B 03     sta $030b
+0000D0r 1  20 rr rr     jsr _set_pp_in
+0000D3r 1  20 rr rr     jsr _set_pp_on
+0000D6r 1  60           rts
+0000D7r 1               pp_in_setup_send:
+0000D7r 1  60           rts
+0000D8r 1               pp_in_put_byte:
+0000D8r 1  60           rts
+0000D9r 1               pp_in_get_byte:
+0000D9r 1  A9 02        lda #(1<<1)
+0000DBr 1               lp_igb:
+0000DBr 1  2C 0D 03     bit $030d
+0000DEr 1  F0 FB        beq lp_igb
+0000E0r 1  AD 01 03     lda $0301
+0000E3r 1  48           pha
+0000E4r 1  A9 EF        lda #%11101111
+0000E6r 1  2D 02 03     and $0302
+0000E9r 1  8D 02 03     sta $0302
+0000ECr 1               lp_igbw:
+0000ECr 1  AD 00 03     lda $0300
+0000EFr 1  29 10        and #%00010000
+0000F1r 1  F0 F9        beq lp_igbw
+0000F3r 1  0D 02 03     ora $0302
+0000F6r 1  8D 02 03     sta $0302
+0000F9r 1  68           pla
+0000FAr 1  60           rts
+0000FBr 1               pp_reset:
+0000FBr 1  20 rr rr     jsr _set_pp_off
+0000FEr 1  20 rr rr     jsr _set_pp_out
+000101r 1  AD rr rr     lda pp_save_via_b
+000104r 1  8D 00 03     sta $0300
+000107r 1  AD rr rr     lda pp_save_via_ddrb
+00010Ar 1  8D 02 03     sta $0302
+00010Dr 1  AD rr rr     lda pp_save_via_a
+000110r 1  8D 01 03     sta $0301
+000113r 1  AD rr rr     lda pp_save_via_ddra
+000116r 1  8D 03 03     sta $0303
+000119r 1  AD rr rr     lda pp_save_via_pcr
+00011Cr 1  8D 0C 03     sta $030c
+00011Fr 1  AD rr rr     lda pp_save_via_acr
+000122r 1  8D 0B 03     sta $030b
+000125r 1  A9 7F        lda #%01111111
+000127r 1  8D 0E 03     sta $030e
+00012Ar 1  8D 0D 03     sta $030d
+00012Dr 1  AD rr rr     lda pp_save_via_ier
+000130r 1  09 80        ora #$80
+000132r 1  8D 0E 03     sta $030e
+000135r 1  60           rts
+000136r 1               .export __pp_cmd_ptr
+000136r 1               .export __pp_defprogress
+000136r 1               .export __pp_setprogress
+000136r 1               .export __pp_receive
+000136r 1               

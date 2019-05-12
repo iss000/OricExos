@@ -1,0 +1,807 @@
+Modules list:
+-------------
+pp.o:
+    CODE              Offs=000000  Size=000114  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+oricexos.o:
+    CODE              Offs=000114  Size=0000DB  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+compat.o:
+    CODE              Offs=0001EF  Size=0000A7  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000002  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+libsedoric.o:
+    CODE              Offs=000296  Size=00022C  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+master.o:
+    CODE              Offs=0004C2  Size=00015A  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=00004A  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=00000C  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000004  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(_file.o):
+    CODE              Offs=00061C  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=00004A  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00000C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000004  Size=00001E  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(_hextab.o):
+    CODE              Offs=00061C  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=00004A  Size=000010  Align=00001  Fill=0000
+    BSS               Offs=00000C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000022  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(_longminstr.o):
+    CODE              Offs=00061C  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=00005A  Size=00000C  Align=00001  Fill=0000
+    BSS               Offs=00000C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000022  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(_printf.o):
+    CODE              Offs=00061C  Size=0003A5  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00000C  Size=00002B  Align=00001  Fill=0000
+    DATA              Offs=000022  Size=000003  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(_seterrno.o):
+    CODE              Offs=0009C1  Size=000009  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000025  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(addysp.o):
+    CODE              Offs=0009CA  Size=00000E  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000025  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(axlong.o):
+    CODE              Offs=0009D8  Size=00000D  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000025  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(call.o):
+    CODE              Offs=0009E5  Size=000007  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000025  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(callmain.o):
+    CODE              Offs=0009EC  Size=000017  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000025  Size=000004  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(condes.o):
+    CODE              Offs=000A03  Size=00000C  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000029  Size=000025  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ONCE              Offs=000000  Size=00000C  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(crt0.o):
+    CODE              Offs=000A0F  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+    STARTUP           Offs=000000  Size=000025  Align=00001  Fill=0000
+    ONCE              Offs=00000C  Size=000020  Align=00001  Fill=0000
+    INIT              Offs=000000  Size=00001C  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(ctype.o):
+    CODE              Offs=000A0F  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000066  Size=000100  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(decax1.o):
+    CODE              Offs=000A0F  Size=000007  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(decsp4.o):
+    CODE              Offs=000A16  Size=00000D  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(decsp6.o):
+    CODE              Offs=000A23  Size=00000D  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(errno.o):
+    CODE              Offs=000A30  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000037  Size=000002  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(fwrite.o):
+    CODE              Offs=000A30  Size=00007B  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000039  Size=000002  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(incsp2.o):
+    CODE              Offs=000AAB  Size=000016  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(incsp6.o):
+    CODE              Offs=000AC1  Size=000005  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(ldaxsp.o):
+    CODE              Offs=000AC6  Size=000009  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(lneg.o):
+    CODE              Offs=000ACF  Size=00001E  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(lpush.o):
+    CODE              Offs=000AED  Size=000021  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(ltoa.o):
+    CODE              Offs=000B0E  Size=000095  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(mul.o):
+    CODE              Offs=000BA3  Size=000045  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(mul8.o):
+    CODE              Offs=000BE8  Size=00003A  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(popptr1.o):
+    CODE              Offs=000C22  Size=00000E  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(printf.o):
+    CODE              Offs=000C30  Size=000033  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003B  Size=000001  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(push1.o):
+    CODE              Offs=000C63  Size=000005  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(pushax.o):
+    CODE              Offs=000C68  Size=00001A  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(pushwsp.o):
+    CODE              Offs=000C82  Size=00001C  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(strlen.o):
+    CODE              Offs=000C9E  Size=000016  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(strlower.o):
+    CODE              Offs=000CB4  Size=000028  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(udiv.o):
+    CODE              Offs=000CDC  Size=00004F  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(umod.o):
+    CODE              Offs=000D2B  Size=000011  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(vfprintf.o):
+    CODE              Offs=000D3C  Size=000061  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=00004E  Size=000008  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(write.o):
+    CODE              Offs=000D9D  Size=00003A  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000056  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(zerobss.o):
+    CODE              Offs=000DD7  Size=000023  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000056  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+/root/work/projects/8Bit/devtools/cc65/lib/atmos.lib(zeropage.o):
+    CODE              Offs=000DFA  Size=000000  Align=00001  Fill=0000
+    RODATA            Offs=000166  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00003C  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000056  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000002  Size=00001A  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+NULL                  000000  000000  000000  00001
+ZEROPAGE              000050  00006B  00001C  00001
+STARTUP               000600  000624  000025  00001
+CODE                  000625  00141E  000DFA  00001
+RODATA                00141F  001584  000166  00001
+DATA                  001585  0015DA  000056  00001
+INIT                  0015DB  0015F6  00001C  00001
+BSS                   0015F7  001632  00003C  00001
+ONCE                  0015F7  001622  00002C  00001
+
+
+Exports list by name:
+---------------------
+__AUTORUN__               000000  EA    __BSS_LOAD__              0015F7  LA    
+__BSS_RUN__               0015F7 RLA    __BSS_SIZE__              00003C REA    
+__CONSTRUCTOR_COUNT__     000000 REA    __CONSTRUCTOR_TABLE__     001623 RLA    
+__DESTRUCTOR_COUNT__      000000 REA    __DESTRUCTOR_TABLE__      001585 RLA    
+__GRAB__                  000000 REA    __MAIN_FILEOFFS__         000000  EA    
+__MAIN_LAST__             001623  LA    __MAIN_SIZE__             009200 REA    
+__MAIN_START__            000600 RLA    __ONCE_LOAD__             0015F7  LA    
+__ONCE_RUN__              0015F7 RLA    __ONCE_SIZE__             00002C  EA    
+__PROGFLAG__              000080  EA    __RAMEND__                009800 REA    
+__STACKSIZE__             000800 REA    __STARTUP__               000001 REA    
+__START_ADDRESS__         000600  EA    __ZP_FILEOFFS__           000000  EA    
+__ZP_LAST__               00006C  LA    __ZP_SIZE__               000040  EA    
+__ZP_START__              000050  LA    __argc                    0015AA  LA    
+__argv                    0015AC  LA    __auto_exec_ptr           0009D3  EA    
+__ctype                   001485 RLA    __errno                   00162E RLA    
+__filetab                 001589  LA    __hextab                  001469 RLA    
+__longminstr              001479 RLA    __pp_cmd_ptr              000625 RLA    
+__pp_send                 00062F RLA    __printf                  000D34 RLA    
+__sedoric                 00088D  LA    __sedoric_cmdptr          00088B  LA    
+__seterrno                000FE6 RLA    __sleep                   000751 RLA    
+__sleept                  00074F RLA    _cli                      00073B  LA    
+_cls                      000814 RLA    _doserr                   0004FD  EA    
+_dosflag                  0004FC  EA    _dosrom                   0004F2  EA    
+_execfile                 000AE7  LA    _exit                     00060D  LA    
+_exvec                    0002F5  EA    _fwrite                   001055 RLA    
+_get                      000836  LA    _getXparm                 000866  EA    
+_grexit                   000884  EA    _grexit2                  000887  EA    
+_hires                    000820  LA    _ink                      000852 RLA    
+_ipc                      00BFE0  EA    _kbdclick1                000823  LA    
+_kbdclick2                000826  LA    _key                      000829  LA    
+_loadfile                 000B3F  LA    _lores0                   00081A  LA    
+_lores1                   00081D  LA    _ltoa                     00114B RLA    
+_main                     000B78 RLA    _next_token               0000E2  EZ    
+_paper                    00083E RLA    _phi                      00073E  LA    
+_pli                      000747  LA    _printf                   001255 RLA    
+_reset_exos               000766 RLA    _savefile                 000AF9  LA    
+_sed_begin                0008BD RLA    _sed_end                  0008BF RLA    
+_sed_err                  0008C3 RLA    _sed_execfile             0009C5 RLA    
+_sed_fname                0008BB RLA    _sed_loadfile             000A56 RLA    
+_sed_savefile             0009EA RLA    _sed_size                 0008C1 RLA    
+_sei                      000739  LA    _set_mix_a                0007DB  LA    
+_set_mix_b                0007D1  LA    _set_pp_in                0007B4  LA    
+_set_pp_off               0007A1 RLA    _set_pp_on                000797 RLA    
+_set_pp_out               0007BE RLA    _set_ram_off              000784  LA    
+_set_ram_on               00077A  LA    _set_rom_off              00077A  LA    
+_set_rom_on               000784  LA    _set_vsync_off            000801  LA    
+_set_vsync_on             0007EE  LA    _stderr                   0015A5  LA    
+_stdin                    0015A1  LA    _stdout                   0015A3 RLA    
+_strlen                   0012C3 RLA    _strlower                 0012D9 RLA    
+_strlwr                   0012D9  LA    _text                     000817  LA    
+_tmp                      000050  EZ    _ultoa                    00118C RLA    
+_vfprintf                 001399 RLA    _write                    0013C2 RLA    
+addysp                    000FF0 RLA    addysp1                   000FEF  LA    
+axlong                    000FFD RLA    axulong                   001003 RLA    
+callax                    00100A RLA    callmain                  001011 RLA    
+condes                    0015AE  LA    decax1                    001034 RLA    
+decsp4                    00103B RLA    decsp6                    001048 RLA    
+donelib                   001028 RLA    incsp2                    0010D8 RLA    
+incsp6                    0010E6 RLA    initlib                   0015F7 RLA    
+ldax0sp                   0010EB RLA    ldaxysp                   0010ED RLA    
+mul8x16                   00120F RLA    mul8x16a                  001219 RLA    
+negeax                    0010F4 RLA    popax                     0010D0 RLA    
+popptr1                   001247 RLA    ptr1                      00005A RLZ    
+ptr2                      00005C RLZ    ptr3                      00005E RLZ    
+ptr4                      000060 RLZ    push0                     00128D  LA    
+push0ax                   001115  LA    push1                     001288 RLA    
+pusha0                    00128F RLA    pushax                    001291 RLA    
+pusheax                   00111B RLA    pushl0                    001112  LA    
+pushw0sp                  0012A7  LA    pushwysp                  0012A9 RLA    
+regbank                   000066 RLZ    regsave                   000056  LZ    
+sp                        000052 RLZ    sreg                      000054 RLZ    
+tmp1                      000062 RLZ    tmp2                      000063  LZ    
+tmp3                      000064  LZ    tmp4                      000065  LZ    
+tosmula0                  00120D  LA    tosmulax                  0011C8  LA    
+tosudiva0                 001301 RLA    tosudivax                 001303 RLA    
+tosumoda0                 001350 RLA    tosumodax                 001352  LA    
+tosumula0                 00120D  LA    tosumulax                 0011C8 RLA    
+udiv16                    001312 RLA    zerobss                   0013FC RLA    
+
+
+
+Exports list by value:
+----------------------
+__AUTORUN__               000000  EA    __CONSTRUCTOR_COUNT__     000000 REA    
+__DESTRUCTOR_COUNT__      000000 REA    __GRAB__                  000000 REA    
+__MAIN_FILEOFFS__         000000  EA    __ZP_FILEOFFS__           000000  EA    
+__STARTUP__               000001 REA    __ONCE_SIZE__             00002C  EA    
+__BSS_SIZE__              00003C REA    __ZP_SIZE__               000040  EA    
+__ZP_START__              000050  LA    _tmp                      000050  EZ    
+sp                        000052 RLZ    sreg                      000054 RLZ    
+regsave                   000056  LZ    ptr1                      00005A RLZ    
+ptr2                      00005C RLZ    ptr3                      00005E RLZ    
+ptr4                      000060 RLZ    tmp1                      000062 RLZ    
+tmp2                      000063  LZ    tmp3                      000064  LZ    
+tmp4                      000065  LZ    regbank                   000066 RLZ    
+__ZP_LAST__               00006C  LA    __PROGFLAG__              000080  EA    
+_next_token               0000E2  EZ    _exvec                    0002F5  EA    
+_dosrom                   0004F2  EA    _dosflag                  0004FC  EA    
+_doserr                   0004FD  EA    __MAIN_START__            000600 RLA    
+__START_ADDRESS__         000600  EA    _exit                     00060D  LA    
+__pp_cmd_ptr              000625 RLA    __pp_send                 00062F RLA    
+_sei                      000739  LA    _cli                      00073B  LA    
+_phi                      00073E  LA    _pli                      000747  LA    
+__sleept                  00074F RLA    __sleep                   000751 RLA    
+_reset_exos               000766 RLA    _set_ram_on               00077A  LA    
+_set_rom_off              00077A  LA    _set_ram_off              000784  LA    
+_set_rom_on               000784  LA    _set_pp_on                000797 RLA    
+_set_pp_off               0007A1 RLA    _set_pp_in                0007B4  LA    
+_set_pp_out               0007BE RLA    _set_mix_b                0007D1  LA    
+_set_mix_a                0007DB  LA    _set_vsync_on             0007EE  LA    
+__STACKSIZE__             000800 REA    _set_vsync_off            000801  LA    
+_cls                      000814 RLA    _text                     000817  LA    
+_lores0                   00081A  LA    _lores1                   00081D  LA    
+_hires                    000820  LA    _kbdclick1                000823  LA    
+_kbdclick2                000826  LA    _key                      000829  LA    
+_get                      000836  LA    _paper                    00083E RLA    
+_ink                      000852 RLA    _getXparm                 000866  EA    
+_grexit                   000884  EA    _grexit2                  000887  EA    
+__sedoric_cmdptr          00088B  LA    __sedoric                 00088D  LA    
+_sed_fname                0008BB RLA    _sed_begin                0008BD RLA    
+_sed_end                  0008BF RLA    _sed_size                 0008C1 RLA    
+_sed_err                  0008C3 RLA    _sed_execfile             0009C5 RLA    
+__auto_exec_ptr           0009D3  EA    _sed_savefile             0009EA RLA    
+_sed_loadfile             000A56 RLA    _execfile                 000AE7  LA    
+_savefile                 000AF9  LA    _loadfile                 000B3F  LA    
+_main                     000B78 RLA    __printf                  000D34 RLA    
+__seterrno                000FE6 RLA    addysp1                   000FEF  LA    
+addysp                    000FF0 RLA    axlong                    000FFD RLA    
+axulong                   001003 RLA    callax                    00100A RLA    
+callmain                  001011 RLA    donelib                   001028 RLA    
+decax1                    001034 RLA    decsp4                    00103B RLA    
+decsp6                    001048 RLA    _fwrite                   001055 RLA    
+popax                     0010D0 RLA    incsp2                    0010D8 RLA    
+incsp6                    0010E6 RLA    ldax0sp                   0010EB RLA    
+ldaxysp                   0010ED RLA    negeax                    0010F4 RLA    
+pushl0                    001112  LA    push0ax                   001115  LA    
+pusheax                   00111B RLA    _ltoa                     00114B RLA    
+_ultoa                    00118C RLA    tosmulax                  0011C8  LA    
+tosumulax                 0011C8 RLA    tosmula0                  00120D  LA    
+tosumula0                 00120D  LA    mul8x16                   00120F RLA    
+mul8x16a                  001219 RLA    popptr1                   001247 RLA    
+_printf                   001255 RLA    push1                     001288 RLA    
+push0                     00128D  LA    pusha0                    00128F RLA    
+pushax                    001291 RLA    pushw0sp                  0012A7  LA    
+pushwysp                  0012A9 RLA    _strlen                   0012C3 RLA    
+_strlower                 0012D9 RLA    _strlwr                   0012D9  LA    
+tosudiva0                 001301 RLA    tosudivax                 001303 RLA    
+udiv16                    001312 RLA    tosumoda0                 001350 RLA    
+tosumodax                 001352  LA    _vfprintf                 001399 RLA    
+_write                    0013C2 RLA    zerobss                   0013FC RLA    
+__hextab                  001469 RLA    __longminstr              001479 RLA    
+__ctype                   001485 RLA    __DESTRUCTOR_TABLE__      001585 RLA    
+__filetab                 001589  LA    _stdin                    0015A1  LA    
+_stdout                   0015A3 RLA    _stderr                   0015A5  LA    
+__argc                    0015AA  LA    __argv                    0015AC  LA    
+condes                    0015AE  LA    __BSS_LOAD__              0015F7  LA    
+__BSS_RUN__               0015F7 RLA    __ONCE_LOAD__             0015F7  LA    
+__ONCE_RUN__              0015F7 RLA    initlib                   0015F7 RLA    
+__CONSTRUCTOR_TABLE__     001623 RLA    __MAIN_LAST__             001623  LA    
+__errno                   00162E RLA    __MAIN_SIZE__             009200 REA    
+__RAMEND__                009800 REA    _ipc                      00BFE0  EA    
+
+
+
+Imports list:
+-------------
+__AUTORUN__ ([linker generated]):
+__BSS_LOAD__ ([linker generated]):
+__BSS_RUN__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__BSS_SIZE__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__CONSTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__CONSTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__DESTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__DESTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__GRAB__ ([linker generated]):
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosc.cfg(6)
+__MAIN_FILEOFFS__ ([linker generated]):
+__MAIN_LAST__ ([linker generated]):
+__MAIN_SIZE__ ([linker generated]):
+    crt0.o                    atmos/crt0.s(13)
+__MAIN_START__ ([linker generated]):
+    crt0.o                    atmos/crt0.s(13)
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosc.cfg(10)
+__ONCE_LOAD__ ([linker generated]):
+__ONCE_RUN__ ([linker generated]):
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosc.cfg(11)
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosc.cfg(11)
+__ONCE_SIZE__ ([linker generated]):
+__PROGFLAG__ ([linker generated]):
+__RAMEND__ ([linker generated]):
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosc.cfg(11)
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosc.cfg(10)
+__STACKSIZE__ ([linker generated]):
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosc.cfg(11)
+__STARTUP__ (crt0.o):
+    master.o                  obj/master/master.c1(26)
+__START_ADDRESS__ ([linker generated]):
+__ZP_FILEOFFS__ ([linker generated]):
+__ZP_LAST__ ([linker generated]):
+__ZP_SIZE__ ([linker generated]):
+__ZP_START__ ([linker generated]):
+__argc (callmain.o):
+__argv (callmain.o):
+__auto_exec_ptr (libsedoric.o):
+__ctype (ctype.o):
+    strlower.o                common/strlower.s(13)
+__errno (errno.o):
+    _seterrno.o               /root/work/repos/public/cc65/asminc/errno.inc(7)
+__filetab (_file.o):
+__hextab (_hextab.o):
+    ltoa.o                    common/ltoa.s(10)
+__longminstr (_longminstr.o):
+    ltoa.o                    common/ltoa.s(10)
+__pp_cmd_ptr (pp.o):
+    master.o                  obj/master/master.c1(48)
+__pp_send (pp.o):
+    master.o                  obj/master/master.c1(49)
+__printf (_printf.o):
+    vfprintf.o                common/vfprintf.s(10)
+__sedoric (compat.o):
+__sedoric_cmdptr (compat.o):
+__seterrno (_seterrno.o):
+    fwrite.o                  /root/work/repos/public/cc65/asminc/errno.inc(9)
+__sleep (oricexos.o):
+    master.o                  obj/master/master.c1(46)
+__sleept (oricexos.o):
+    master.o                  obj/master/master.c1(45)
+_cli (oricexos.o):
+_cls (compat.o):
+    master.o                  obj/master/master.c1(42)
+_doserr (libsedoric.o):
+_dosflag (libsedoric.o):
+_dosrom (libsedoric.o):
+_execfile (master.o):
+_exit (crt0.o):
+_exvec (libsedoric.o):
+_fwrite (fwrite.o):
+    vfprintf.o                common/vfprintf.s(10)
+_get (compat.o):
+_getXparm (compat.o):
+_grexit (compat.o):
+_grexit2 (compat.o):
+_hires (compat.o):
+_ink (compat.o):
+    master.o                  obj/master/master.c1(44)
+_ipc (oricexos.o):
+_kbdclick1 (compat.o):
+_kbdclick2 (compat.o):
+_key (compat.o):
+_loadfile (master.o):
+_lores0 (compat.o):
+_lores1 (compat.o):
+_ltoa (ltoa.o):
+    _printf.o                 common/_printf.s(12)
+_main (master.o):
+    callmain.o                runtime/callmain.s(11)
+_next_token (libsedoric.o):
+_paper (compat.o):
+    master.o                  obj/master/master.c1(43)
+_phi (oricexos.o):
+_pli (oricexos.o):
+_printf (printf.o):
+    master.o                  obj/master/master.c1(41)
+_reset_exos (oricexos.o):
+    master.o                  obj/master/master.c1(47)
+_savefile (master.o):
+_sed_begin (libsedoric.o):
+    master.o                  obj/master/master.c1(51)
+_sed_end (libsedoric.o):
+    master.o                  obj/master/master.c1(52)
+_sed_err (libsedoric.o):
+    master.o                  obj/master/master.c1(54)
+_sed_execfile (libsedoric.o):
+    master.o                  obj/master/master.c1(96)
+_sed_fname (libsedoric.o):
+    master.o                  obj/master/master.c1(50)
+_sed_loadfile (libsedoric.o):
+    master.o                  obj/master/master.c1(219)
+_sed_savefile (libsedoric.o):
+    master.o                  obj/master/master.c1(137)
+_sed_size (libsedoric.o):
+    master.o                  obj/master/master.c1(53)
+_sei (oricexos.o):
+_set_mix_a (oricexos.o):
+_set_mix_b (oricexos.o):
+_set_pp_in (oricexos.o):
+_set_pp_off (oricexos.o):
+    pp.o                      obj/master/pp.s1(163)
+_set_pp_on (oricexos.o):
+    pp.o                      obj/master/pp.s1(163)
+_set_pp_out (oricexos.o):
+    pp.o                      obj/master/pp.s1(163)
+_set_ram_off (oricexos.o):
+_set_ram_on (oricexos.o):
+_set_rom_off (oricexos.o):
+_set_rom_on (oricexos.o):
+_set_vsync_off (oricexos.o):
+_set_vsync_on (oricexos.o):
+_stderr (_file.o):
+_stdin (_file.o):
+_stdout (_file.o):
+    printf.o                  common/printf.s(8)
+_strlen (strlen.o):
+    _printf.o                 common/_printf.s(13)
+_strlower (strlower.o):
+    _printf.o                 common/_printf.s(13)
+_strlwr (strlower.o):
+_text (compat.o):
+_tmp (compat.o):
+_ultoa (ltoa.o):
+    _printf.o                 common/_printf.s(12)
+_vfprintf (vfprintf.o):
+    printf.o                  common/printf.s(8)
+_write (write.o):
+    fwrite.o                  common/fwrite.s(10)
+addysp (addysp.o):
+    fwrite.o                  common/fwrite.s(11)
+    printf.o                  common/printf.s(8)
+    incsp6.o                  runtime/incsp6.s(8)
+addysp1 (addysp.o):
+axlong (axlong.o):
+    _printf.o                 common/_printf.s(11)
+axulong (axlong.o):
+    _printf.o                 common/_printf.s(11)
+callax (call.o):
+    master.o                  obj/master/master.c1(437)
+callmain (callmain.o):
+    crt0.o                    atmos/crt0.s(12)
+condes (condes.o):
+decax1 (decax1.o):
+    master.o                  obj/master/master.c1(437)
+decsp4 (decsp4.o):
+    lpush.o                   runtime/lpush.s(12)
+decsp6 (decsp6.o):
+    _printf.o                 common/_printf.s(11)
+donelib (condes.o):
+    crt0.o                    atmos/crt0.s(11)
+incsp2 (incsp2.o):
+    popptr1.o                 runtime/popptr1.s(8)
+    master.o                  obj/master/master.c1(437)
+incsp6 (incsp6.o):
+    fwrite.o                  common/fwrite.s(11)
+    vfprintf.o                common/vfprintf.s(9)
+    master.o                  obj/master/master.c1(437)
+    master.o                  obj/master/master.c1(437)
+initlib (condes.o):
+    crt0.o                    atmos/crt0.s(11)
+ldax0sp (ldaxsp.o):
+    master.o                  obj/master/master.c1(437)
+    master.o                  obj/master/master.c1(437)
+    master.o                  obj/master/master.c1(437)
+ldaxysp (ldaxsp.o):
+    fwrite.o                  common/fwrite.s(11)
+    master.o                  obj/master/master.c1(437)
+    master.o                  obj/master/master.c1(437)
+mul8x16 (mul8.o):
+    mul.o                     runtime/mul.s(8)
+mul8x16a (mul8.o):
+    mul.o                     runtime/mul.s(8)
+negeax (lneg.o):
+    ltoa.o                    common/ltoa.s(9)
+popax (incsp2.o):
+    write.o                   atmos/write.s(10)
+    ltoa.o                    common/ltoa.s(9)
+    _printf.o                 common/_printf.s(11)
+popptr1 (popptr1.o):
+    write.o                   atmos/write.s(10)
+    mul8.o                    runtime/mul8.s(9)
+    mul.o                     runtime/mul.s(9)
+    ltoa.o                    common/ltoa.s(9)
+    umod.o                    runtime/umod.s(8)
+    udiv.o                    runtime/udiv.s(9)
+ptr1 (zeropage.o):
+    write.o                   atmos/write.s(11)
+    strlower.o                common/strlower.s(14)
+    popptr1.o                 runtime/popptr1.s(9)
+    mul8.o                    runtime/mul8.s(10)
+    mul.o                     runtime/mul.s(10)
+    ltoa.o                    common/ltoa.s(11)
+    fwrite.o                  common/fwrite.s(14)
+    _printf.o                 /root/work/repos/public/cc65/asminc/zeropage.inc(12)
+    zerobss.o                 common/zerobss.s(9)
+    vfprintf.o                common/vfprintf.s(11)
+    udiv.o                    runtime/udiv.s(10)
+    printf.o                  common/printf.s(9)
+    call.o                    runtime/call.s(8)
+    master.o                  obj/master/master.c1(11)
+ptr2 (zeropage.o):
+    write.o                   atmos/write.s(11)
+    strlower.o                common/strlower.s(14)
+    strlen.o                  common/strlen.s(12)
+    ltoa.o                    common/ltoa.s(11)
+    _printf.o                 /root/work/repos/public/cc65/asminc/zeropage.inc(12)
+ptr3 (zeropage.o):
+    write.o                   atmos/write.s(11)
+    ltoa.o                    common/ltoa.s(11)
+ptr4 (zeropage.o):
+    mul8.o                    runtime/mul8.s(10)
+    mul.o                     runtime/mul.s(10)
+    umod.o                    runtime/umod.s(9)
+    udiv.o                    runtime/udiv.s(10)
+push0 (pushax.o):
+push0ax (lpush.o):
+push1 (push1.o):
+    _printf.o                 common/_printf.s(11)
+    vfprintf.o                common/vfprintf.s(9)
+pusha0 (pushax.o):
+    push1.o                   runtime/push1.s(8)
+pushax (pushax.o):
+    fwrite.o                  common/fwrite.s(11)
+    callmain.o                runtime/callmain.s(11)
+    _printf.o                 common/_printf.s(11)
+    printf.o                  common/printf.s(8)
+    master.o                  obj/master/master.c1(437)
+    master.o                  obj/master/master.c1(437)
+    master.o                  obj/master/master.c1(437)
+    master.o                  obj/master/master.c1(437)
+pusheax (lpush.o):
+    _printf.o                 common/_printf.s(11)
+pushl0 (lpush.o):
+pushw0sp (pushwsp.o):
+pushwysp (pushwsp.o):
+    fwrite.o                  common/fwrite.s(11)
+    vfprintf.o                common/vfprintf.s(9)
+regbank (zeropage.o):
+    _printf.o                 /root/work/repos/public/cc65/asminc/zeropage.inc(14)
+regsave (zeropage.o):
+sp (zeropage.o):
+    decsp4.o                  runtime/decsp4.s(8)
+    pushwsp.o                 runtime/pushwsp.s(8)
+    popptr1.o                 runtime/popptr1.s(9)
+    lpush.o                   runtime/lpush.s(13)
+    decsp6.o                  runtime/decsp6.s(8)
+    addysp.o                  runtime/addysp.s(8)
+    _printf.o                 /root/work/repos/public/cc65/asminc/zeropage.inc(11)
+    vfprintf.o                common/vfprintf.s(11)
+    pushax.o                  runtime/pushax.s(8)
+    printf.o                  common/printf.s(9)
+    ldaxsp.o                  runtime/ldaxsp.s(8)
+    incsp2.o                  runtime/incsp2.s(8)
+    crt0.o                    /root/work/repos/public/cc65/asminc/zeropage.inc(11)
+    master.o                  obj/master/master.c1(10)
+    compat.o                  obj/master/compat.s1(8)
+sreg (zeropage.o):
+    lneg.o                    runtime/lneg.s(11)
+    ltoa.o                    common/ltoa.s(11)
+    lpush.o                   runtime/lpush.s(13)
+    axlong.o                  runtime/axlong.s(9)
+    _printf.o                 /root/work/repos/public/cc65/asminc/zeropage.inc(11)
+    umod.o                    runtime/umod.s(9)
+    udiv.o                    runtime/udiv.s(10)
+tmp1 (zeropage.o):
+    mul.o                     runtime/mul.s(10)
+    ltoa.o                    common/ltoa.s(11)
+    _printf.o                 /root/work/repos/public/cc65/asminc/zeropage.inc(13)
+tmp2 (zeropage.o):
+tmp3 (zeropage.o):
+tmp4 (zeropage.o):
+tosmula0 (mul8.o):
+tosmulax (mul.o):
+tosudiva0 (udiv.o):
+    master.o                  obj/master/master.c1(437)
+tosudivax (udiv.o):
+    fwrite.o                  common/fwrite.s(12)
+tosumoda0 (umod.o):
+    master.o                  obj/master/master.c1(437)
+tosumodax (umod.o):
+tosumula0 (mul8.o):
+tosumulax (mul.o):
+    fwrite.o                  common/fwrite.s(12)
+udiv16 (udiv.o):
+    umod.o                    runtime/umod.s(8)
+zerobss (zerobss.o):
+    crt0.o                    atmos/crt0.s(12)
+

@@ -246,6 +246,23 @@ void render_gimg_sw( int img_id, Sint32 xp, Sint32 yp )
     memcpy( dst_scanline, src_scanline, pixel_size*gi->w );
 }
 
+static SDL_bool isdirty( struct machine *oric, int y )
+{
+  return 
+  oric->vid_dirty[y] |
+  oric->exos[1]->vid_dirty[y] |
+  oric->exos[2]->vid_dirty[y] |
+  oric->exos[3]->vid_dirty[y];
+}
+
+static void setdirty( struct machine *oric, int y, SDL_bool b )
+{
+  oric->vid_dirty[y] = 
+  oric->exos[1]->vid_dirty[y] = 
+  oric->exos[2]->vid_dirty[y] = 
+  oric->exos[3]->vid_dirty[y] = b;
+}
+
 // Draw part of an image (xp,yp = screen location, ox, oy = offset into image, w, h = dimensions)
 void render_gimgpart_sw( int img_id, Sint32 xp, Sint32 yp, Sint32 ox, Sint32 oy, Sint32 w, Sint32 h )
 {
@@ -376,24 +393,31 @@ void render_video_sw_16bpp( struct machine *oric, SDL_bool doublesize )
   }
 }
 
-static Uint8 mix32_correction(Uint32 x)
+// Called only for exos0
+static Uint8 mix32_correction(struct machine *oric, Uint32 x)
 {
-  switch(x)
+  if( oric->exos_gammacorrection )
   {
-    case 4*255:
-      return 255;
-    case 3*255:
-      return 255-32;
-    case 2*255:
-      return 255-32-32;
-    case 1*255:
-      return 255-32-32-32;
-    default:
-      break;
+    switch(x)
+    {
+      case 4*255:
+        return 255;
+      case 3*255:
+        return 255-32;
+      case 2*255:
+        return 255-32-32;
+      case 1*255:
+        return 255-32-32-32;
+      default:
+        break;
+    }
+    return 0;
   }
-  return 0;
+  
+  return x/4;
 }
 
+// Called only for exos0
 static Uint32 mix32( struct machine *oric, Uint32 c0, Uint32 c1, Uint32 c2, Uint32 c3 )
 {
   Uint8 r0, g0, b0;
@@ -405,30 +429,42 @@ static Uint32 mix32( struct machine *oric, Uint32 c0, Uint32 c1, Uint32 c2, Uint
   SDL_GetRGB(c1, screen->format, &r1, &g1, &b1);
   SDL_GetRGB(c2, screen->format, &r2, &g2, &b2);
   SDL_GetRGB(c3, screen->format, &r3, &g3, &b3);
+
+  if( oric->exos_stat.mix )
+  {
+    r0 = r0? 128:0;
+    r1 = r1?  64:0;
+    r2 = r2?  32:0;
+    r3 = r3?  16:0;
+    
+    g0 = g0? 128:0;
+    g1 = g1?  64:0;
+    g2 = g2?  32:0;
+    g3 = g3?  16:0;
+    
+    b0 = b0? 128:0;
+    b1 = b1?  64:0;
+    b2 = b2?  32:0;
+    b3 = b3?  16:0;
+    
+    r0 = r0+r1+r2+r3;
+    g0 = g0+g1+g2+g3;
+    b0 = b0+b1+b2+b3;
+    
+    if( oric->exos_gammacorrection )
+    {
+      r0 += r0? 15:0;
+      g0 += r0? 15:0;
+      b0 += r0? 15:0;
+    }
+    return SDL_MapRGB( screen->format, r0, g0, b0);
+  }
   
   return SDL_MapRGB( screen->format, 
-                     mix32_correction(r0+r1+r2+r3),
-                     mix32_correction(g0+g1+g2+g3),
-                     mix32_correction(b0+b1+b2+b3));
+                     mix32_correction(oric, r0+r1+r2+r3),
+                     mix32_correction(oric, g0+g1+g2+g3),
+                     mix32_correction(oric, b0+b1+b2+b3));
 }
-
-static SDL_bool isdirty( struct machine *oric, int y )
-{
-  return 
-  oric->vid_dirty[y] |
-  oric->exos[1]->vid_dirty[y] |
-  oric->exos[2]->vid_dirty[y] |
-  oric->exos[3]->vid_dirty[y];
-}
-
-static void setdirty( struct machine *oric, int y, SDL_bool b )
-{
-  oric->vid_dirty[y] = 
-  oric->exos[1]->vid_dirty[y] = 
-  oric->exos[2]->vid_dirty[y] = 
-  oric->exos[3]->vid_dirty[y] = b;
-}
-
 
 // Copy the video output buffer to the SDL surface, assuming 32bpp video mode
 void render_video_sw_32bpp( struct machine *oric, SDL_bool doublesize )

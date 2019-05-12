@@ -94,10 +94,10 @@ struct exosstat
 
 struct machine
 {
+  int exos_id;
   struct machine* exos[4];
   struct exosstat exos_stat;
-  int exos_id;
-  
+  SDL_bool exos_gammacorrection;
   
   Uint8 type;
   struct m6502 cpu;

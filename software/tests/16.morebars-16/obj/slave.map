@@ -1,0 +1,152 @@
+Modules list:
+-------------
+slave.o:
+    CODE              Offs=000000  Size=00017C  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+pp.o:
+    CODE              Offs=00017C  Size=000136  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+oricexos.o:
+    CODE              Offs=0002B2  Size=0000DB  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
+    NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+BSS                   000000  000000  000000  00001
+NULL                  000000  000000  000000  00001
+RODATA                000000  000000  000000  00001
+ZEROPAGE              000050  000050  000000  00001
+CODE                  002000  00238C  00038D  00001
+DATA                  00238D  00238D  000000  00001
+
+
+Exports list by name:
+---------------------
+__AUTORUN__               000000  EA    __GRAB__                  000000 REA    
+__MAIN_FILEOFFS__         000000  EA    __MAIN_LAST__             00238D  LA    
+__MAIN_SIZE__             007800  EA    __MAIN_START__            002000 RLA    
+__PROGFLAG__              000080  EA    __RAMEND__                009800 REA    
+__STACKSIZE__             000800  EA    __START_ADDRESS__         002000  EA    
+__ZP_FILEOFFS__           000000  EA    __ZP_LAST__               000050  LA    
+__ZP_SIZE__               000040  EA    __ZP_START__              000050  LA    
+__pp_cmd_ptr              00217C  LA    __pp_defprogress          002186  LA    
+__pp_receive              002197  LA    __pp_setprogress          00218A  LA    
+__sleep                   0022CA  LA    __sleept                  0022C8  LA    
+_cli                      0022B4  LA    _ipc                      00BFE0  EA    
+_master                   00206B  LA    _phi                      0022B7  LA    
+_pli                      0022C0  LA    _reset_exos               0022DF  LA    
+_scrn_hi                  002160  LA    _scrn_lo                  002144  LA    
+_scrn_ptr                 00BB80  EA    _sei                      0022B2  LA    
+_set_mix_a                002354 RLA    _set_mix_b                00234A RLA    
+_set_pp_in                00232D RLA    _set_pp_off               00231A RLA    
+_set_pp_on                002310 RLA    _set_pp_out               002337 RLA    
+_set_ram_off              0022FD  LA    _set_ram_on               0022F3  LA    
+_set_rom_off              0022F3  LA    _set_rom_on               0022FD  LA    
+_set_vsync_off            00237A  LA    _set_vsync_on             002367  LA    
+_slave_1                  0020A0  LA    _slave_2                  0020E1  LA    
+_slave_3                  002141  LA    _start                    002000  LA    
+_stop                     002030  LA    
+
+
+Exports list by value:
+----------------------
+__AUTORUN__               000000  EA    __GRAB__                  000000 REA    
+__MAIN_FILEOFFS__         000000  EA    __ZP_FILEOFFS__           000000  EA    
+__ZP_SIZE__               000040  EA    __ZP_LAST__               000050  LA    
+__ZP_START__              000050  LA    __PROGFLAG__              000080  EA    
+__STACKSIZE__             000800  EA    __MAIN_START__            002000 RLA    
+__START_ADDRESS__         002000  EA    _start                    002000  LA    
+_stop                     002030  LA    _master                   00206B  LA    
+_slave_1                  0020A0  LA    _slave_2                  0020E1  LA    
+_slave_3                  002141  LA    _scrn_lo                  002144  LA    
+_scrn_hi                  002160  LA    __pp_cmd_ptr              00217C  LA    
+__pp_defprogress          002186  LA    __pp_setprogress          00218A  LA    
+__pp_receive              002197  LA    _sei                      0022B2  LA    
+_cli                      0022B4  LA    _phi                      0022B7  LA    
+_pli                      0022C0  LA    __sleept                  0022C8  LA    
+__sleep                   0022CA  LA    _reset_exos               0022DF  LA    
+_set_ram_on               0022F3  LA    _set_rom_off              0022F3  LA    
+_set_ram_off              0022FD  LA    _set_rom_on               0022FD  LA    
+_set_pp_on                002310 RLA    _set_pp_off               00231A RLA    
+_set_pp_in                00232D RLA    _set_pp_out               002337 RLA    
+_set_mix_b                00234A RLA    _set_mix_a                002354 RLA    
+_set_vsync_on             002367  LA    _set_vsync_off            00237A  LA    
+__MAIN_LAST__             00238D  LA    __MAIN_SIZE__             007800  EA    
+__RAMEND__                009800 REA    _scrn_ptr                 00BB80  EA    
+_ipc                      00BFE0  EA    
+
+
+Imports list:
+-------------
+__AUTORUN__ ([linker generated]):
+__GRAB__ ([linker generated]):
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosa.cfg(6)
+__MAIN_FILEOFFS__ ([linker generated]):
+__MAIN_LAST__ ([linker generated]):
+__MAIN_SIZE__ ([linker generated]):
+__MAIN_START__ ([linker generated]):
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosa.cfg(10)
+__PROGFLAG__ ([linker generated]):
+__RAMEND__ ([linker generated]):
+    [linker generated]        /root/work/projects/8Bit/devtools/cc65/atmosa.cfg(10)
+__STACKSIZE__ ([linker generated]):
+__START_ADDRESS__ ([linker generated]):
+__ZP_FILEOFFS__ ([linker generated]):
+__ZP_LAST__ ([linker generated]):
+__ZP_SIZE__ ([linker generated]):
+__ZP_START__ ([linker generated]):
+__pp_cmd_ptr (pp.o):
+__pp_defprogress (pp.o):
+__pp_receive (pp.o):
+__pp_setprogress (pp.o):
+__sleep (oricexos.o):
+__sleept (oricexos.o):
+_cli (oricexos.o):
+_ipc (oricexos.o):
+_master (slave.o):
+_phi (oricexos.o):
+_pli (oricexos.o):
+_reset_exos (oricexos.o):
+_scrn_hi (slave.o):
+_scrn_lo (slave.o):
+_scrn_ptr (slave.o):
+_sei (oricexos.o):
+_set_mix_a (oricexos.o):
+    slave.o                   obj/slave/slave.s1(237)
+_set_mix_b (oricexos.o):
+    slave.o                   obj/slave/slave.s1(237)
+_set_pp_in (oricexos.o):
+    pp.o                      obj/slave/pp.s1(189)
+_set_pp_off (oricexos.o):
+    pp.o                      obj/slave/pp.s1(189)
+_set_pp_on (oricexos.o):
+    pp.o                      obj/slave/pp.s1(189)
+_set_pp_out (oricexos.o):
+    pp.o                      obj/slave/pp.s1(189)
+_set_ram_off (oricexos.o):
+_set_ram_on (oricexos.o):
+_set_rom_off (oricexos.o):
+_set_rom_on (oricexos.o):
+_set_vsync_off (oricexos.o):
+_set_vsync_on (oricexos.o):
+_slave_1 (slave.o):
+_slave_2 (slave.o):
+_slave_3 (slave.o):
+_start (slave.o):
+_stop (slave.o):
+

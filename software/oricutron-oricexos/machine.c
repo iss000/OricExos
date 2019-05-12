@@ -1029,6 +1029,8 @@ void preinit_machine( struct machine *oric )
   oric->sticky_mod_keys = SDL_FALSE;
   
   oric->pravdiskautoboot = SDL_TRUE;
+  
+  oric->exos_gammacorrection = SDL_FALSE;
 }
 
 void load_diskroms( struct machine *oric )
@@ -1594,18 +1596,33 @@ static void oricexos_write( struct m6502 *cpu, unsigned short addr, unsigned cha
   if( ( 0x380 <= addr ) && ( addr < 0x390 ) )
   {
     struct machine *oric = (struct machine *)cpu->userdata;
+    SDL_bool oldmix = oric->exos_stat.mix;
+    
     oric->exos_stat.map      = addr & (1<<0) ? SDL_TRUE : SDL_FALSE;
     oric->exos_stat.ppenable = addr & (1<<1) ? SDL_TRUE : SDL_FALSE;
     oric->exos_stat.ppdir    = addr & (1<<2) ? SDL_TRUE : SDL_FALSE;
     oric->exos_stat.mix      = addr & (1<<3) ? SDL_TRUE : SDL_FALSE;
     oric->romdis = oric->exos_stat.map;
     oric->romon = !oric->romdis;
-#if 0
+    
+    if( oldmix != oric->exos_stat.mix )
+    {
+      int y;
+      for( y=0; y<200; y++ )
+      {
+        oric->vid_dirty[y] = 
+        oric->exos[1]->vid_dirty[y] = 
+        oric->exos[2]->vid_dirty[y] = 
+        oric->exos[3]->vid_dirty[y] = SDL_TRUE;
+      }
+    }
+    
+#if 1
     printf("OricExos #%d write: %.4x %s %s %s %s\n", oric->exos_id, addr,
            oric->exos_stat.map ? "ram":"rom",
            oric->exos_stat.ppenable ? "ppon ":"ppoff",
            oric->exos_stat.ppdir ? "ppin ":"ppout",
-           oric->exos_stat.mix ? "mixa":"mixb");
+           oric->exos_stat.mix ? "mixb":"mixa");
 #endif
   }
   else

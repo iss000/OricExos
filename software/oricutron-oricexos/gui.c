@@ -93,6 +93,7 @@ extern Uint32 cyclespersample;
 #define GIMG_W_DISK 18
 #define GIMG_W_TAPE 20
 #define GIMG_W_AVIR 16
+#define GIMG_W_LED  16
 
 // Images used in the GUI
 struct guiimg gimgs[NUM_GIMG]  = { { IMAGEPREFIX"statusbar.bmp",              640, 16, NULL },
@@ -107,6 +108,8 @@ struct guiimg gimgs[NUM_GIMG]  = { { IMAGEPREFIX"statusbar.bmp",              64
                                    { IMAGEPREFIX"tape_stop.bmp",      GIMG_W_TAPE, 16, NULL },
                                    { IMAGEPREFIX"tape_record.bmp",    GIMG_W_TAPE, 16, NULL },
                                    { IMAGEPREFIX"avirec.bmp",         GIMG_W_AVIR, 16, NULL },
+                                   { IMAGEPREFIX"led-black.bmp",      GIMG_W_LED,  16, NULL },
+                                   { IMAGEPREFIX"led-yellow.bmp",     GIMG_W_LED,  16, NULL },
                                    { IMAGEPREFIX"gfx_oric1kbd.bmp",   640, 240, NULL },
                                    { IMAGEPREFIX"gfx_atmoskbd.bmp",   640, 240, NULL },
                                    { IMAGEPREFIX"gfx_pravetzkbd.bmp", 640, 240, NULL }};
@@ -123,7 +126,8 @@ extern SDL_bool microdiscrom_valid, jasminrom_valid, pravetzrom_valid;
 #define GIMG_POS_SBARY   (480-16)
 #define GIMG_POS_TAPEX   (640-4-GIMG_W_TAPE)
 #define GIMG_POS_DISKX   (GIMG_POS_TAPEX-(6+(GIMG_W_DISK*4)))
-#define GIMG_POS_AVIRECX (GIMG_POS_DISKX-(6+GIMG_W_AVIR))
+#define GIMG_POS_LEDX    (GIMG_POS_DISKX-(6+GIMG_W_LED*4))
+#define GIMG_POS_AVIRECX (GIMG_POS_LEDX-(6+GIMG_W_AVIR))
 
 // Text zone (and other gui area) colours R, G, B
 unsigned char sgpal[] = { 0x00, 0x00, 0x00,     // 0 = black
@@ -481,6 +485,16 @@ void draw_disks( struct machine *oric )
   if( oric->statusbar_mode == STATUSBARMODE_NONE )
     return;
 
+  // Overlay the led icons onto the status bar
+  if( oric->exos_id == 0 )
+  {
+    for( i=0; i<4; i++ )
+    {
+      j = (oric->exos[i]->romon) ? GIMG_LED_OFF : GIMG_LED_ON;
+      oric->render_gimg( j, GIMG_POS_LEDX+i*GIMG_W_LED, GIMG_POS_SBARY );
+    }
+  }
+  
   if( oric->drivetype == DRV_NONE )
   {
     oric->render_gimgpart( GIMG_STATUSBAR, GIMG_POS_DISKX, GIMG_POS_SBARY, GIMG_POS_DISKX, 0, 18*4, 16 );

@@ -15,7 +15,7 @@ static int rc;
 void main(void)
 {
   reset_exos();
-  sleep(32767);
+  sleep(0x7fff);
   
   paper(0);
   ink(7);

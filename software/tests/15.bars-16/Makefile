@@ -20,9 +20,9 @@ PROJECT_QUITDOS		:= 0
 
 START_ADDRESS           := $(shell echo $$((0x0600)))
 
-ATAPS			:= slave
+ATAPS			:= 
 BTAPS			:= 
-CTAPS			:= $(PROJECT)
+CTAPS			:= $(PROJECT) slave
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
 

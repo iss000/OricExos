@@ -13,8 +13,8 @@ DEMOS := \
 	11.graytime \
 	12.bars \
 	13.morebars \
-	14.tesseract
-
+	14.tesseract \
+	15.bars-16
 # 
 all: remove-bin
 	@for i in $(DEMOS); do (make -C $$i all && make -C $$i clean) || exit 1; done

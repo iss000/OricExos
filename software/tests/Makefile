@@ -19,12 +19,13 @@ DEMOS := \
 	17.bigfoot \
 	18.mystic
 # 
-all: remove-bin
+.PHONY: all clean remove-bin
+
+all: clean
 	@for i in $(DEMOS); do (make -C $$i all && make -C $$i clean) || exit 1; done
 
 clean: remove-bin
 	@for i in $(DEMOS); do make -C $$i clean; done
 
-.PHONY: remove-bin
 remove-bin:
 	@rm -f *.tap *.dsk *.hfe

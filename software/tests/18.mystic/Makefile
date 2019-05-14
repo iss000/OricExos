@@ -1,6 +1,6 @@
 # # #
-DEMO_NUMBER             := 17
-DEMO_NAME               := bigfoot
+DEMO_NUMBER             := 18
+DEMO_NAME               := mystic
 
 # # #
 PROJECT                 := master

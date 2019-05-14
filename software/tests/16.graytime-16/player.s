@@ -96,6 +96,7 @@ skip
 _player
 ;--------------------------
         ; show time
+        jsr   _set_mix_b
         jsr   _set_vsync_on
         
         ; is this master

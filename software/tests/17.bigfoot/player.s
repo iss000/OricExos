@@ -96,6 +96,7 @@ skip
 _player
 ;--------------------------
         ; show time
+        jsr   _set_mix_b
         jsr   _set_vsync_on
         
         ; is this master
@@ -154,9 +155,9 @@ wvlp_1
         rts
 
 ;--------------------------
-framew  =     (150/6)
-frameh  =     (120)
-frames  =     (11)
+framew  =     (96/6)
+frameh  =     (64)
+frames  =     (25)
 frameo  =     (0)
 
 _tab_frames_lo = MOVIE_ADDRESS+(framew*frameh*frames)

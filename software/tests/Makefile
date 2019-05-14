@@ -14,7 +14,9 @@ DEMOS := \
 	12.bars \
 	13.morebars \
 	14.tesseract \
-	15.bars-16
+	15.bars-16 \
+	16.graytime-16 \
+	17.bigfoot
 # 
 all: remove-bin
 	@for i in $(DEMOS); do (make -C $$i all && make -C $$i clean) || exit 1; done

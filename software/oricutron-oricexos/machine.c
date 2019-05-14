@@ -1617,13 +1617,13 @@ static void oricexos_write( struct m6502 *cpu, unsigned short addr, unsigned cha
       }
     }
     
-#if 1
+    #ifdef DEBUG_EXOS
     printf("OricExos #%d write: %.4x %s %s %s %s\n", oric->exos_id, addr,
            oric->exos_stat.map ? "ram":"rom",
            oric->exos_stat.ppenable ? "ppon ":"ppoff",
            oric->exos_stat.ppdir ? "ppin ":"ppout",
            oric->exos_stat.mix ? "mixb":"mixa");
-#endif
+    #endif
   }
   else
   {

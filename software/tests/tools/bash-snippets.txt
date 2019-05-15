@@ -1,11 +1,20 @@
-#!/bin/sh
-convert IzNS.gif \
+# = 8< ==========================
+# useful comamnd line snippets
+
+# = 8< ==========================
+# create series of bmp from animated gif
+convert input.gif \
   -crop 186x186+32+32 -resize 96x96 +repage +grayscale \
   -type truecolor 'bmp3:cc%05d.bmp'
-  
+
+# = 8< ==========================
+# display number of bmp files in current dir
+# and the number of the unique bmps
 ls *.bmp| wc -l
 crc32 *.bmp| cut -f1| sort -u | wc -l
 
+# = 8< ==========================
+# remove bmp duplicates
 gawk '
   {
     cmd="md5sum " q FILENAME q
@@ -19,10 +28,3 @@ gawk '
     }
     nextfile
   }' q='"' *
-
-ls *.bmp| wc -l
-crc32 *.bmp| cut -f1| sort -u | wc -l
-
-
-# rm -rf res && mkdir -p res
-# mv -f `cat frames.txt` res/

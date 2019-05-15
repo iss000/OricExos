@@ -146,7 +146,7 @@ pplink_LFLAGS		:=
 splayer_LFLAGS		:=
 mplayer_LFLAGS		:=
 
-TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap tools/bmpslicer res/out res-1/out
+TEMP_FILES 		+= *.HFE *.hfe $(PROJECT).tap bmpslicer res/out res-1/out
 
 prepare: resources
 	@echo "Building..."
@@ -164,47 +164,47 @@ finalize: hxc
 	@echo "Done"
 
 # 
-.PHONY: tools/bmpslicer resources gom gos1 gos2 gos3 goplink 
+.PHONY: bmpslicer resources gom gos1 gos2 gos3 goplink 
 
-resources: tools/bmpslicer
+resources: bmpslicer
 	@rm -rf res/out/* res-1/out/*
 	@mkdir -p res/out/{0,1,2,3} res-1/out/{0,1,2,3}
 	@for i in res/*.bmp; do \
 		label=`echo $$(basename $$i)|sed -e 's/.bmp//g'` && \
 		convert $$i -crop 150x120+40+30 +repage +dither -posterize 6 -type truecolor bmp3:res/out/$$(basename $$i) && \
 		\
-		tools/bmpslicer res/out/$$(basename $$i) res/out/0/$$(basename $$i) 0 && \
+		./bmpslicer res/out/$$(basename $$i) res/out/0/$$(basename $$i) 0 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic0$$label res/out/0/$$(basename $$i) res/out/0/$$(basename $$i).s && \
 		\
-		tools/bmpslicer res/out/$$(basename $$i) res/out/1/$$(basename $$i) 1 && \
+		./bmpslicer res/out/$$(basename $$i) res/out/1/$$(basename $$i) 1 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic1$$label  res/out/1/$$(basename $$i) res/out/1/$$(basename $$i).s && \
 		\
-		tools/bmpslicer res/out/$$(basename $$i) res/out/2/$$(basename $$i) 2 && \
+		./bmpslicer res/out/$$(basename $$i) res/out/2/$$(basename $$i) 2 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic2$$label  res/out/2/$$(basename $$i) res/out/2/$$(basename $$i).s && \
 		\
-		tools/bmpslicer res/out/$$(basename $$i) res/out/3/$$(basename $$i) 3 && \
+		./bmpslicer res/out/$$(basename $$i) res/out/3/$$(basename $$i) 3 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic3$$label  res/out/3/$$(basename $$i) res/out/3/$$(basename $$i).s ; \
 	done
 	@for i in res-1/*.bmp; do \
 		label=`echo $$(basename $$i)|sed -e 's/.bmp//g'` && \
 		convert $$i -crop 150x120+40+30 +repage +dither -posterize 6 -type truecolor bmp3:res-1/out/$$(basename $$i) && \
 		\
-		tools/bmpslicer res-1/out/$$(basename $$i) res-1/out/0/$$(basename $$i) 0 && \
+		./bmpslicer res-1/out/$$(basename $$i) res-1/out/0/$$(basename $$i) 0 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic0$$label res-1/out/0/$$(basename $$i) res-1/out/0/$$(basename $$i).s && \
 		\
-		tools/bmpslicer res-1/out/$$(basename $$i) res-1/out/1/$$(basename $$i) 1 && \
+		./bmpslicer res-1/out/$$(basename $$i) res-1/out/1/$$(basename $$i) 1 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic1$$label  res-1/out/1/$$(basename $$i) res-1/out/1/$$(basename $$i).s && \
 		\
-		tools/bmpslicer res-1/out/$$(basename $$i) res-1/out/2/$$(basename $$i) 2 && \
+		./bmpslicer res-1/out/$$(basename $$i) res-1/out/2/$$(basename $$i) 2 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic2$$label  res-1/out/2/$$(basename $$i) res-1/out/2/$$(basename $$i).s && \
 		\
-		tools/bmpslicer res-1/out/$$(basename $$i) res-1/out/3/$$(basename $$i) 3 && \
+		./bmpslicer res-1/out/$$(basename $$i) res-1/out/3/$$(basename $$i) 3 0 && \
 		$(OSDK)/bin/pictconv -f0 -d0 -o4pic3$$label  res-1/out/3/$$(basename $$i) res-1/out/3/$$(basename $$i).s ; \
 	done
 	@rm -f res/out/{0,1,2,3}/*.bmp res-1/out/{0,1,2,3}/*.bmp
 
-tools/bmpslicer:
-	@gcc -o $@ tools/bmpslicer.c
+bmpslicer: ../tools/bmpslicer.c
+	@gcc -o $@ $<
 
 gopplink: all
 	@oric -ma -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \

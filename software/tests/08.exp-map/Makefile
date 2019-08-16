@@ -33,7 +33,7 @@ $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 $(PROJECT)_ACPP		:= 1
 
-slave_SRC               := oricexos.s slave.s
+slave_SRC               := oricexos.s slave.c
 slave_AUTORUN           := 1
 slave_ADDRESS           := $(shell echo $$((0x2000)))
 slave_ACPP              := 1

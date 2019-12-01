@@ -19,7 +19,7 @@ ORIC_PARAM := --vsynchack on
 exos: all
 	@export ORIC_PARAM='$(EXOS_PARAM)'; exos -r:$(PROJECT_DIR)/$(PROJECT).brk \
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
-	-s $(PROJECT_DIR)/slave.sym master.dsk
+	-s $(PROJECT_DIR)/slave.sym $(PROJECT).dsk
 
 # use telestrat config to run as master
 gom: all

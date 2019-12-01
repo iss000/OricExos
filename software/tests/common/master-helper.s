@@ -2,9 +2,6 @@
 
 .text
 *           =   $0f00
-_sed_begin
-_sed_end    =   _sed_begin+2
-
             sei
             jsr _dosrom
             lda $c052
@@ -23,3 +20,7 @@ _sed_end    =   _sed_begin+2
             jsr _dosrom ; disable OverlayRAM
             cli ; re-enable interrupts
             rts
+            
+_sed_begin  .word 0
+_sed_end    .word 0
+

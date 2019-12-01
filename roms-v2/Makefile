@@ -1,5 +1,5 @@
 # # #
-PROJECT 		:= master
+PROJECT 		:= master-v2
 PROJECT_DIR		:= $(shell pwd)
 
 # # # Only if floppybuilder
@@ -24,12 +24,12 @@ START_ADDRESS		:= $(shell echo $$((0xc000)))
 
 common_SRC 		:=
 
-$(PROJECT)_SRC 		:= $(PROJECT).s
+$(PROJECT)_SRC 		:= master.s
 $(PROJECT)_AUTORUN	:= 0
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 $(PROJECT)_ACPP		:= 1
 
-$(PROJECT)-slave_SRC 	:= $(PROJECT).s
+$(PROJECT)-slave_SRC 	:= master.s
 $(PROJECT)-slave_AUTORUN:= 0
 $(PROJECT)-slave_ADDRESS:= $(START_ADDRESS)
 $(PROJECT)-slave_ACPP	:= 1
@@ -96,9 +96,13 @@ finalize: #hxc
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/2 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x12\x10\x10OricExos  2 \x10\x10\x12\x10/g' > slave-v2-2.rom
 	@cat $(PROJECT)-slave | sed -e 's/. 1983/3 1983/g' -e 's/RGB OricExos 123 BGR/\x10\x10\x14\x10OricExos   3\x10\x14\x10\x10/g' > slave-v2-3.rom
 	@cp -f $(PROJECT).rom $(PROJECT).pch slave-v2-1.rom slave-v2-2.rom slave-v2-3.rom $(EMUDIR)/roms/
-	@cat master.pch > $(EMUDIR)/roms/slave-v2-1.pch 
-	@cat master.pch > $(EMUDIR)/roms/slave-v2-2.pch 
-	@cat master.pch > $(EMUDIR)/roms/slave-v2-3.pch 
+	@cat $(PROJECT).pch > $(EMUDIR)/roms/slave-v2-1.pch 
+	@cat $(PROJECT).pch > $(EMUDIR)/roms/slave-v2-2.pch 
+	@cat $(PROJECT).pch > $(EMUDIR)/roms/slave-v2-3.pch 
+	@cat $(PROJECT).txt > $(EMUDIR)/roms/$(PROJECT).sym
+	@cat $(PROJECT).txt > $(EMUDIR)/roms/slave-v2-1.sym
+	@cat $(PROJECT).txt > $(EMUDIR)/roms/slave-v2-2.sym
+	@cat $(PROJECT).txt > $(EMUDIR)/roms/slave-v2-3.sym
 	@echo "Done"
 
 .PHONY: $(PROJECT).dsk

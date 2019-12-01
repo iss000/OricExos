@@ -69,7 +69,7 @@ OSDK_OPT65		:= 0
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
 CC65_ALIGNED		:= 0
 # 
-TOOLCHAIN		:= CC65
+TOOLCHAIN		:= OSDK
 
 EMU 			:= ./oricutron
 EMUDIR 			:= ${HOME}/work/projects/8Bit/emulators/oricutron-build

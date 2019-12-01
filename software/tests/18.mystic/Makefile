@@ -38,11 +38,11 @@ pplink_ADDRESS          := $(shell echo $$((0x0400)))
 
 splayer_SRC            := splayer.s oricexos.s
 splayer_AUTORUN        := 1
-splayer_ADDRESS        := $(shell echo $$((0x0680)))
+splayer_ADDRESS        := $(shell echo $$((0x0700)))
 
 mplayer_SRC             := mplayer.s oricexos.s
 mplayer_AUTORUN         := 1
-mplayer_ADDRESS         := $(shell echo $$((0x0500)))
+mplayer_ADDRESS         := $(shell echo $$((0x0700)))
 
 # 
 MOVIE_ADDRESS           := $(shell echo $$((0x1680)))
@@ -69,7 +69,7 @@ OSDK_OPT65		:= 0
 CC65			:= ${HOME}/work/projects/8Bit/devtools/cc65
 CC65_ALIGNED		:= 0
 # 
-TOOLCHAIN		:= CC65
+TOOLCHAIN		:= OSDK
 
 EMU 			:= ./oricutron
 EMUDIR 			:= ${HOME}/work/projects/8Bit/emulators/oricutron-build

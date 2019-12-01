@@ -21,6 +21,21 @@ exos: all
 	-s $(PROJECT_DIR)/$(PROJECT).sym \
 	-s $(PROJECT_DIR)/slave.sym $(PROJECT).dsk
 
+exostap: all
+	@export ORIC_PARAM='$(EXOS_PARAM)'; exos -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	-s $(PROJECT_DIR)/$(PROJECT).sym \
+	-s $(PROJECT_DIR)/slave.sym $(DEMO_NAME).tap
+
+exos1: all
+	@export ORIC_PARAM='$(EXOS_PARAM)'; exos -m1 -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	-s $(PROJECT_DIR)/$(PROJECT).sym \
+	-s $(PROJECT_DIR)/slave.sym $(PROJECT).dsk
+
+exos1tap: all
+	@export ORIC_PARAM='$(EXOS_PARAM)'; exos -m1 -kn -r:$(PROJECT_DIR)/$(PROJECT).brk \
+	-s $(PROJECT_DIR)/$(PROJECT).sym \
+	-s $(PROJECT_DIR)/slave.sym $(DEMO_NAME).tap
+
 # use telestrat config to run as master
 gom: all
 	@export ORIC_PARAM='$(ORIC_PARAM)'; oric -mt -km -r:$(PROJECT_DIR)/$(PROJECT).brk \

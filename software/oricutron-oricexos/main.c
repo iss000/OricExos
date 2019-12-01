@@ -413,9 +413,14 @@ static void load_config( struct start_opts *sto, struct machine *oric )
     if( oric->exos_id==1 && read_config_string( &sto->lctmp[i], "atmosrom1",     atmosromfile, 1024 ) ) continue;
     if( oric->exos_id==2 && read_config_string( &sto->lctmp[i], "atmosrom2",     atmosromfile, 1024 ) ) continue;
     if( oric->exos_id==3 && read_config_string( &sto->lctmp[i], "atmosrom3",     atmosromfile, 1024 ) ) continue;
-    
+
+    if( oric->exos_id==0 && read_config_string( &sto->lctmp[i], "oric1rom0",     oric1romfile, 1024 ) ) continue;
+    if( oric->exos_id==1 && read_config_string( &sto->lctmp[i], "oric1rom1",     oric1romfile, 1024 ) ) continue;
+    if( oric->exos_id==2 && read_config_string( &sto->lctmp[i], "oric1rom2",     oric1romfile, 1024 ) ) continue;
+    if( oric->exos_id==3 && read_config_string( &sto->lctmp[i], "oric1rom3",     oric1romfile, 1024 ) ) continue;
+
     if( read_config_bool( &sto->lctmp[i], "gammacorrection", &oric->exos_gammacorrection ) ) continue;
-    
+
     if( read_config_option( &sto->lctmp[i], "machine",      &sto->start_machine, machtypes ) ) continue;
     if( read_config_option( &sto->lctmp[i], "disktype",     &sto->start_disktype, disktypes ) ) continue;
     if( read_config_bool(   &sto->lctmp[i], "debug",        &sto->start_debug ) ) continue;
@@ -1623,16 +1628,17 @@ static void ay_unlockaudios( struct machine *oric )
   ay_unlockaudio(&oric->exos[0]->ay);
 }
 
+static Uint8 exostype = MACH_ATMOS;
+static char* avatmos[] = { "exos", "-ma", "-kn" };
+static char* avoric1[] = { "exos", "-m1", "-kn" };
 static char* av0[] = { "exos", "-ma", "-km" };
-static char* av[] = { "exos", "-ma", "-kn" };
-static int ac = sizeof(av)/sizeof(av[0]);
 
 int main( int argc, char *argv[] )
 {
   static struct machine exos[4];
   SDL_bool isinit;
   char ** avv;
-  int acc;
+  int ac, acc;
 
 #ifdef _MSC_VER
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -1690,10 +1696,6 @@ int main( int argc, char *argv[] )
   exos[0].exos[1] = &exos[1];
   exos[0].exos[0] = &exos[0];
 
-  isinit &= init( &exos[3], ac, av );
-  isinit &= init( &exos[2], ac, av );
-  isinit &= init( &exos[1], ac, av );
-  
   for( avv = (char**)NULL, ac = 0; ac<(sizeof(av0)/sizeof(av0[0])); ac++ )
   {
     avv = (char**)realloc(avv, sizeof(char*)*(ac+1));
@@ -1704,10 +1706,27 @@ int main( int argc, char *argv[] )
   {
     avv = (char**)realloc(avv, sizeof(char*)*(ac+1));
     avv[ac] = strdup(argv[acc]);
+    if( !strcmp(argv[acc], "-m1") ) exostype = MACH_ORIC1;
+    if( !strcmp(argv[acc], "-ma") ) exostype = MACH_ATMOS;
+  }
+  
+  if( exostype == MACH_ATMOS )
+  {
+    acc = sizeof(avatmos)/sizeof(avatmos[0]);
+    isinit &= init( &exos[3], acc, avatmos );
+    isinit &= init( &exos[2], acc, avatmos );
+    isinit &= init( &exos[1], acc, avatmos );
+  }
+  else
+  {
+    acc = sizeof(avoric1)/sizeof(avoric1[0]);
+    isinit &= init( &exos[3], acc, avoric1 );
+    isinit &= init( &exos[2], acc, avoric1 );
+    isinit &= init( &exos[1], acc, avoric1 );
   }
   
   isinit &= init( &exos[0], ac, avv );
-  
+
   while(ac-->0) free(avv[ac]);
   free(avv);
 

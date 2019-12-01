@@ -96,8 +96,8 @@ finalize: hxc
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@cat master-tape.tap slave.tap > $(DEMO_NAME).tap
 	@cp -f $(DEMO_NAME).tap ../$(DEMO_NUMBER).$(DEMO_NAME).tap
-	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
-	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
+# 	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
+# 	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
 	@echo "Done"
 
 

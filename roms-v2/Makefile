@@ -1,5 +1,5 @@
 # # #
-PROJECT 		:= master-v2
+PROJECT 		:= master
 PROJECT_DIR		:= $(shell pwd)
 
 # # # Only if floppybuilder

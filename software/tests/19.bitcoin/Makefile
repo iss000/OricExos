@@ -16,11 +16,11 @@ PROJECT_DIR		:= $(shell pwd)
 PROJECT_AUTORUN		:= 1
 
 # # # Leave DOS
-PROJECT_QUITDOS		:= 0
+PROJECT_QUITDOS		:= 1
 
-START_ADDRESS           := $(shell echo $$((0x0600)))
+START_ADDRESS           := $(shell echo $$((0x0800)))
 
-ATAPS			:= 
+ATAPS			:= pplink
 BTAPS			:= 
 CTAPS			:= $(PROJECT) slave
 OTHER			:= hash
@@ -34,14 +34,18 @@ $(PROJECT)_AUTORUN	:= 1
 $(PROJECT)_ADDRESS	:= $(START_ADDRESS)
 $(PROJECT)_ACPP		:= 1
 
-slave_SRC               := oricexos.s slave.c
+pplink_SRC              := pplink.s pp.s oricexos.s
+pplink_AUTORUN          := 1
+pplink_ADDRESS          := $(shell echo $$((0x0500)))
+
+slave_SRC               := compat.s oricexos.s slave.c 
 slave_AUTORUN           := 1
 slave_ADDRESS           := $(shell echo $$((0x2000)))
 slave_ACPP              := 1
 
 hash_SRC                := hash.m32
 hash_AUTORUN            := 0
-hash_ADDRESS            := $(shell echo $$((0x4000)))
+hash_ADDRESS            := $(shell echo $$((0x5000)))
 hash_ACPP               := 0
 
 
@@ -81,19 +85,26 @@ include $($(TOOLCHAIN))/atmos.make
 
 AFLAGS			+= $(addprefix -I,$(VPATH))
 AFLAGS			+= -DASSEMBLER
+AFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)
 AFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 AFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
+AFLAGS			+= -DHASH_ADDRESS=$(hash_ADDRESS)
 AFLAGS			+= -DUSE_TEXT
 
-$(PROJECT)_AFLAGS 	:= -DPP_MASTER
-slave_AFLAGS 		:= -DPP_SLAVE
+$(PROJECT)_AFLAGS 	:= -DMASTER -DPP_MASTER
+slave_AFLAGS 		:= -DSLAVE -DPP_SLAVE
+pplink_AFLAGS		:= -DSLAVE -DPP_SLAVE
 
 CFLAGS			+= $(addprefix -I,$(VPATH))
+CFLAGS			+= -DPPLINK_ADDRESS=$(pplink_ADDRESS)
 CFLAGS			+= -DSTART_ADDRESS=$(START_ADDRESS)
 CFLAGS			+= -DSLAVE_ADDRESS=$(slave_ADDRESS)
+CFLAGS			+= -DHASH_ADDRESS=$(hash_ADDRESS)
+CFLAGS			+= -DUSE_TEXT
 
-$(PROJECT)_CFLAGS 	:= -DPP_MASTER
-slave_CFLAGS 		:= -DPP_SLAVE
+$(PROJECT)_CFLAGS 	:= -DMASTER -DPP_MASTER
+slave_CFLAGS 		:= -DSLAVE -DPP_SLAVE
+pplink_CFLAGS		:= -DSLAVE -DPP_SLAVE
 
 LFLAGS			+=
 $(PROJECT)_LFLAGS 	:=
@@ -108,6 +119,7 @@ finalize: hxc
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
 	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
 	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
+	@printf "[MEM]   pplink: #%.4X .. #%.4X\\n" $$(($(pplink_ADDRESS))) $$(expr `cat pplink | wc -c` + $$(($(pplink_ADDRESS))))
 	@printf "[MEM]   master: #%.4X .. #%.4X\\n" $$(($(master_ADDRESS))) $$(expr `cat master | wc -c` + $$(($(master_ADDRESS))))
 	@printf "[MEM]   slave : #%.4X .. #%.4X\\n" $$(($(slave_ADDRESS))) $$(expr `cat slave | wc -c` + $$(($(slave_ADDRESS))))
 	@printf "[MEM]   hash  : #%.4X .. #%.4X\\n" $$(($(hash_ADDRESS))) $$(expr `cat hash | wc -c` + $$(($(hash_ADDRESS))))
@@ -125,10 +137,11 @@ SLAVE_TAP=slave.tap
 include ../../emulator.rules
 
 MERLIN32_TEMP := _FileInformation.txt *_Output.txt
+# MERLIN32_SILENT := $(SILENT)
 
 %.tap: %.m32
 	@echo -n "[M32]   $< -> $(shell echo $<|sed -e 's/\.m32//g')"
-	@$(MERLIN32) $< $(SILENT) && echo
+	@$(MERLIN32) $< $(MERLIN32_SILENT) && echo
 	@mv -f $(shell echo $<|tr [a-z] [A-Z]|sed -e 's/\.M32//g') $(shell echo $<|sed -e 's/\.m32//g')
 	@rm -f $(MERLIN32_TEMP)
 	@echo -n "[HDR]   $< -> $@ : "

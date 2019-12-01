@@ -93,77 +93,79 @@ TEMP1               EQU $8C             ; temp storage for various operations
 
 HASHCACHED          EQU $D0             ; is the first pass already done, and the result cached in CACHEDHASH?
 
+IPC_ID              EQU $BFE0
+
 **************************************************
 * Apple Standard Memory Locations
 **************************************************
-CLRLORES    EQU $F832
-LORES       EQU $C050
-TXTSET      EQU $C051
-MIXCLR      EQU $C052
-MIXSET      EQU $C053
-TXTPAGE1    EQU $C054
-TXTPAGE2    EQU $C055
-KEY         EQU $C000
-C80STOREOFF EQU $C000
-C80STOREON  EQU $C001
-STROBE      EQU $C010
-SPEAKER     EQU $C030
-VBL         EQU $C02E
-RDVBLBAR    EQU $C019       ; not VBL (VBL signal low
-WAIT        EQU $FCA8 
-RAMWRTAUX   EQU $C005
-RAMWRTMAIN  EQU $C004
-SETAN3      EQU $C05E       ; Set annunciator-3 output to 0
-SET80VID    EQU $C00D       ; enable 80-column display mode (WR-only)
-HOME        EQU $FC58       ; clear the text screen
-VTAB        EQU $FC22       ; Sets the cursor vertical position (from CV)
-COUT        EQU $FDED       ; Calls the output routine whose address is stored in CSW,
-;COUTI      EQU $fbf0                               ;  normally COUTI
-CROUT       EQU $FD8E           ; prints CR
-
-STROUT      EQU $DB3A           ;Y=String ptr high, A=String ptr low
-PRBYTE      EQU $FDDA           ; print hex byte in A
-
-ALTTEXT     EQU $C055
-ALTTEXTOFF  EQU $C054
-
-
-PB0         EQU $C061       ; paddle 0 button. high bit set when pressed.
-PDL0        EQU $C064       ; paddle 0 value, or should I use PREAD?
-PREAD       EQU $FB1E
-
-ROMINIT     EQU $FB2F
-ROMSETKBD   EQU $FE89
-ROMSETVID   EQU $FE93
-
-ALTCHAR     EQU $C00F       ; enables alternative character set - mousetext
-
-CH          EQU $24         ; cursor Horiz
-CV          EQU $25         ; cursor Vert
-
-WNDWDTH     EQU $21         ; Width of text window
-WNDTOP      EQU $22         ; Top of text window
+; CLRLORES    EQU $F832
+; LORES       EQU $C050
+; TXTSET      EQU $C051
+; MIXCLR      EQU $C052
+; MIXSET      EQU $C053
+; TXTPAGE1    EQU $C054
+; TXTPAGE2    EQU $C055
+; KEY         EQU $C000
+; C80STOREOFF EQU $C000
+; C80STOREON  EQU $C001
+; STROBE      EQU $C010
+; SPEAKER     EQU $C030
+; VBL         EQU $C02E
+; RDVBLBAR    EQU $C019       ; not VBL (VBL signal low
+; WAIT        EQU $FCA8 
+; RAMWRTAUX   EQU $C005
+; RAMWRTMAIN  EQU $C004
+; SETAN3      EQU $C05E       ; Set annunciator-3 output to 0
+; SET80VID    EQU $C00D       ; enable 80-column display mode (WR-only)
+; HOME        EQU $FC58       ; clear the text screen
+; VTAB        EQU $FC22       ; Sets the cursor vertical position (from CV)
+; COUT        EQU $FDED       ; Calls the output routine whose address is stored in CSW,
+; ;COUTI      EQU $fbf0                               ;  normally COUTI
+; CROUT       EQU $FD8E           ; prints CR
+; 
+; STROUT      EQU $DB3A           ;Y=String ptr high, A=String ptr low
+; PRBYTE      EQU $FDDA           ; print hex byte in A
+; 
+; ALTTEXT     EQU $C055
+; ALTTEXTOFF  EQU $C054
+; 
+; 
+; PB0         EQU $C061       ; paddle 0 button. high bit set when pressed.
+; PDL0        EQU $C064       ; paddle 0 value, or should I use PREAD?
+; PREAD       EQU $FB1E
+; 
+; ROMINIT     EQU $FB2F
+; ROMSETKBD   EQU $FE89
+; ROMSETVID   EQU $FE93
+; 
+; ALTCHAR     EQU $C00F       ; enables alternative character set - mousetext
+; 
+; CH          EQU $24         ; cursor Horiz
+; CV          EQU $25         ; cursor Vert
+; 
+; WNDWDTH     EQU $21         ; Width of text window
+; WNDTOP      EQU $22         ; Top of text window
 
 **************************************************
 * START - sets up various fiddly zero page bits
 **************************************************
 
-                ORG $2000                       ; PROGRAM DATA STARTS AT $2000
+                ORG $5000                       ; PROGRAM DATA STARTS AT $2000
 
-                JSR HOME                        ; clear screen
+;                 JSR HOME                        ; clear screen
 
-                STA $C050                       ; rw:TXTCLR ; Set Lo-res page 1, mixed graphics + text
-                STA $C053                       ; rw:MIXSET
-                STA $C054                       ; rw:TXTPAGE1
-                STA $C056                       ; rw:LORES
+;                 STA $C050                       ; rw:TXTCLR ; Set Lo-res page 1, mixed graphics + text
+;                 STA $C053                       ; rw:MIXSET
+;                 STA $C054                       ; rw:TXTPAGE1
+;                 STA $C056                       ; rw:LORES
 
-                JSR FILLSCREENFAST              ; blanks screen to black.
-                JSR SPLASHSCREEN                ; fancy lo-res graphics
+;                 JSR FILLSCREENFAST              ; blanks screen to black.
+;                 JSR SPLASHSCREEN                ; fancy lo-res graphics
 
                 LDA #$00
                 STA HASHCACHED                  ; clear cache status
 
-                JSR FLIPCOIN
+;                 JSR FLIPCOIN
 
 **************************************************
 *   SETUP
@@ -300,7 +302,7 @@ COPYCHUNK1      LDA MESSAGE + ]chunkbyte
 EXTENDWORDS
                 LDX #60                             ; 15*4
 
-EXTEND              TXA
+EXTEND          TXA
                 CLC
                 ADC #$04                            ; increment A = 16
                 ;;CMP #$40                          ; compare to 64*4
@@ -429,7 +431,7 @@ COMPRESSION
 *       for i from 0 to 63
 
                 LDA #$00
-COMPRESS            TAX
+COMPRESS        TAX
                     
 *           S1 := (e rightrotate 6) xor (e rightrotate 11) xor (e rightrotate 25)
 
@@ -710,10 +712,12 @@ COPYHASH
                 JMP INITIALIZEHASH              ; re-initializes the original sqrt hash values for pass 2                   
 
 DIGEST                                          ; done the thing. 
-
-                LDA #$06                        ;   set the memory location for line $14.
+                LDA IPC_ID
+                AND #$03
+                TAY
+                LDA LINETABHI,Y
                 STA $29                         ;   
-                LDA #$50                        ;   
+                LDA LINETABLO,Y
                 STA $28                         ;   
                 LDY #$00                ; 0
                 
@@ -729,16 +733,23 @@ PRNONCE
 
 
 
-                INC $29                             ; 0650 -> 0750
+;                 INC $29                             ; 0650 -> 0750
+                clc
+                lda #40
+                adc $28
+                sta $28
+                lda #0
+                adc $29
+                sta $29
 
 
 PRDIGEST        
                 LDX H00             
                 BNE PRBYTE1
                 ; if zero, spin the coin
-                JSR FLIPCOIN
+;                 JSR FLIPCOIN
                 LDX H00             
-PRBYTE1             LDY #$00                ; 0
+PRBYTE1         LDY #$00                ; 0
                 PRHEX                           
                                                 
 
@@ -753,8 +764,17 @@ PRBYTE1             LDY #$00                ; 0
                 --^
 
 
-NEXTLINE            LDA #$D0
-                STA $28             ; $0750 to $07D0
+NEXTLINE        
+;                 LDA #$D0
+;                 STA $28             ; $0750 to $07D0
+                clc
+                lda #40
+                adc $28
+                sta $28
+                lda #0
+                adc $29
+                sta $29
+
                 LDY #$00                ; 0
 
 ]hashbyte       =   20              
@@ -1969,102 +1989,102 @@ PRHEX   MAC         ; replaces PRBYTE routine. still uses COUT. You're next, COU
 **************************************************
 *   subroutines
 **************************************************
-ROTATE1             LDA ROTATE1LO       ; Setup pointers to move memory
-                    STA $3C             ; $3C and $3D for source start
-                    LDA ROTATE1HI
-                    STA $3D
-    
-                    LDA ROTATE1LO
-                    STA $3E             ; $3E and $3F for source end
-                    LDA ROTATE1HI
-                    CLC 
-                    ADC #$04            ; add $400 to start == end of graphic
-                    STA $3F             ; 
-                    JMP MOVEIMAGE
+; ROTATE1             LDA ROTATE1LO       ; Setup pointers to move memory
+;                     STA $3C             ; $3C and $3D for source start
+;                     LDA ROTATE1HI
+;                     STA $3D
+;     
+;                     LDA ROTATE1LO
+;                     STA $3E             ; $3E and $3F for source end
+;                     LDA ROTATE1HI
+;                     CLC 
+;                     ADC #$04            ; add $400 to start == end of graphic
+;                     STA $3F             ; 
+;                     JMP MOVEIMAGE
+; 
+; ROTATE2             LDA ROTATE2LO       ; Setup pointers to move memory
+;                     STA $3C             ; $3C and $3D for source start
+;                     LDA ROTATE2HI
+;                     STA $3D
+;     
+;                     LDA ROTATE2LO
+;                     STA $3E             ; $3E and $3F for source end
+;                     LDA ROTATE2HI
+;                     CLC 
+;                     ADC #$04            ; add $400 to start == end of graphic
+;                     STA $3F             ; 
+;                     JMP MOVEIMAGE
 
-ROTATE2             LDA ROTATE2LO       ; Setup pointers to move memory
-                    STA $3C             ; $3C and $3D for source start
-                    LDA ROTATE2HI
-                    STA $3D
-    
-                    LDA ROTATE2LO
-                    STA $3E             ; $3E and $3F for source end
-                    LDA ROTATE2HI
-                    CLC 
-                    ADC #$04            ; add $400 to start == end of graphic
-                    STA $3F             ; 
-                    JMP MOVEIMAGE
-
-FLIPCOIN            JSR ROTATE1
-                    LDA #$30
-                    JSR WAIT
-                    JSR ROTATE2
-                    LDA #$30
-                    JSR WAIT
-                    ;;JSR SPLASHSCREEN              ; fancy lo-res graphics
-                    ;;RTS ;fall through
-;/FLIPCOIN                  
-
-
+; FLIPCOIN            JSR ROTATE1
+;                     LDA #$30
+;                     JSR WAIT
+;                     JSR ROTATE2
+;                     LDA #$30
+;                     JSR WAIT
+;                     ;;JSR SPLASHSCREEN              ; fancy lo-res graphics
+;                     ;;RTS ;fall through
+; ;/FLIPCOIN                  
 
 
-SPLASHSCREEN        LDA SPLASHLO        ; Setup pointers to move memory
-                    STA $3C             ; $3C and $3D for source start
-                    LDA SPLASHHI
-                    STA $3D
-    
-                    LDA SPLASHLO
-                    STA $3E             ; $3E and $3F for source end
-                    LDA SPLASHHI
-                    CLC 
-                    ADC #$04            ; add $400 to start == end of graphic
-                    STA $3F             ; 
 
-MOVEIMAGE           LDA #$00            ; move graphic data to $8000
-                    STA $42             ; $42 and $43 for destination
-                    LDA #$80
-                    STA $43
-                    LDA #$00            ; Clear ACC, X,Y for smooth operation
-                    TAX 
-                    TAY 
-                    JSR $FE2C           ; F8ROM:MOVE    ; Do the memory move
-                        
 
-                                        ; display the data from $8000 at $400                   
-RESETVPTR           LDA #$00            ; Move titlepage from $8000 to $400 (screen)
-                    STA $FE             ; pointer for where we are at vertically on screen
-                    TAY                 ; Y-Reg used for indexing across (horiz) screen
-
-VERTICALPTR         LDA $FE             ; pointer for where we are at vertically on screen
-                    JSR $F847           ; F8ROM:GBASCALC
-    
-                    LDA $26
-                    STA $FA             ; $FA is our offset GBASL Byte (Source data titlepage)
-        
-                    LDA $27             ; Add 04 w/ Carry to get to $8000 where graphic data is
-                    ADC #$7C    
-                    STA $FB             ; $FB is our offset GBASH Byte (Source data titlepage)
-                            
-                    LDY #$07
-GRABSTORAGE         LDA ($FA),Y         ; Grab from storage
-                    STA ($26),Y         ; Put to screen
-                    INY     
-                    CPY #$21            ; #$28 past the width of screen?
-                    BNE GRABSTORAGE     ; No?  Back for another round
-
-                    LDA #$00
-                    TAX 
-                    TAY 
-    
-                        
-                    INC $FE             ; Next line down vertically
-                    LDA #$00
-                    TAX 
-                    TAY 
-                    LDA $FE
-                    CMP #$14            ; #$18 bottom of screen?
-                    BNE VERTICALPTR     ; No? Go back and do next line down
-                    
+; SPLASHSCREEN        LDA SPLASHLO        ; Setup pointers to move memory
+;                     STA $3C             ; $3C and $3D for source start
+;                     LDA SPLASHHI
+;                     STA $3D
+;     
+;                     LDA SPLASHLO
+;                     STA $3E             ; $3E and $3F for source end
+;                     LDA SPLASHHI
+;                     CLC 
+;                     ADC #$04            ; add $400 to start == end of graphic
+;                     STA $3F             ; 
+; 
+; MOVEIMAGE           LDA #$00            ; move graphic data to $8000
+;                     STA $42             ; $42 and $43 for destination
+;                     LDA #$80
+;                     STA $43
+;                     LDA #$00            ; Clear ACC, X,Y for smooth operation
+;                     TAX 
+;                     TAY 
+;                     JSR $FE2C           ; F8ROM:MOVE    ; Do the memory move
+;                         
+; 
+;                                         ; display the data from $8000 at $400                   
+; RESETVPTR           LDA #$00            ; Move titlepage from $8000 to $400 (screen)
+;                     STA $FE             ; pointer for where we are at vertically on screen
+;                     TAY                 ; Y-Reg used for indexing across (horiz) screen
+; 
+; VERTICALPTR         LDA $FE             ; pointer for where we are at vertically on screen
+;                     JSR $F847           ; F8ROM:GBASCALC
+;     
+;                     LDA $26
+;                     STA $FA             ; $FA is our offset GBASL Byte (Source data titlepage)
+;         
+;                     LDA $27             ; Add 04 w/ Carry to get to $8000 where graphic data is
+;                     ADC #$7C    
+;                     STA $FB             ; $FB is our offset GBASH Byte (Source data titlepage)
+;                             
+;                     LDY #$07
+; GRABSTORAGE         LDA ($FA),Y         ; Grab from storage
+;                     STA ($26),Y         ; Put to screen
+;                     INY     
+;                     CPY #$21            ; #$28 past the width of screen?
+;                     BNE GRABSTORAGE     ; No?  Back for another round
+; 
+;                     LDA #$00
+;                     TAX 
+;                     TAY 
+;     
+;                         
+;                     INC $FE             ; Next line down vertically
+;                     LDA #$00
+;                     TAX 
+;                     TAY 
+;                     LDA $FE
+;                     CMP #$14            ; #$18 bottom of screen?
+;                     BNE VERTICALPTR     ; No? Go back and do next line down
+;                     
                     RTS                 ; We now return you to your regular programming
 
 ;/SPLASHSCREEN
@@ -2072,26 +2092,26 @@ GRABSTORAGE         LDA ($FA),Y         ; Grab from storage
 
 
 
-FILLSCREENFAST      LDA #$00 
-                    LDY #$78 
-
-FILL1               DEY
-                    STA $400, Y
-                    STA $480, Y
-                    STA $500, Y
-                    STA $580, Y
-                    BNE FILL1
-
-                    LDY #$50            ; #$78 for all 24 lines.
-
-FILL2               DEY
-                STA $600, Y
-                STA $680, Y
-                STA $700, Y
-                STA $780, Y
-                BNE FILL2
-
-                    RTS      
+; FILLSCREENFAST      LDA #$00 
+;                     LDY #$78 
+; 
+; FILL1               DEY
+;                     STA $400, Y
+;                     STA $480, Y
+;                     STA $500, Y
+;                     STA $580, Y
+;                     BNE FILL1
+; 
+;                     LDY #$50            ; #$78 for all 24 lines.
+; 
+; FILL2               DEY
+;                 STA $600, Y
+;                 STA $680, Y
+;                 STA $700, Y
+;                 STA $780, Y
+;                 BNE FILL2
+; 
+;                     RTS      
 
 **************************************************
 * MESSAGE TO BE HASHED.
@@ -2143,7 +2163,7 @@ MESSAGELENGTH   HEX 00,00,00,00,00,00,02,80
 
 
 
-JOBID           ASC "65e11"
+JOBID           ASC '6502'
 
 ;   VERSION         HEX 01,00,00,00 ;   DS 4
 ;   PREVHASH        HEX 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00 ;   DS 32
@@ -2191,6 +2211,17 @@ MESSAGELENGTH2  HEX 00,00,00,00,00,00,01,00
 * Data Tables
 *
 **************************************************
+SLAVE0  = {$BB80+40*{0*4+12}+3}
+SLAVE1  = {$BB80+40*{1*4+12}+3}
+SLAVE2  = {$BB80+40*{2*4+12}+3}
+SLAVE3  = {$BB80+40*{3*4+12}+3}
+
+
+LINETABLO
+                    DFB  <SLAVE0,<SLAVE1,<SLAVE2,<SLAVE3
+LINETABHI
+                    DFB  >SLAVE0,>SLAVE1,>SLAVE2,>SLAVE3
+
 
         
 ;;TEMPLO            DB <TEMP0,<TEMP1
@@ -2458,38 +2489,39 @@ K63             HEX c6,71,78,f2
 
 
     DS \
-HEXTOASCIILO            ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-                ASC "0123456789ABCDEF" 
-HEXTOASCIIHI            ASC "0000000000000000" 
-                ASC "1111111111111111" 
-                ASC "2222222222222222" 
-                ASC "3333333333333333" 
-                ASC "4444444444444444" 
-                ASC "5555555555555555" 
-                ASC "6666666666666666" 
-                ASC "7777777777777777" 
-                ASC "8888888888888888" 
-                ASC "9999999999999999" 
-                ASC "AAAAAAAAAAAAAAAA" 
-                ASC "BBBBBBBBBBBBBBBB" 
-                ASC "CCCCCCCCCCCCCCCC" 
-                ASC "DDDDDDDDDDDDDDDD" 
-                ASC "EEEEEEEEEEEEEEEE" 
-                ASC "FFFFFFFFFFFFFFFF" 
+HEXTOASCIILO    ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+                ASC '0123456789ABCDEF' 
+
+HEXTOASCIIHI    ASC '0000000000000000' 
+                ASC '1111111111111111' 
+                ASC '2222222222222222' 
+                ASC '3333333333333333' 
+                ASC '4444444444444444' 
+                ASC '5555555555555555' 
+                ASC '6666666666666666' 
+                ASC '7777777777777777' 
+                ASC '8888888888888888' 
+                ASC '9999999999999999' 
+                ASC 'AAAAAAAAAAAAAAAA' 
+                ASC 'BBBBBBBBBBBBBBBB' 
+                ASC 'CCCCCCCCCCCCCCCC' 
+                ASC 'DDDDDDDDDDDDDDDD' 
+                ASC 'EEEEEEEEEEEEEEEE' 
+                ASC 'FFFFFFFFFFFFFFFF' 
 
 SPLASHLO            db  <SPLASHSCREENDATA
 SPLASHHI            db  >SPLASHSCREENDATA

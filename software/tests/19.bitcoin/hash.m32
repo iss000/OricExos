@@ -163,6 +163,19 @@ IPC_ID              EQU $BFE0
 ;                 JSR SPLASHSCREEN                ; fancy lo-res graphics
 
                 LDA #$00
+                STA NONCE+3
+                STA NONCE+2
+                STA NONCE+1
+                LDA IPC_ID
+                ASL
+                ASL
+                ASL
+                ASL
+                ASL
+                ASL
+                STA NONCE
+
+                LDA #$00
                 STA HASHCACHED                  ; clear cache status
 
 ;                 JSR FLIPCOIN
@@ -2156,14 +2169,7 @@ MESSAGELENGTH   HEX 00,00,00,00,00,00,02,80
 ;NONCELO                DB  <NONCE
 ;NONCEHI                DB  >NONCE
 
-
-
-
-
-
-
-
-JOBID           ASC '6502'
+; JOBID           ASC '6502'
 
 ;   VERSION         HEX 01,00,00,00 ;   DS 4
 ;   PREVHASH        HEX 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00 ;   DS 32
@@ -2211,18 +2217,14 @@ MESSAGELENGTH2  HEX 00,00,00,00,00,00,01,00
 * Data Tables
 *
 **************************************************
-SLAVE0  = {$BB80+40*{0*4+12}+3}
-SLAVE1  = {$BB80+40*{1*4+12}+3}
-SLAVE2  = {$BB80+40*{2*4+12}+3}
-SLAVE3  = {$BB80+40*{3*4+12}+3}
+SLAVE0  = {$BB80+40*{0*5+8}+2}
+SLAVE1  = {$BB80+40*{1*5+8}+2}
+SLAVE2  = {$BB80+40*{2*5+8}+2}
+SLAVE3  = {$BB80+40*{3*5+8}+2}
 
 
-LINETABLO
-                    DFB  <SLAVE0,<SLAVE1,<SLAVE2,<SLAVE3
-LINETABHI
-                    DFB  >SLAVE0,>SLAVE1,>SLAVE2,>SLAVE3
-
-
+LINETABLO           DFB  <SLAVE0,<SLAVE1,<SLAVE2,<SLAVE3
+LINETABHI           DFB  >SLAVE0,>SLAVE1,>SLAVE2,>SLAVE3
         
 ;;TEMPLO            DB <TEMP0,<TEMP1
 ;;TEMPHI            DB >TEMP0,>TEMP1        

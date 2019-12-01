@@ -16,14 +16,14 @@ PROJECT_DIR		:= $(shell pwd)
 PROJECT_AUTORUN		:= 1
 
 # # # Leave DOS
-PROJECT_QUITDOS		:= 1
+PROJECT_QUITDOS		:= 0
 
 START_ADDRESS           := $(shell echo $$((0x0800)))
 
 ATAPS			:= pplink
 BTAPS			:= 
 CTAPS			:= $(PROJECT) slave
-OTHER			:= hash
+OTHER			:= hash res/linemod
 
 TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS) $(OTHER))
 
@@ -38,7 +38,7 @@ pplink_SRC              := pplink.s pp.s oricexos.s
 pplink_AUTORUN          := 1
 pplink_ADDRESS          := $(shell echo $$((0x0500)))
 
-slave_SRC               := compat.s oricexos.s slave.c 
+slave_SRC               := oricexos.s slave.c 
 slave_AUTORUN           := 1
 slave_ADDRESS           := $(shell echo $$((0x2000)))
 slave_ACPP              := 1
@@ -137,7 +137,7 @@ SLAVE_TAP=slave.tap
 include ../../emulator.rules
 
 MERLIN32_TEMP := _FileInformation.txt *_Output.txt
-# MERLIN32_SILENT := $(SILENT)
+MERLIN32_SILENT := $(SILENT)
 
 %.tap: %.m32
 	@echo -n "[M32]   $< -> $(shell echo $<|sed -e 's/\.m32//g')"

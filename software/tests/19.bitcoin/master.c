@@ -17,8 +17,9 @@ typedef struct s_item {
 static t_item slave_items[] = 
 {
   { "PPLINK.COM", PPLINK_ADDRESS, PP_AUTO|PP_SLAVEALL },
-  { "HASH.BIN",   HASH_ADDRESS,   PP_SLAVEALL },
-  { "SLAVE.COM",  SLAVE_ADDRESS,  PP_AUTO|PP_SLAVEALL },
+  { "CHARSET.BIN", 0xb400, PP_SLAVEALL },
+  { "HASH.BIN", HASH_ADDRESS, PP_SLAVEALL },
+  { "SLAVE.COM", SLAVE_ADDRESS, PP_AUTO|PP_SLAVEALL },
 };
 
 static void(*slave_code)(void) = (void(*)(void))SLAVE_ADDRESS;

@@ -148,26 +148,26 @@ prepare:
 
 finalize: hxc
 	@[ -e $(PROJECT).brk ] || touch $(PROJECT).brk
-# 	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
-# 	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
+	@cp -f $(PROJECT).dsk ../$(DEMO_NUMBER).$(DEMO_NAME).dsk
+	@cp -f $(PROJECT)_dsk.hfe ../$(DEMO_NUMBER).$(DEMO_NAME).hfe
 	@printf "[MEM]   master: #%.4X .. #%.4X\\n" $$(($(master_ADDRESS))) $$(expr `cat master | wc -c` + $$(($(master_ADDRESS))))
 	@printf "[MEM]   pplink: #%.4X .. #%.4X\\n" $$(($(pplink_ADDRESS))) $$(expr `cat pplink | wc -c` + $$(($(pplink_ADDRESS))))
 	@printf "[MEM]   slave : #%.4X .. #%.4X\\n" $$(($(slave_ADDRESS))) $$(expr `cat slave | wc -c` + $$(($(slave_ADDRESS))))
 	@echo "Done"
 
 .PHONY: res
-
+# MUSIC_LEN := -df9100
 res:
-	@$(YM2MYM) -df9100 -t0 -f0 -h0 -v1 res/psg1.ym res/psg1.mym
+	@$(YM2MYM) $(MUSIC_LEN) -t0 -f0 -h0 -v1 res/psg1.ym res/psg1.mym
+	@$(BIN2TXT) -s1 -f2 -h1 -n16 res/psg1.mym psg0.s song
 	@$(BIN2TXT) -s1 -f2 -h1 -n16 res/psg1.mym psg1.s song
 	@echo "Song is: `cat res/psg1.mym | wc -c` bytes long."
-	@$(YM2MYM) -df9100 -t0 -f0 -h0 -v1 res/psg2.ym res/psg2.mym
+	@$(YM2MYM) $(MUSIC_LEN) -t0 -f0 -h0 -v1 res/psg2.ym res/psg2.mym
 	@$(BIN2TXT) -s1 -f2 -h1 -n16 res/psg2.mym psg2.s song
 	@echo "Song is: `cat res/psg2.mym | wc -c` bytes long."
-	@$(YM2MYM) -df9100 -t0 -f0 -h0 -v1 res/psg3.ym res/psg3.mym
+	@$(YM2MYM) $(MUSIC_LEN) -t0 -f0 -h0 -v1 res/psg3.ym res/psg3.mym
 	@$(BIN2TXT) -s1 -f2 -h1 -n16 res/psg3.mym psg3.s song
 	@echo "Song is: `cat res/psg3.mym | wc -c` bytes long."
-	@cp -f psg1.s psg0.s
 	@$(RM) res/psg*.mym
 
 # # # 

@@ -34,9 +34,7 @@ void main(void)
   cli();
 
   while(1)
-  {
     sprintf(&stat[2],"POS:%5d   ", mym_frame_counter);
-  }
 
   mym_stop();
   
@@ -45,4 +43,6 @@ void main(void)
   vsync_close();
   
   isr_close();
+  
+  while(1);
 }

@@ -25,7 +25,6 @@ static t_item slave_items[] =
 static void(*slave_code)(void) = (void(*)(void))SLAVE_ADDRESS;
 
 static unsigned int len;
-static void* buffer;
 static int i;
 
 static void load_item(const char* name, void* src);

@@ -1,7 +1,7 @@
 #include <compat.h>
 #include <oricexos.h>
 
-static void (*dosrom)(void) = (void(*)(void))0x04f2;
+// static void (*dosrom)(void) = (void(*)(void))0x04f2;
 static unsigned char* scrn = (unsigned char*)0xbb80;
 
 static int i, x, y;

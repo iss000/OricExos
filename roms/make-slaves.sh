@@ -15,3 +15,7 @@ cat slave-1.rom | sed -e 's/1 1983/3 1983/g' > slave-3.rom
 cat slave.pch > slave-1.pch
 cat slave.pch > slave-2.pch
 cat slave.pch > slave-3.pch
+
+cat slave.sym > slave-1.sym
+cat slave.sym > slave-2.sym
+cat slave.sym > slave-3.sym

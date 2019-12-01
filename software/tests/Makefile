@@ -17,7 +17,8 @@ DEMOS := \
 	15.bars-16 \
 	16.graytime-16 \
 	17.bigfoot \
-	18.mystic
+	18.mystic \
+	19.bitcoin
 # 
 .PHONY: all clean remove-bin
 

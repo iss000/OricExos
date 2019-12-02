@@ -2381,23 +2381,26 @@ SDL_bool init_gui( struct machine *oric, Sint32 rendermode )
   if( !alloc_textzone( oric, TZ_AY,       400, 228, 30, 21, "AY Status"            ) ) return SDL_FALSE;
   if( !alloc_textzone( oric, TZ_DISK,     400, 228, 30, 21, "Disk Status"          ) ) return SDL_FALSE;
 
-  // Set up SDL audio
-  wanted.freq     = AUDIO_FREQ;
-  wanted.format   = AUDIO_S16SYS;
-  wanted.channels = 2; /* 1 = mono, 2 = stereo */
-  wanted.samples  = AUDIO_BUFLEN;
-
-  wanted.callback = (void*)ay_callback;
-  wanted.userdata = &oric->ay;
-
-  soundavailable = SDL_FALSE;
-  soundon = SDL_FALSE;
-  if( SDL_OpenAudio( &wanted, &obtained ) >= 0 )
+  if( oric->exos_id == 0 )
   {
-    soundon = SDL_TRUE;
-    soundavailable = SDL_TRUE;
-    soundsilence = obtained.silence * 8192;
-    cyclespersample = ((CYCLESPERSECOND<<FPBITS)/obtained.freq);
+    // Set up SDL audio
+    wanted.freq     = AUDIO_FREQ;
+    wanted.format   = AUDIO_S16SYS;
+    wanted.channels = 2; /* 1 = mono, 2 = stereo */
+    wanted.samples  = AUDIO_BUFLEN;
+    
+    wanted.callback = (void*)ay_callback;
+    wanted.userdata = &oric->ay;
+    
+    soundavailable = SDL_FALSE;
+    soundon = SDL_FALSE;
+    if( SDL_OpenAudio( &wanted, &obtained ) >= 0 )
+    {
+      soundon = SDL_TRUE;
+      soundavailable = SDL_TRUE;
+      soundsilence = obtained.silence * 8192;
+      cyclespersample = ((CYCLESPERSECOND<<FPBITS)/obtained.freq);
+    }
   }
 
   setmenutoggles( oric );

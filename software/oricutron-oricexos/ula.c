@@ -235,6 +235,25 @@ void ula_renderscreen( struct machine *oric )
   oric->scrpt = scrpt;
 }
 
+static Uint8 vidcap_frame[240*224];
+static Uint8 mix8( Uint8 p0,Uint8 p1,Uint8 p2,Uint8 p3 )
+{
+  Uint16 c0 = p0;
+  Uint16 c1 = p1;
+  Uint16 c2 = p2;
+  Uint16 c3 = p3;
+  return (Uint8)((c0+c1+c2+c3)/4);
+}
+static void vidcap_mix( struct machine *oric )
+{
+  Uint8 *p0 = oric->exos[0]->scr;
+  Uint8 *p1 = oric->exos[1]->scr;
+  Uint8 *p2 = oric->exos[2]->scr;
+  Uint8 *p3 = oric->exos[3]->scr;
+  Sint32 i;
+  for( i=0; i<240*224; i++ )
+    vidcap_frame[i] = mix8(p0[i],p1[i],p2[i],p3[i]);
+}
 // Draw one rasterline
 SDL_bool ula_doraster( struct machine *oric )
 {
@@ -248,8 +267,9 @@ SDL_bool ula_doraster( struct machine *oric )
   oric->vid_raster++;
   if( oric->vid_raster == oric->vid_maxrast )
   {
-    if( vidcap )
+    if( vidcap && oric->exos_id == 0 )
     {
+      vidcap_mix( oric );
       // If we're recording with sound, and they do warp speed,
       // stop writing frames to the AVI, since it'll just get out of sync.
       if ( ( !vidcap->dosnd ) || ( !warpspeed ) )
@@ -258,7 +278,7 @@ SDL_bool ula_doraster( struct machine *oric )
         if( vidcap->is50hz == oric->vid_freq )
         {
           ay_lockaudio( &oric->ay ); // Gets unlocked at the end of each frame
-          avi_addframe( &vidcap, oric->scr );
+          avi_addframe( &vidcap, vidcap_frame );
         }
         // Check for 60hz oric & 50 hz AVI
         else if( vidcap->is50hz )
@@ -267,7 +287,7 @@ SDL_bool ula_doraster( struct machine *oric )
           if( (vidcap->frameadjust%6) != 5 )
           {
             ay_lockaudio( &oric->ay ); // Gets unlocked at the end of each frame
-            avi_addframe( &vidcap, oric->scr );
+            avi_addframe( &vidcap, vidcap_frame );
           }
 
           vidcap->frameadjust++;
@@ -277,10 +297,10 @@ SDL_bool ula_doraster( struct machine *oric )
         {
           // In this case we need to duplicate every fifth frame
           ay_lockaudio( &oric->ay ); // Gets unlocked at the end of each frame
-          avi_addframe( &vidcap, oric->scr );
+          avi_addframe( &vidcap, vidcap_frame );
 
           if( (vidcap->frameadjust%5) == 4 )
-            avi_addframe( &vidcap, oric->scr );
+            avi_addframe( &vidcap, vidcap_frame );
 
           vidcap->frameadjust++;
         }

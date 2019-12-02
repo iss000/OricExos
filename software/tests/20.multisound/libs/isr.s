@@ -61,7 +61,7 @@ irq_handler
             sta   _isr_flag
 
 #ifdef USE_VSYNC
-            jsr _vsync_handler
+            jsr   _vsync_handler
 #endif
             lda   _isr_flag
             and   #via_irq_t1
@@ -115,6 +115,7 @@ nmi_handler
 ; ---------------------------------------------------------------------------
 _isr_open
 .(
+            php
             sei
             lda   via_t1ll
             sta   save_v_t1
@@ -245,13 +246,14 @@ is_oric1    ; Oric-1 default vectors
             sta   irq_addrhi_oric1
 #endif
 is_atmos
-            cli
+            plp
             rts
 .)
 
 ; ---------------------------------------------------------------------------
 _isr_close
 .(
+            php
             sei
             ; Disable all VIA interrupts
             lda   #%01111111
@@ -317,7 +319,7 @@ is_oric1
             sta   irq_addrhi_oric1
 is_atmos
 #endif
-            cli
+            plp
             rts
 .)
 

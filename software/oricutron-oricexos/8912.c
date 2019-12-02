@@ -354,115 +354,140 @@ void ay_flushlog( struct ay8912 *ay )
 ** This is the SDL audio callback. It is called by SDL
 ** when it needs a sound buffer to be filled.
 */
+static Uint16 exos_out[4][AUDIO_BUFLEN*2];
+static Uint16 mix_channels(Sint32 i)
+{
+  Sint32 c0 = (Sint32)exos_out[0][i] - 32767;
+  Sint32 c1 = (Sint32)exos_out[1][i] - 32767;
+  Sint32 c2 = (Sint32)exos_out[2][i] - 32767;
+  Sint32 c3 = (Sint32)exos_out[3][i] - 32767;
+  return (Uint16)(32767 + (c0+c1+c2+c3)/4);
+}
 void ay_callback( void *dummy, Sint8 *stream, int length )
 {
   Uint16 *out;
   Sint16 fout;
-  Sint32 i, j, logc, tlogc;
+  Sint32 i, j, n;
+  Sint32 logc, tlogc;
   struct ay8912 *ay = (struct ay8912 *)dummy;
+  struct machine *oric = ay->oric;
   Sint32 dcadjustave, dcadjustmax;
   SDL_bool tapenoise;
   int actual_length;
 
-  logc    = 0;
-  tlogc   = 0;
-  dcadjustave = 0;
-  dcadjustmax = soundsilence;
-
-  tapenoise = ay->oric->tapenoise && ((!ay->oric->tapeturbo)||(ay->oric->rawtape));
-  if( !tapenoise ) ay->tapeout = 0;
-
-  out = (Uint16 *)stream;
-  cvt.buf = (Uint8 *)stream;
-
+  if( 0 < oric->exos_id )
+    return;
+  
   actual_length = length/(2*sizeof(Uint16));
   actual_length = (actual_length < AUDIO_BUFLEN)? actual_length : AUDIO_BUFLEN;
   actual_length = (actual_length < obtained.samples)? actual_length : obtained.samples;
   
-  for( i=0,j=0; i<actual_length; i++ )
+  for( n=0; n<4; n++ )
   {
-    ay->ccyc = ay->ccycle>>FPBITS;
+    ay = &oric->exos[n]->ay;
+    out = exos_out[n];
+    
+    logc = 0;
+    tlogc = 0;
+    dcadjustave = 0;
+    dcadjustmax = soundsilence;
+    
+    tapenoise = ay->oric->tapenoise && ((!ay->oric->tapeturbo)||(ay->oric->rawtape));
+    if( !tapenoise ) ay->tapeout = 0;
+    
+    for( i=0,j=0; i<actual_length; i++ )
+    {
+      ay->ccyc = ay->ccycle>>FPBITS;
+      
+      while( ( logc < ay->logged ) && ( ay->ccyc >= ay->writelog[logc].cycle ) )
+        ay_dowrite( ay, &ay->writelog[logc++] );
+      
+      if( tapenoise )
+      {
+        while( ( tlogc < ay->tlogged ) && ( ay->ccyc >= ay->tapelog[tlogc].cycle ) )
+          ay->tapeout = ay->tapelog[tlogc++].val * 8192;
+      }
+      
+      if( ay->ccyc > ay->lastcyc )
+      {
+        ay_audioticktock( ay, ay->ccyc-ay->lastcyc );
+        ay->lastcyc = ay->ccyc;
+      }
+      
+      fout = ay->output + ay->tapeout;
+      out[j++] = fout;
+      out[j++] = fout;
+      
+      if( fout > dcadjustmax ) dcadjustmax = fout;
+      dcadjustave += fout;
+      
+      ay->ccycle += cyclespersample;
+    }
+    
+    dcadjustave /= (length/4);
+    
+    if( (dcadjustmax-dcadjustave) > 32767 )
+      dcadjustave = -(32767-dcadjustmax);
 
-    while( ( logc < ay->logged ) && ( ay->ccyc >= ay->writelog[logc].cycle ) )
-      ay_dowrite( ay, &ay->writelog[logc++] );
+    #if 0
+    if( dcadjustave )
+    {
+      for( i=0, j=0; i<actual_length; i++ )
+      {
+        out[j++] -= dcadjustave;
+        out[j++] -= dcadjustave;
+      }
+    }
+    #endif
 
+    if (ay->logged > logc)
+    {
+      memmove(&ay->writelog[0], &ay->writelog[logc], (ay->logged-logc) * sizeof(ay->writelog[0]));
+      ay->logged -= logc;
+      for (i=0; i<ay->logged; i++)
+        ay->writelog[i].cycle -= ay->lastcyc;
+      
+      /* Got out of sync? */
+      if (ay->logged > 150)
+        ay_flushlog( ay );
+    }
+    else
+    {
+      ay->logged = 0;
+    }
+    
     if( tapenoise )
     {
-      while( ( tlogc < ay->tlogged ) && ( ay->ccyc >= ay->tapelog[tlogc].cycle ) )
+      while( tlogc < ay->tlogged )
         ay->tapeout = ay->tapelog[tlogc++].val * 8192;
     }
-
-    if( ay->ccyc > ay->lastcyc )
-    {
-      ay_audioticktock( ay, ay->ccyc-ay->lastcyc );
-      ay->lastcyc = ay->ccyc;
-    }
-
-    fout = ay->output + ay->tapeout;
-    out[j++] = fout;
-    out[j++] = fout;
-    if( vidcap ) audiocapbuf[i] = fout;
-
-    if( fout > dcadjustmax ) dcadjustmax = fout;
-    dcadjustave += fout;
-
-    ay->ccycle += cyclespersample;
+    
+    ay->ccycle -= (ay->lastcyc<<FPBITS);
+    ay->lastcyc = 0;
+    ay->newlogcycle = ay->ccycle>>FPBITS;
+    ay->do_logcycle_reset = SDL_TRUE;
+    //ay->logged   = 0;
+    ay->tlogged  = 0;
   }
 
-  dcadjustave /= (length/4);
-
-  if( (dcadjustmax-dcadjustave) > 32767 )
-    dcadjustave = -(32767-dcadjustmax);
-
-  if( dcadjustave )
-  {
-    for( i=0, j=0; i<actual_length; i++ )
-    {
-      out[j++] -= dcadjustave;
-      out[j++] -= dcadjustave;
-      if( vidcap ) audiocapbuf[i] -= dcadjustave;
-    }
-  }
-
+  out = (Uint16 *)stream;
+  for( i=0; i<actual_length*2; i++ )
+    out[i] = mix_channels(i);
+  
   if( vidcap )
   {
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    for( i=0, j=0; i<actual_length; i++, j+=2 )
+      audiocapbuf[i] = out[j];
+    
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     for( i=0; i<(length/4); i++ )
       audiocapbuf[i] = SDL_Swap16( audiocapbuf[i] );
-#endif
+    #endif
     avi_addaudio( &vidcap, audiocapbuf, length/2 );
   }
 
-  if (ay->logged > logc)
-  {
-    memmove(&ay->writelog[0], &ay->writelog[logc], (ay->logged-logc) * sizeof(ay->writelog[0]));
-    ay->logged -= logc;
-    for (i=0; i<ay->logged; i++)
-      ay->writelog[i].cycle -= ay->lastcyc;
-
-    /* Got out of sync? */
-    if (ay->logged > 150)
-      ay_flushlog( ay );
-  }
-  else
-  {
-    ay->logged = 0;
-  }
-
-  if( tapenoise )
-  {
-    while( tlogc < ay->tlogged )
-      ay->tapeout = ay->tapelog[tlogc++].val * 8192;
-  }
-
+  cvt.buf = (Uint8 *)stream;
   SDL_ConvertAudio(&cvt);
-
-  ay->ccycle -= (ay->lastcyc<<FPBITS);
-  ay->lastcyc = 0;
-  ay->newlogcycle = ay->ccycle>>FPBITS;
-  ay->do_logcycle_reset = SDL_TRUE;
-//  ay->logged   = 0;
-  ay->tlogged  = 0;
 }
 
 /*
@@ -645,10 +670,13 @@ SDL_bool ay_init( struct ay8912 *ay, struct machine *oric )
   if( soundavailable )
     SDL_PauseAudio( 0 );
 
-  // initialize audio conversion system for SDL2
-  SDL_BuildAudioCVT(&cvt, AUDIO_S16SYS, 2, AUDIO_FREQ, obtained.format, obtained.channels, obtained.freq);
-  cvt.len = obtained.samples * sizeof(Sint16) * obtained.channels;
-  // Do not allocate a buffer, write directly into the callback stream
+  if( oric->exos_id == 0 )
+  {
+    // initialize audio conversion system for SDL2
+    SDL_BuildAudioCVT(&cvt, AUDIO_S16SYS, 2, AUDIO_FREQ, obtained.format, obtained.channels, obtained.freq);
+    cvt.len = obtained.samples * sizeof(Sint16) * obtained.channels;
+    // Do not allocate a buffer, write directly into the callback stream
+  }
 
   return SDL_TRUE;
 }

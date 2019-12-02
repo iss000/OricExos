@@ -25,8 +25,9 @@ MUSIC_DATA           	:= $(shell echo $$((0x5000)))
 ATAPS			:= pplink psg0 psg1 psg2 psg3
 BTAPS			:= 
 CTAPS			:= $(PROJECT) slave
+RTAPS			:= res/boldmod
 
-TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS))
+TAPS 			:= $(addsuffix .tap,$(ATAPS) $(BTAPS) $(CTAPS) $(RTAPS))
 
 common_SRC 		:= pp.s oricexos.s
 
@@ -110,10 +111,10 @@ AFLAGS                  += -DMUSIC_DATA=$(MUSIC_DATA)
 AFLAGS                  += -DUSE_VSYNC
 AFLAGS                  += -DUSE_VSYNC_50HZ
 # AFLAGS                += -DUSE_VSYNC_60HZ
-AFLAGS                  += -DUSE_VSYNC_SOFT
-# AFLAGS                += -DUSE_VSYNC_HARD
+# AFLAGS                += -DUSE_VSYNC_SOFT
+AFLAGS                	+= -DUSE_VSYNC_HARD
 AFLAGS                  += -DUSE_VSYNC_NEGEDGE
-AFLAGS                  += -DUSE_VSYNC_AUTO_TEXT
+# AFLAGS                += -DUSE_VSYNC_AUTO_TEXT
 
 $(PROJECT)_AFLAGS 	:= -DMASTER -DPP_MASTER
 slave_AFLAGS 		:= -DSLAVE -DPP_SLAVE

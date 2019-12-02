@@ -20,6 +20,7 @@ static t_item slave_items[] =
   { "PSG1.BIN", MUSIC_DATA, PP_SLAVE1 },
   { "PSG2.BIN", MUSIC_DATA, PP_SLAVE2 },
   { "PSG3.BIN", MUSIC_DATA, PP_SLAVE3 },
+  { "CHARSET.BIN", 0xb400, PP_SLAVEALL },
   { "SLAVE.COM", SLAVE_ADDRESS, PP_AUTO|PP_SLAVEALL },
 };
 
@@ -44,7 +45,7 @@ void main(void)
     send_item(slave_items[i].name, (void*)slave_items[i].address, buffer, slave_items[i].flags);
   }
   
-  load_item("PSG0.BIN", (void*)MUSIC_DATA);
+  load_item("CHARSET.BIN", (void*)0xb400);
   load_item("SLAVE.COM", (void*)SLAVE_ADDRESS);
   
   // jump to slave code

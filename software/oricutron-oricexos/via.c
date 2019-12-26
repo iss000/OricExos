@@ -69,10 +69,10 @@ void lprintchar( struct machine *oric, char c )
       fputc( c, oric->prf );
       oric->prclose = 64*312*50*5;
     }
+    // emulate ack signal
+    oric->prclock = 40;
+    via_write_CA1( &oric->via, 1 );
   }
-  // emulate ack signal
-  oric->prclock = 40;
-  via_write_CA1( &oric->via, 1 );
 }
 
 
@@ -841,21 +841,21 @@ void via_write( struct via *v, int offset, unsigned char data )
   unsigned char b4 = 0x10;
   unsigned char b7 = 0x80;
   unsigned char b = via_mon_read( v, VIA_IORB );
-  
+
   oric->vsynchack = 0x40 & b? SDL_FALSE:SDL_TRUE;
-  
+
   if(oric->exos_id == 0)
   {
     b4 = (b4 & b) == b4? 1:0;
     via_write_CA1( &oric->exos[1]->via, b4 );
     via_write_CA1( &oric->exos[2]->via, b4 );
     via_write_CA1( &oric->exos[3]->via, b4 );
-    
+
     b4 = ( oric->exos_stat.ppenable && !oric->exos_stat.ppdir )? via_mon_read( v, VIA_IORA ) : 0xff;
     via_main_write_porta( &oric->exos[1]->via, 0xff, (oric->exos[1]->exos_stat.ppenable && oric->exos[1]->exos_stat.ppdir)? b4:0xff );
     via_main_write_porta( &oric->exos[2]->via, 0xff, (oric->exos[2]->exos_stat.ppenable && oric->exos[2]->exos_stat.ppdir)? b4:0xff );
     via_main_write_porta( &oric->exos[3]->via, 0xff, (oric->exos[3]->exos_stat.ppenable && oric->exos[3]->exos_stat.ppdir)? b4:0xff );
-    
+
     b7 = (b7 & b) == b7? 1:0;
     via_write_CB1( &oric->exos[1]->via, b7 );
     via_write_CB1( &oric->exos[2]->via, b7 );

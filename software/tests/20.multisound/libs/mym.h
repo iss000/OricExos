@@ -9,5 +9,6 @@ void mym_play_frame(void);
 
 extern char mym_playing;
 extern unsigned int mym_frame_counter;
+extern unsigned int mym_length;
 
 #endif /* __MYM_h__ */

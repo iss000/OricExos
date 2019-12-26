@@ -42,6 +42,9 @@ _mym_playing
 _mym_frame_counter
           .byt 0,0
 
+_mym_length = _MusicData
+
+
 _mym_stop
           sty mym_keep_y
           lda #0

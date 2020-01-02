@@ -31,6 +31,10 @@
 
 extern SDL_AudioSpec obtained;
 
+#define USE_ORICEXOS
+
+#ifndef USE_ORICEXOS
+
 // Write a 32bit value to a stream in little-endian format
 static SDL_bool write32l( SDL_bool stillok, struct avi_handle *ah, Uint32 val, Uint32 *rem )
 {
@@ -97,7 +101,7 @@ struct avi_handle *avi_open( char *filename, Uint8 *pal, SDL_bool dosound, int i
 
   ah = malloc( sizeof( struct avi_handle ) );
   if( !ah ) return NULL;
-  
+
   memset( ah, 0, sizeof( struct avi_handle ) );
 
   ah->f = fopen( filename, "wb" );
@@ -474,7 +478,7 @@ void avi_close( struct avi_handle **ah )
     time_ms = (double)(time_end - (*ah)->time_start);  // Time in milliseconds
 
     rate     = ((double)((*ah)->frames) * 1000000000.0f) / time_ms;
-    usperfrm = (time_ms*1000.0f) / ((double)(*ah)->frames); 
+    usperfrm = (time_ms*1000.0f) / ((double)(*ah)->frames);
 
     ok &= seek_write32l( ok, *ah, (*ah)->offs_frmrate,  (Uint32)(rate + .5) );
     ok &= seek_write32l( ok, *ah, (*ah)->offs_usperfrm, (Uint32)(usperfrm + .5) );
@@ -485,3 +489,149 @@ void avi_close( struct avi_handle **ah )
   *ah = NULL;
 }
 
+#else /* USE_ORICEXOS */
+
+// OricExos
+#include "avi_lib.h"
+#include "avi_lib.c"
+
+#define bool SDL_bool
+#define true SDL_TRUE
+#define false SDL_FALSE
+
+static FILE *mem_fopen(const char *pathname, const char *mode);
+static int mem_fclose(FILE *stream);
+static size_t mem_fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+static int mem_putc(int c, FILE *stream);
+
+#include "avi_jo_jpeg.h"
+#include "avi_jo_jpeg.c"
+
+struct avi_handle *avi_open( char *filename, Uint8 *pal, SDL_bool dosound, int is50hz )
+{
+  struct avi_handle *ah;
+  avi_t *avifile;
+
+  ah = malloc( sizeof( struct avi_handle ) );
+  if( !ah ) return NULL;
+
+  memset( ah, 0, sizeof( struct avi_handle ) );
+
+  ah->f = (FILE*)AVI_open_output_file(filename);
+  if( !ah->f )
+  {
+    free( ah );
+    return NULL;
+  }
+
+  ah->dosnd = dosound;
+  ah->csize = 0;
+  ah->is50hz = is50hz;
+  ah->frames = 0;
+  ah->audiolen = 0;
+  ah->movisize = 0;
+
+  avifile = (avi_t *)ah->f;
+
+  if(avifile)
+  {
+    // width, height     - width and height of the video in pixels
+    // fps               - frame rate in frames per second, notice that this is a double value!
+    // compressor        - string describing the compressor
+    AVI_set_video(avifile, 256, 240, ah->is50hz? 50.0:60.0, "MJPG");
+
+    // channels          - number of audio channels, 1 for mono, 2 for stereo, 0 if no audio present
+    // rate              - audio rate in samples/second
+    // bits              - audio bits, usually 8 or 16, 0 if no audio present
+    // format            - audio format, most common is 1 for raw PCM, look into avilib.h for others
+    AVI_set_audio(avifile, 1, obtained.freq, 16, WAVE_FORMAT_PCM, obtained.freq);
+    AVI_set_audio_track(avifile, 0);
+  }
+
+  return ah;
+}
+
+SDL_bool avi_addframe( struct avi_handle **ah, Uint8 *srcdata )
+{
+  int keyframe;
+  avi_t *avifile;
+
+  if( ( !ah ) || (!(*ah)) ) return SDL_FALSE;
+  if( !(*ah)->dosnd ) return SDL_TRUE;
+
+  avifile = (avi_t *)(*ah)->f;
+  if( avifile )
+  {
+    keyframe = 0==((*ah)->frames % 50) ? 1:0;
+    jo_write_jpg((const char*)(*ah), (unsigned char *)srcdata, 256, 240, 3, 80);
+    AVI_write_frame(avifile, (char*)(*ah)->rledata, (*ah)->movisize, keyframe);
+    (*ah)->frames++;
+  }
+
+  return SDL_TRUE;
+}
+
+SDL_bool avi_addaudio( struct avi_handle **ah, Sint16 *audiodata, Uint32 audiosize )
+{
+  avi_t *avifile;
+
+  if( ( !ah ) || (!(*ah)) ) return SDL_FALSE;
+  if( !(*ah)->dosnd ) return SDL_TRUE;
+
+  avifile = (avi_t *)(*ah)->f;
+  if( avifile )
+  {
+    AVI_write_audio(avifile, (char*)audiodata, audiosize);
+    (*ah)->audiolen += audiosize;
+  }
+
+  return SDL_TRUE;
+}
+
+void avi_close( struct avi_handle **ah )
+{
+  avi_t *avifile;
+
+  if( ( !ah ) || (!(*ah)) ) return;
+
+  if( (*ah)->f )
+  {
+    avifile = (avi_t *)(*ah)->f;
+    AVI_close(avifile);
+  }
+  free( (*ah) );
+  *ah = NULL;
+}
+
+static FILE *mem_fopen(const char *pathname, const char *mode)
+{
+  struct avi_handle *ah = (struct avi_handle *)pathname;
+  ah->movisize = 0;
+  return (FILE*)pathname;
+}
+static int mem_fclose(FILE *stream)
+{
+  return stream==NULL? 0:1;
+}
+
+#define minlen(a,b)   (((a)<=(b))?(a):(b))
+static size_t mem_fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+  struct avi_handle *ah = (struct avi_handle *)stream;
+  size_t len = minlen(sizeof(ah->rledata)/sizeof(ah->rledata[0]) - ah->movisize, size*nmemb);
+  memcpy(&ah->rledata[ah->movisize], ptr, len);
+  ah->movisize += len;
+  return nmemb;
+}
+
+static int mem_putc(int c, FILE *stream)
+{
+  struct avi_handle *ah = (struct avi_handle *)stream;
+  size_t len = minlen(sizeof(ah->rledata)/sizeof(ah->rledata[0]) - ah->movisize, 1);
+  if(0<len)
+    ah->rledata[ah->movisize++] = c;
+
+  return 0xff&((int)c);
+}
+
+#endif /* USE_ORICEXOS */

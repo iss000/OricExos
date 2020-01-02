@@ -105,7 +105,7 @@ void render_begin_sw( struct machine *oric )
 {
   int x, y;
   Uint8 *dst_scanline;
-  
+
   if( 0<oric->exos_id )
     return;
 
@@ -137,7 +137,7 @@ void render_begin_sw( struct machine *oric )
     }
     oric->newpopupstr = SDL_FALSE;
   }
-  
+
   if( oric->newstatusstr )
   {
     refreshstatus = SDL_TRUE;
@@ -153,7 +153,7 @@ void render_end_sw( struct machine *oric )
 
   if( 0<oric->exos_id )
     return;
-  
+
   char_pitch = 8 * pixel_size;
 
   if( oric->emu_mode == EM_RUNNING )
@@ -166,7 +166,7 @@ void render_end_sw( struct machine *oric )
       for( i=0; oric->popupstr[i]; i++, dst_pixel += char_pitch )
         printchar( dst_pixel, oric->popupstr[i], gpal[1], gpal[0], SDL_TRUE );
     }
-  
+
     if( oric->statusstr[0] )
     {
       dst_pixel = (Uint8*)screen->pixels;
@@ -200,7 +200,7 @@ void render_textzone_sw( struct machine *oric, int i )
 
   if( 0<oric->exos_id )
     return;
-  
+
   char_pitch = 8 * pixel_size;
 
   dst_scanline = (Uint8 *)screen->pixels;
@@ -248,7 +248,7 @@ void render_gimg_sw( int img_id, Sint32 xp, Sint32 yp )
 
 static SDL_bool isdirty( struct machine *oric, int y )
 {
-  return 
+  return
   oric->vid_dirty[y] |
   oric->exos[1]->vid_dirty[y] |
   oric->exos[2]->vid_dirty[y] |
@@ -257,9 +257,9 @@ static SDL_bool isdirty( struct machine *oric, int y )
 
 static void setdirty( struct machine *oric, int y, SDL_bool b )
 {
-  oric->vid_dirty[y] = 
-  oric->exos[1]->vid_dirty[y] = 
-  oric->exos[2]->vid_dirty[y] = 
+  oric->vid_dirty[y] =
+  oric->exos[1]->vid_dirty[y] =
+  oric->exos[2]->vid_dirty[y] =
   oric->exos[3]->vid_dirty[y] = b;
 }
 
@@ -288,7 +288,7 @@ void render_video_sw_16bpp( struct machine *oric, SDL_bool doublesize )
   Uint8 *src_pixel1, *src_pixel2, *src_pixel3;
   Sint32 dst_pitch_x2;
   Uint32 c;
-  Uint32 c1, c2, c3;
+//   Uint32 c1, c2, c3;
   Uint8 *dst_scanline, *dst_even_scanline, *dst_odd_scanline;
   Uint16 *dst_pixel;
   Uint32 *dst_even_pixel, *dst_odd_pixel;
@@ -308,7 +308,7 @@ void render_video_sw_16bpp( struct machine *oric, SDL_bool doublesize )
     src_pixel1 = oric->exos[1]->scr;
     src_pixel2 = oric->exos[2]->scr;
     src_pixel3 = oric->exos[3]->scr;
-    
+
     dst_pitch_x2 = 2 * screen->pitch;
 
     dst_even_scanline = ((Uint8*)screen->pixels) + offset_top;
@@ -334,10 +334,10 @@ void render_video_sw_16bpp( struct machine *oric, SDL_bool doublesize )
         for( x=240; x!=0; --x )
         {
           c = *(src_pixel++);
-          c1 = *(src_pixel1++);
-          c2 = *(src_pixel2++);
-          c3 = *(src_pixel3++);
-          
+//           c1 = *(src_pixel1++);
+//           c2 = *(src_pixel2++);
+//           c3 = *(src_pixel3++);
+
           *(dst_even_pixel++) = dpal[c];
           *(dst_odd_pixel++)  = dpal[c+8];
         }
@@ -358,13 +358,13 @@ void render_video_sw_16bpp( struct machine *oric, SDL_bool doublesize )
         dst_even_pixel = (Uint32*)dst_even_scanline;
         dst_odd_pixel  = (Uint32*)dst_odd_scanline;
 
-        for( x=240; x!=0; --x ) 
+        for( x=240; x!=0; --x )
         {
           c = dpal[*(src_pixel++)];
-          c1 = dpal[*(src_pixel1++)];
-          c2 = dpal[*(src_pixel2++)];
-          c3 = dpal[*(src_pixel3++)];
-          
+//           c1 = dpal[*(src_pixel1++)];
+//           c2 = dpal[*(src_pixel2++)];
+//           c3 = dpal[*(src_pixel3++)];
+
           *(dst_even_pixel++) = c;
           *(dst_odd_pixel++)  = c;
         }
@@ -413,7 +413,7 @@ static Uint8 mix32_correction(struct machine *oric, Uint32 x)
     }
     return 0;
   }
-  
+
   return x/4;
 }
 
@@ -424,7 +424,7 @@ static Uint32 mix32( struct machine *oric, Uint32 c0, Uint32 c1, Uint32 c2, Uint
   Uint8 r1, g1, b1;
   Uint8 r2, g2, b2;
   Uint8 r3, g3, b3;
-  
+
   SDL_GetRGB(c0, screen->format, &r0, &g0, &b0);
   SDL_GetRGB(c1, screen->format, &r1, &g1, &b1);
   SDL_GetRGB(c2, screen->format, &r2, &g2, &b2);
@@ -436,31 +436,31 @@ static Uint32 mix32( struct machine *oric, Uint32 c0, Uint32 c1, Uint32 c2, Uint
     r1 = r1?  64:0;
     r2 = r2?  32:0;
     r3 = r3?  16:0;
-    
+
     g0 = g0? 128:0;
     g1 = g1?  64:0;
     g2 = g2?  32:0;
     g3 = g3?  16:0;
-    
+
     b0 = b0? 128:0;
     b1 = b1?  64:0;
     b2 = b2?  32:0;
     b3 = b3?  16:0;
-    
+
     r0 = r0+r1+r2+r3;
     g0 = g0+g1+g2+g3;
     b0 = b0+b1+b2+b3;
-    
+
     if( oric->exos_gammacorrection )
     {
       r0 += r0? 15:0;
-      g0 += r0? 15:0;
-      b0 += r0? 15:0;
+      g0 += g0? 15:0;
+      b0 += b0? 15:0;
     }
     return SDL_MapRGB( screen->format, r0, g0, b0);
   }
-  
-  return SDL_MapRGB( screen->format, 
+
+  return SDL_MapRGB( screen->format,
                      mix32_correction(oric, r0+r1+r2+r3),
                      mix32_correction(oric, g0+g1+g2+g3),
                      mix32_correction(oric, b0+b1+b2+b3));
@@ -493,7 +493,7 @@ void render_video_sw_32bpp( struct machine *oric, SDL_bool doublesize )
     src_pixel1 = oric->exos[1]->scr;
     src_pixel2 = oric->exos[2]->scr;
     src_pixel3 = oric->exos[3]->scr;
-    
+
     dst_pitch_x2 = 2 * screen->pitch;
 
     dst_even_scanline = ((Uint8*)screen->pixels) + offset_top;
@@ -520,16 +520,16 @@ void render_video_sw_32bpp( struct machine *oric, SDL_bool doublesize )
         {
           cc = pal[(*src_pixel)+8];
           c = pal[*(src_pixel++)];
-          
+
           cc1 = pal[(*src_pixel1)+8];
           c1 = pal[*(src_pixel1++)];
-          
+
           cc2 = pal[(*src_pixel2)+8];
           c2 = pal[*(src_pixel2++)];
-          
+
           cc3 = pal[(*src_pixel3)+8];
           c3 = pal[*(src_pixel3++)];
-          
+
           c = mix32( oric, c, c1, c2, c3 );
           cc = mix32( oric, cc, cc1, cc2, cc3 );
 
@@ -554,13 +554,13 @@ void render_video_sw_32bpp( struct machine *oric, SDL_bool doublesize )
         dst_even_pixel = (Uint32*)dst_even_scanline;
         dst_odd_pixel  = (Uint32*)dst_odd_scanline;
 
-        for( x=240; x!=0; --x ) 
+        for( x=240; x!=0; --x )
         {
           c = pal[*(src_pixel++)];
           c1 = pal[*(src_pixel1++)];
           c2 = pal[*(src_pixel2++)];
           c3 = pal[*(src_pixel3++)];
-          
+
           c = mix32( oric, c, c1, c2, c3 );
           *(dst_even_pixel++) = c;
           *(dst_even_pixel++) = c;
@@ -624,7 +624,7 @@ void preinit_render_sw( struct machine *oric )
 
   if( 0<oric->exos_id )
     return;
-  
+
   // Images are not set yet
   for( i=0; i<NUM_GIMG; i++ )
     mgimg[i] = NULL;
@@ -634,7 +634,7 @@ SDL_bool render_togglefullscreen_sw( struct machine *oric )
 {
   if( 0<oric->exos_id )
     return SDL_FALSE;
-  
+
 #if defined(__amigaos4__) || defined(__linux__) || defined(__MORPHOS__)
   // Use SDL_WM_ToggleFullScreen on systems where it is supported
   if( SDL_COMPAT_WM_ToggleFullScreen( screen ) )
@@ -649,7 +649,7 @@ SDL_bool render_togglefullscreen_sw( struct machine *oric )
   fullscreen = !fullscreen;
   if( oric->init_render( oric ) ) return SDL_TRUE;
   set_render_mode( oric, RENDERMODE_NULL );
-  oric->emu_mode = EM_PLEASEQUIT; 
+  oric->emu_mode = EM_PLEASEQUIT;
   return SDL_FALSE;
 #endif
 }
@@ -693,27 +693,27 @@ SDL_bool init_render_sw( struct machine *oric )
     int i;
     unsigned char* pal_it;
     Sint32 surfacemode;
-    
+
     pixel_size = oric->sw_depth / 8;
-    
+
     surfacemode = fullscreen ? SDL_COMPAT_FULLSCREEN : SDL_SWSURFACE;
     if( hwsurface ) { surfacemode &= ~SDL_SWSURFACE; surfacemode |= SDL_COMPAT_HWSURFACE; }
-    
+
     // Try to setup the video display
     if (oric->show_keyboard) {
       screen = SDL_COMPAT_SetVideoMode( 640, 480+240, oric->sw_depth, surfacemode );
     } else {
       screen = SDL_COMPAT_SetVideoMode( 640, 480, oric->sw_depth, surfacemode );
     }
-    
+
     if( !screen )
     {
       printf( "SDL video failed\n" );
       return SDL_FALSE;
     }
-    
+
     SDL_COMPAT_WM_SetCaption( APP_NAME_FULL, APP_NAME_FULL );
-    
+
     // Set the video bit depth dependent function
     if (oric->sw_depth == 16) {
       printchar = printchar_16bpp;
@@ -725,12 +725,12 @@ SDL_bool init_render_sw( struct machine *oric )
       guiimg_to_img = guiimg_to_img_32bpp;
       //    SDL_COMPAT_WM_SetCaption( "32bit video", "32bit video" );
     }
-    
+
     // Convert the GUI palette to the screen format bti depth
     pal_it = sgpal;
     for( i=0; i<NUM_GUI_COLS; i++, pal_it+=3 )
       gpal[i] = SDL_MapRGB( screen->format, pal_it[0], pal_it[1], pal_it[2] );
-    
+
     // Convert the Oric palette to the screen format bti depth
     pal_it = oricpalette;
     for( i=0; i<8; i++, pal_it+=3 )
@@ -738,22 +738,22 @@ SDL_bool init_render_sw( struct machine *oric )
       pal[i  ] = SDL_MapRGB( screen->format, pal_it[0],   pal_it[1],   pal_it[2] );
       pal[i+8] = SDL_MapRGB( screen->format, pal_it[0]/2, pal_it[1]/2, pal_it[2]/2 );
     }
-    
+
     // Get the images for the GUI
     for( i=0; i<NUM_GIMG; i++ )
     {
       if (!guiimg_to_img(mgimg + i, gimgs + i))
         return SDL_FALSE;
     }
-    
+
     // Precompute pixels pairs for efficient rendering in 16 bpp mode
     for( i=0; i<8*2; i++ )
       dpal[i] = (pal[i]<<16)|pal[i];
-    
+
     // For the first frame rendered, we need to clean the screen
     needclr = SDL_TRUE;
     refreshstatus = SDL_TRUE;
-    
+
     // Calculate the offset to render the screen
     offset_top = (240 - 226) * screen->pitch;
     offset_top += pixel_size * 80;

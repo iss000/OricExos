@@ -235,24 +235,128 @@ void ula_renderscreen( struct machine *oric )
   oric->scrpt = scrpt;
 }
 
-static Uint8 vidcap_frame[240*224];
-static Uint8 mix8( Uint8 p0,Uint8 p1,Uint8 p2,Uint8 p3 )
+static Uint32 palette32[] =
+{ 0x000000,
+  0xff0000,
+  0x00ff00,
+  0xffff00,
+  0x0000ff,
+  0xff00ff,
+  0x00ffff,
+  0xffffff
+};
+static Uint8 vidcap_frame[256*240*3];
+static Uint8 mix32_correction(struct machine *oric, Uint32 x)
 {
-  Uint16 c0 = p0;
-  Uint16 c1 = p1;
-  Uint16 c2 = p2;
-  Uint16 c3 = p3;
-  return (Uint8)((c0+c1+c2+c3)/4);
+  if( oric->exos_gammacorrection )
+  {
+    switch(x)
+    {
+      case 4*255:
+        return 255;
+      case 3*255:
+        return 255-32;
+      case 2*255:
+        return 255-32-32;
+      case 1*255:
+        return 255-32-32-32;
+      default:
+        break;
+    }
+    return 0;
+  }
+
+  return x/4;
+}
+
+// static Uint32 mix32( struct machine *oric, Uint32 c0, Uint32 c1, Uint32 c2, Uint32 c3 )
+static void mix32( struct machine *oric, Uint8 p0, Uint8 p1, Uint8 p2, Uint8 p3, Uint8* r, Uint8* g, Uint8* b )
+{
+  Uint32 c0 = palette32[p0];
+  Uint32 c1 = palette32[p1];
+  Uint32 c2 = palette32[p2];
+  Uint32 c3 = palette32[p3];
+
+  Uint8 r0, g0, b0;
+  Uint8 r1, g1, b1;
+  Uint8 r2, g2, b2;
+  Uint8 r3, g3, b3;
+
+  r0 = ((c0 & 0xff));
+  g0 = ((c0>>8) & 0xff);
+  b0 = ((c0>>16) & 0xff);
+
+  r1 = ((c1 & 0xff));
+  g1 = ((c1>>8) & 0xff);
+  b1 = ((c1>>16) & 0xff);
+
+  r2 = ((c2 & 0xff));
+  g2 = ((c2>>8) & 0xff);
+  b2 = ((c2>>16) & 0xff);
+
+  r3 = ((c3 & 0xff));
+  g3 = ((c3>>8) & 0xff);
+  b3 = ((c3>>16) & 0xff);
+
+  if( oric->exos_stat.mix )
+  {
+    r0 = r0? 128:0;
+    r1 = r1?  64:0;
+    r2 = r2?  32:0;
+    r3 = r3?  16:0;
+
+    g0 = g0? 128:0;
+    g1 = g1?  64:0;
+    g2 = g2?  32:0;
+    g3 = g3?  16:0;
+
+    b0 = b0? 128:0;
+    b1 = b1?  64:0;
+    b2 = b2?  32:0;
+    b3 = b3?  16:0;
+
+    r0 = r0+r1+r2+r3;
+    g0 = g0+g1+g2+g3;
+    b0 = b0+b1+b2+b3;
+
+    if( oric->exos_gammacorrection )
+    {
+      r0 += r0? 15:0;
+      g0 += g0? 15:0;
+      b0 += b0? 15:0;
+    }
+    *r = r0;
+    *g = g0;
+    *b = b0;
+  }
+  else
+  {
+    *r = mix32_correction(oric, r0+r1+r2+r3);
+    *g = mix32_correction(oric, g0+g1+g2+g3);
+    *b = mix32_correction(oric, b0+b1+b2+b3);
+  }
 }
 static void vidcap_mix( struct machine *oric )
 {
+  Uint32 i,x,y,offs;
+  Uint8 r,g,b;
   Uint8 *p0 = oric->exos[0]->scr;
   Uint8 *p1 = oric->exos[1]->scr;
   Uint8 *p2 = oric->exos[2]->scr;
   Uint8 *p3 = oric->exos[3]->scr;
-  Sint32 i;
-  for( i=0; i<240*224; i++ )
-    vidcap_frame[i] = mix8(p0[i],p1[i],p2[i],p3[i]);
+
+  i = 0;
+  for( y=0; y<224; y++ )
+  {
+    offs = 3*256*(8 + y) + 3*8;
+    for( x=0; x<240; x++, i++ )
+    {
+      mix32(oric,p0[i],p1[i],p2[i],p3[i],&r,&g,&b);
+      vidcap_frame[offs++] = r;
+      vidcap_frame[offs++] = g;
+      vidcap_frame[offs++] = b;
+    }
+  }
 }
 // Draw one rasterline
 SDL_bool ula_doraster( struct machine *oric )
@@ -308,7 +412,7 @@ SDL_bool ula_doraster( struct machine *oric )
     }
 
     oric->vid_raster = 0;
-    
+
     // store current T1 counter
     oric->vid_offset = oric->via.t1c/64;
 
@@ -469,6 +573,9 @@ SDL_bool init_ula( struct machine *oric )
 
   oric->scr = (Uint8 *)malloc( 240*224 );
   if( !oric->scr ) return SDL_FALSE;
+
+  if( oric->exos_id == 0 )
+    memset(vidcap_frame, 0, 256*240*3);
 
   memset(oric->scr, 0, 240*224);
   ula_set_dirty( oric );

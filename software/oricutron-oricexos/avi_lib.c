@@ -30,7 +30,6 @@
 #include <io.h>
 #define ftruncate _chsize
 #define strncasecmp _strnicmp
-typedef int ssize_t;
 #endif
 
 #ifdef __CYGWIN__
@@ -78,7 +77,7 @@ static size_t avi_read(int fd, char* buf, size_t len)
   {
     n = read(fd, buf + r, len - r);
 
-    if((ssize_t)n <= 0)
+    if((int)n <= 0)
       return r;
     r += n;
   }
@@ -95,7 +94,7 @@ static size_t avi_write(int fd, char* buf, size_t len)
   while(r < len)
   {
     n = write(fd, buf + r, len - r);
-    if((ssize_t)n < 0)
+    if((int)n < 0)
       return n;
 
     r += n;

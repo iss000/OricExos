@@ -32,7 +32,6 @@
 extern SDL_AudioSpec obtained;
 
 #define USE_ORICEXOS
-
 #ifndef USE_ORICEXOS
 
 // Write a 32bit value to a stream in little-endian format

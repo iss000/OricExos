@@ -287,7 +287,7 @@ void ay_dowrite( struct ay8912 *ay, struct aywrite *aw )
       ay->regs[aw->reg] = aw->val;
       ay->toneper[2] = (((ay->regs[AY_CHC_PER_H]&0xf)<<8)|ay->regs[AY_CHC_PER_L]) * TONETIME;
       break;
-    
+
     case AY_STATUS:      // Status
       ay->regs[aw->reg] = aw->val;
       ay->tonebit[0]  = (aw->val&0x01)?1:0;
@@ -315,7 +315,7 @@ void ay_dowrite( struct ay8912 *ay, struct aywrite *aw )
         ay->vol[i] = voltab[aw->val&0xf];
       ay->newout |= (1<<i);
       break;
-    
+
     case AY_ENV_PER_L:
     case AY_ENV_PER_H:
       ay->regs[aw->reg] = aw->val;
@@ -350,10 +350,126 @@ void ay_flushlog( struct ay8912 *ay )
   ay->logged = 0;
 }
 
+#define ORICEXOS
+#ifndef ORICEXOS
+
 /*
 ** This is the SDL audio callback. It is called by SDL
 ** when it needs a sound buffer to be filled.
 */
+void ay_callback( void *dummy, Sint8 *stream, int length )
+{
+  Uint16 *out;
+  Sint16 fout;
+  Sint32 i, j, logc, tlogc;
+  struct ay8912 *ay = (struct ay8912 *)dummy;
+  Sint32 dcadjustave, dcadjustmax;
+  SDL_bool tapenoise;
+  int actual_length;
+
+  logc    = 0;
+  tlogc   = 0;
+  dcadjustave = 0;
+  dcadjustmax = soundsilence;
+
+  tapenoise = ay->oric->tapenoise && ((!ay->oric->tapeturbo)||(ay->oric->rawtape));
+  if( !tapenoise ) ay->tapeout = 0;
+
+  out = (Uint16 *)stream;
+  cvt.buf = (Uint8 *)stream;
+
+  actual_length = length/(2*sizeof(Uint16));
+  actual_length = (actual_length < AUDIO_BUFLEN)? actual_length : AUDIO_BUFLEN;
+  actual_length = (actual_length < obtained.samples)? actual_length : obtained.samples;
+
+  for( i=0,j=0; i<actual_length; i++ )
+  {
+    ay->ccyc = ay->ccycle>>FPBITS;
+
+    while( ( logc < ay->logged ) && ( ay->ccyc >= ay->writelog[logc].cycle ) )
+      ay_dowrite( ay, &ay->writelog[logc++] );
+
+    if( tapenoise )
+    {
+      while( ( tlogc < ay->tlogged ) && ( ay->ccyc >= ay->tapelog[tlogc].cycle ) )
+        ay->tapeout = ay->tapelog[tlogc++].val * 8192;
+    }
+
+    if( ay->ccyc > ay->lastcyc )
+    {
+      ay_audioticktock( ay, ay->ccyc-ay->lastcyc );
+      ay->lastcyc = ay->ccyc;
+    }
+
+    fout = ay->output + ay->tapeout;
+    out[j++] = fout;
+    out[j++] = fout;
+    if( vidcap ) audiocapbuf[i] = fout;
+
+    if( fout > dcadjustmax ) dcadjustmax = fout;
+    dcadjustave += fout;
+
+    ay->ccycle += cyclespersample;
+  }
+
+  dcadjustave /= (length/4);
+
+  if( (dcadjustmax-dcadjustave) > 32767 )
+    dcadjustave = -(32767-dcadjustmax);
+
+  if( dcadjustave )
+  {
+    for( i=0, j=0; i<actual_length; i++ )
+    {
+      out[j++] -= dcadjustave;
+      out[j++] -= dcadjustave;
+      if( vidcap ) audiocapbuf[i] -= dcadjustave;
+    }
+  }
+
+  if( vidcap )
+  {
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    for( i=0; i<(length/4); i++ )
+      audiocapbuf[i] = SDL_Swap16( audiocapbuf[i] );
+    #endif
+    avi_addaudio( &vidcap, audiocapbuf, length/2 );
+  }
+
+  if (ay->logged > logc)
+  {
+    memmove(&ay->writelog[0], &ay->writelog[logc], (ay->logged-logc) * sizeof(ay->writelog[0]));
+    ay->logged -= logc;
+    for (i=0; i<ay->logged; i++)
+      ay->writelog[i].cycle -= ay->lastcyc;
+
+    /* Got out of sync? */
+    if (ay->logged > 150)
+      ay_flushlog( ay );
+  }
+  else
+  {
+    ay->logged = 0;
+  }
+
+  if( tapenoise )
+  {
+    while( tlogc < ay->tlogged )
+      ay->tapeout = ay->tapelog[tlogc++].val * 8192;
+  }
+
+  SDL_ConvertAudio(&cvt);
+
+  ay->ccycle -= (ay->lastcyc<<FPBITS);
+  ay->lastcyc = 0;
+  ay->newlogcycle = ay->ccycle>>FPBITS;
+  ay->do_logcycle_reset = SDL_TRUE;
+  //  ay->logged   = 0;
+  ay->tlogged  = 0;
+}
+
+#else /* ORICEXOS */
+
 static Uint16 exos_out[4][AUDIO_BUFLEN*2];
 static Uint16 mix_channels(Sint32 i)
 {
@@ -377,55 +493,55 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
 
   if( 0 < oric->exos_id )
     return;
-  
+
   actual_length = length/(2*sizeof(Uint16));
   actual_length = (actual_length < AUDIO_BUFLEN)? actual_length : AUDIO_BUFLEN;
   actual_length = (actual_length < obtained.samples)? actual_length : obtained.samples;
-  
+
   for( n=0; n<4; n++ )
   {
     ay = &oric->exos[n]->ay;
     out = exos_out[n];
-    
+
     logc = 0;
     tlogc = 0;
     dcadjustave = 0;
     dcadjustmax = soundsilence;
-    
+
     tapenoise = ay->oric->tapenoise && ((!ay->oric->tapeturbo)||(ay->oric->rawtape));
     if( !tapenoise ) ay->tapeout = 0;
-    
+
     for( i=0,j=0; i<actual_length; i++ )
     {
       ay->ccyc = ay->ccycle>>FPBITS;
-      
+
       while( ( logc < ay->logged ) && ( ay->ccyc >= ay->writelog[logc].cycle ) )
         ay_dowrite( ay, &ay->writelog[logc++] );
-      
+
       if( tapenoise )
       {
         while( ( tlogc < ay->tlogged ) && ( ay->ccyc >= ay->tapelog[tlogc].cycle ) )
           ay->tapeout = ay->tapelog[tlogc++].val * 8192;
       }
-      
+
       if( ay->ccyc > ay->lastcyc )
       {
         ay_audioticktock( ay, ay->ccyc-ay->lastcyc );
         ay->lastcyc = ay->ccyc;
       }
-      
+
       fout = ay->output + ay->tapeout;
       out[j++] = fout;
       out[j++] = fout;
-      
+
       if( fout > dcadjustmax ) dcadjustmax = fout;
       dcadjustave += fout;
-      
+
       ay->ccycle += cyclespersample;
     }
-    
+
     dcadjustave /= (length/4);
-    
+
     if( (dcadjustmax-dcadjustave) > 32767 )
       dcadjustave = -(32767-dcadjustmax);
 
@@ -444,7 +560,7 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
       ay->logged -= logc;
       for (i=0; i<ay->logged; i++)
         ay->writelog[i].cycle -= ay->lastcyc;
-      
+
       /* Got out of sync? */
       if (ay->logged > 150)
         ay_flushlog( ay );
@@ -453,13 +569,13 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
     {
       ay->logged = 0;
     }
-    
+
     if( tapenoise )
     {
       while( tlogc < ay->tlogged )
         ay->tapeout = ay->tapelog[tlogc++].val * 8192;
     }
-    
+
     ay->ccycle -= (ay->lastcyc<<FPBITS);
     ay->lastcyc = 0;
     ay->newlogcycle = ay->ccycle>>FPBITS;
@@ -471,12 +587,12 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
   out = (Uint16 *)stream;
   for( i=0; i<actual_length*2; i++ )
     out[i] = mix_channels(i);
-  
+
   if( vidcap )
   {
     for( i=0, j=0; i<actual_length; i++, j+=2 )
       audiocapbuf[i] = out[j];
-    
+
     #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     for( i=0; i<(length/4); i++ )
       audiocapbuf[i] = SDL_Swap16( audiocapbuf[i] );
@@ -487,6 +603,8 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
   cvt.buf = (Uint8 *)stream;
   SDL_ConvertAudio(&cvt);
 }
+
+#endif /* ORICEXOS */
 
 /*
 ** Emulate the AY for some clock cycles
@@ -517,7 +635,7 @@ void ay_ticktock( struct ay8912 *ay, int cycles )
             ay->oric->cpu.calcop = ay->oric->cpu.read( &ay->oric->cpu, ay->oric->cpu.calcpc );
           }
           break;
-        
+
         case MACH_ORIC1:
         case MACH_ORIC1_16K:
           if( ( ay->oric->cpu.pc == 0xe905 ) && ( ay->oric->romon ) )
@@ -552,7 +670,7 @@ void ay_ticktock( struct ay8912 *ay, int cycles )
             ay->oric->auto_jasmin_reset = SDL_FALSE;
           }
           break;
-        
+
         case MACH_ORIC1:
         case MACH_ORIC1_16K:
           if( ( ay->oric->cpu.pc == 0xe905 ) && ( ay->oric->romon ) )
@@ -752,7 +870,7 @@ void ay_modeset( struct ay8912 *ay )
       ay->oric->via.write_port_a( &ay->oric->via, 0xff, ay->oric->porta_ay );
       ay->oric->porta_is_ay = SDL_TRUE;
       break;
-    
+
     case AYBMF_BDIR: // Write AY register
       if( ay->creg >= NUM_AY_REGS ) break;
       v = ay->oric->via.read_port_a( &ay->oric->via );
@@ -816,7 +934,7 @@ void ay_modeset( struct ay8912 *ay )
           break;
       }
       break;
-    
+
     case AYBMF_BDIR|AYBMF_BC1: // Set register
       ay->creg = ay->oric->via.read_port_a( &ay->oric->via );
       break;

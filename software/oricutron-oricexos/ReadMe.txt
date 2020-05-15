@@ -14,7 +14,7 @@ Current status
   AY:    99% done.
   Video: 100% done
   Tape:  99% done (.TAP, .ORT and .WAV supported)
-  Disk:  Reading/Writing sectors works. No track read/write.
+  Disk:  90% done (single-density mode not supported)
 
 
 
@@ -146,6 +146,8 @@ Here are all the options:
 
                        "microdisc" or "m" for Microdisc
                        "jasmin" or "j" for Jasmin
+                       "bd500" or "b" for ByteDrive BD-500
+                       "pravetz" or "p" for Pravetz-8D FDC
 
   -s / --symbols     = Load symbols from a file
   -f / --fullscreen  = Run oricutron fullscreen
@@ -290,7 +292,9 @@ Commands:
   bz                    - Zap breakpoints
   bzm                   - Zap mem breakpoints
   d <addr>              - Disassemble
-  df <addr> <end> <file>- Disassemble to file
+  fd <addr> <end> <file>- Disassemble to file
+  fw <addr> <len> <file>- Write mem to BIN file
+  fr <addr> <file>      - Read BIN file to mem
   m <addr>              - Dump memory
   mm <addr> <value>     - Modify memory
   mw <addr>             - Memory watch at addr
@@ -306,14 +310,13 @@ Commands:
   sl <file>             - Load user symbols
   sx <file>             - Export user symbols
   sz                    - Zap user symbols
-  wm <addr> <len> <file>- Write mem to disk
 
 
 
 Breakpoints
 ===========
 
-There are two types of breakpoints. "Normal" breakpoints trigger when the CPU
+There are two types of breakpoint. "Normal" breakpoints trigger when the CPU
 is about to execute an instruction at the breakpoint address. "Memory" breakpoints
 trigger when the breakpoint address is accessed or modified.
 
@@ -324,7 +327,7 @@ bs $0c00 z         <-- Break when the CPU is about to execute code at $0c00
 bs $0c00 zc        <-- Set cycles counter to 0 and continues
 bs $0c00 c         <-- Continues execution (i.e. disabled breakpoint)
 
-Main purpose of this modifiers is to make cycle counting easier.
+The main purpose of these modifiers is to make cycle counting easier.
 If symbols are loaded, they can be used instead of absolute addresses.
 
 There are three ways a memory breakpoint can be triggered; when the CPU is about
@@ -350,7 +353,7 @@ and macOS. The best way to cope with them is to install an UK or US
 keyboard definition and to switch to it *before* starting oricutron.
 
 Under macOS you can do that in the "System Preferences", "Keyboard", "Input
-sources". Click on the + and search for the UK or US keyboard.
+Sources". Click on the + and search for the UK or US keyboard.
 
 Under Ubuntu you can do that in the System menu, select Preferences, and
 then select Keyboard. In the Keyboard Preferences dialog, select the
@@ -394,7 +397,7 @@ Oricutron can emulate ACIA at address #31C (standard address for Telestrat).
 The emulation works for Oric, Atmos, Telestrat and Pravetz and can be used
 together with any disk type.
 
-The emulated ACIA communicates with the out-side world trough back-ends.
+The emulated ACIA communicates with the out-side world through back-ends.
 Back-ends can be configured from 'oricutron.cfg' or from command line
 (see default 'oricutron.cfg' for usage).
 
@@ -453,10 +456,10 @@ CH376 command emulated :
 - CH376_CMD_BYTE_WR_GO
 - CH376_CMD_DISK_QUERY
 - CH376_CMD_DIR_CREATE (not emulated under linux)
-- CH376_CMD_DISK_RD_GO 
+- CH376_CMD_DISK_RD_GO
 
 Known bug :
-Under windows, API's file does not send "." and ".." entries when we read the content on the folder. It's a problem because ch376 chip send these 
+Under windows, API's file does not send "." and ".." entries when we read the content on the folder. It's a problem because ch376 chip send these
 entries, when we ask to this chip to read the content of a directory.
 
 If someone wants to emulate CH376_CMD_DIR_CREATE and CH376_CMD_FILE_ERASE. It's easy to do : it justs need to copy WIN32 function and replace DeleteFile

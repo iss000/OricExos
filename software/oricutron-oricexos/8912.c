@@ -287,7 +287,7 @@ void ay_dowrite( struct ay8912 *ay, struct aywrite *aw )
       ay->regs[aw->reg] = aw->val;
       ay->toneper[2] = (((ay->regs[AY_CHC_PER_H]&0xf)<<8)|ay->regs[AY_CHC_PER_L]) * TONETIME;
       break;
-
+    
     case AY_STATUS:      // Status
       ay->regs[aw->reg] = aw->val;
       ay->tonebit[0]  = (aw->val&0x01)?1:0;
@@ -315,7 +315,7 @@ void ay_dowrite( struct ay8912 *ay, struct aywrite *aw )
         ay->vol[i] = voltab[aw->val&0xf];
       ay->newout |= (1<<i);
       break;
-
+    
     case AY_ENV_PER_L:
     case AY_ENV_PER_H:
       ay->regs[aw->reg] = aw->val;
@@ -381,7 +381,7 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
   actual_length = length/(2*sizeof(Uint16));
   actual_length = (actual_length < AUDIO_BUFLEN)? actual_length : AUDIO_BUFLEN;
   actual_length = (actual_length < obtained.samples)? actual_length : obtained.samples;
-
+  
   for( i=0,j=0; i<actual_length; i++ )
   {
     ay->ccyc = ay->ccycle>>FPBITS;
@@ -417,7 +417,7 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
   if( (dcadjustmax-dcadjustave) > 32767 )
     dcadjustave = -(32767-dcadjustmax);
 
-  if( dcadjustave )
+  if( ay->oric->dcadjust && dcadjustave )
   {
     for( i=0, j=0; i<actual_length; i++ )
     {
@@ -429,10 +429,10 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
 
   if( vidcap )
   {
-    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
     for( i=0; i<(length/4); i++ )
       audiocapbuf[i] = SDL_Swap16( audiocapbuf[i] );
-    #endif
+#endif
     avi_addaudio( &vidcap, audiocapbuf, length/2 );
   }
 
@@ -464,7 +464,7 @@ void ay_callback( void *dummy, Sint8 *stream, int length )
   ay->lastcyc = 0;
   ay->newlogcycle = ay->ccycle>>FPBITS;
   ay->do_logcycle_reset = SDL_TRUE;
-  //  ay->logged   = 0;
+//  ay->logged   = 0;
   ay->tlogged  = 0;
 }
 
@@ -635,7 +635,7 @@ void ay_ticktock( struct ay8912 *ay, int cycles )
             ay->oric->cpu.calcop = ay->oric->cpu.read( &ay->oric->cpu, ay->oric->cpu.calcpc );
           }
           break;
-
+        
         case MACH_ORIC1:
         case MACH_ORIC1_16K:
           if( ( ay->oric->cpu.pc == 0xe905 ) && ( ay->oric->romon ) )
@@ -670,7 +670,7 @@ void ay_ticktock( struct ay8912 *ay, int cycles )
             ay->oric->auto_jasmin_reset = SDL_FALSE;
           }
           break;
-
+        
         case MACH_ORIC1:
         case MACH_ORIC1_16K:
           if( ( ay->oric->cpu.pc == 0xe905 ) && ( ay->oric->romon ) )
@@ -788,10 +788,10 @@ SDL_bool ay_init( struct ay8912 *ay, struct machine *oric )
 
   if( oric->exos_id == 0 )
   {
-    // initialize audio conversion system for SDL2
-    SDL_BuildAudioCVT(&cvt, AUDIO_S16SYS, 2, AUDIO_FREQ, obtained.format, obtained.channels, obtained.freq);
-    cvt.len = obtained.samples * sizeof(Sint16) * obtained.channels;
-    // Do not allocate a buffer, write directly into the callback stream
+  // initialize audio conversion system for SDL2
+  SDL_BuildAudioCVT(&cvt, AUDIO_S16SYS, 2, AUDIO_FREQ, obtained.format, obtained.channels, obtained.freq);
+  cvt.len = obtained.samples * sizeof(Sint16) * obtained.channels;
+  // Do not allocate a buffer, write directly into the callback stream
   }
 
   return SDL_TRUE;
@@ -870,7 +870,7 @@ void ay_modeset( struct ay8912 *ay )
       ay->oric->via.write_port_a( &ay->oric->via, 0xff, ay->oric->porta_ay );
       ay->oric->porta_is_ay = SDL_TRUE;
       break;
-
+    
     case AYBMF_BDIR: // Write AY register
       if( ay->creg >= NUM_AY_REGS ) break;
       v = ay->oric->via.read_port_a( &ay->oric->via );
@@ -934,7 +934,7 @@ void ay_modeset( struct ay8912 *ay )
           break;
       }
       break;
-
+    
     case AYBMF_BDIR|AYBMF_BC1: // Set register
       ay->creg = ay->oric->via.read_port_a( &ay->oric->via );
       break;

@@ -27,7 +27,8 @@ enum
   DRV_NONE = 0,
   DRV_JASMIN,
   DRV_MICRODISC,
-  DRV_PRAVETZ
+  DRV_BD500,
+  DRV_PRAVETZ,
 };
 
 enum
@@ -70,6 +71,7 @@ enum
   IMG_ATMOS_MICRODISC,
   IMG_ATMOS_JASMIN,
   IMG_TELESTRAT_DISK,
+  IMG_BD500_DISK,
   IMG_PRAVETZ_DISK,
   IMG_GUESS_MICRODISC,
   IMG_SNAPSHOT,
@@ -145,7 +147,7 @@ struct machine
   int vsync;
 
   SDL_bool vid_double;
-  SDL_bool romdis, romon;
+  SDL_bool romdis, romon, rom16;
   SDL_bool vsynchack;
 
   unsigned short vid_addr;
@@ -160,6 +162,7 @@ struct machine
   int drivetype;
   struct wd17xx    wddisk;
   struct microdisc md;
+  struct bd500     bd;
   struct jasmin    jasmin;
   struct pravetz   pravetz;
   char diskname[MAX_DRIVES][32];

@@ -81,6 +81,7 @@ extern char tapepath[], diskpath[], telediskpath[], pravdiskpath[];
 extern char atmosromfile[];
 extern char oric1romfile[];
 extern char mdiscromfile[];
+extern char bd500romfile[];
 extern char jasmnromfile[];
 extern char pravetzromfile[2][1024];
 extern char telebankfiles[8][1024];
@@ -131,6 +132,8 @@ struct start_opts
   Sint32   start_syms_count;
   char     start_snapshot[1024];
   char    *start_breakpoint;
+  Sint32   start_disks_count;
+  char     start_disks[4][1024];
 };
 
 static char *machtypes[] = { "oric1",
@@ -143,6 +146,7 @@ static char *machtypes[] = { "oric1",
 static char *disktypes[] = { "none",
                              "jasmin",
                              "microdisc",
+                             "bd500",
                              "pravetz",
                              NULL };
 
@@ -430,6 +434,7 @@ static void load_config( struct start_opts *sto, struct machine *oric )
     if( read_config_bool(   &sto->lctmp[i], "aratio",       &oric->aratio ) ) continue;
     if( read_config_bool(   &sto->lctmp[i], "hstretch",     &oric->hstretch ) ) continue;
     if( read_config_bool(   &sto->lctmp[i], "palghosting",  &oric->palghost ) ) continue;
+    if( read_config_bool(   &sto->lctmp[i], "rom16",        &oric->rom16 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "diskimage",    sto->start_disk, 1024 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "tapeimage",    sto->start_tape, 1024 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "symbols",      sto->start_syms, 1024 ) ) continue;
@@ -440,6 +445,7 @@ static void load_config( struct start_opts *sto, struct machine *oric )
     if( read_config_string( &sto->lctmp[i], "atmosrom",     atmosromfile, 1024 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "oric1rom",     oric1romfile, 1024 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "mdiscrom",     mdiscromfile, 1024 ) ) continue;
+    if( read_config_string( &sto->lctmp[i], "bd500rom",     bd500romfile, 1024 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "jasminrom",    jasmnromfile, 1024 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "pravetzrom",   pravetzromfile[0], 1024 ) ) continue;
     if( read_config_string( &sto->lctmp[i], "pravetz8drom", pravetzromfile[1], 1024 ) ) continue;
@@ -565,6 +571,7 @@ static void usage( int ret )
           "\n"
           "                       \"microdisc\" or \"m\" for Microdisc\n"
           "                       \"jasmin\" or \"j\" for Jasmin\n"
+          "                       \"bd500\" or \"b\" for Byte Drive 500\n"
           "                       \"pravetz\" or \"p\" for Pravetz\n"
           "                       \"none\" or \"n\"\n"
           "\n"
@@ -666,6 +673,11 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
   sto->start_disktype_set = SDL_FALSE;
   sto->start_debug    = SDL_FALSE;
   sto->start_rendermode = RENDERMODE_SW;
+  sto->start_disks_count = 0;
+  sto->start_disks[0][0] = 0;
+  sto->start_disks[1][0] = 0;
+  sto->start_disks[2][0] = 0;
+  sto->start_disks[3][0] = 0;
   sto->start_disk[0]  = 0;
   sto->start_tape[0]  = 0;
   sto->start_syms[0]  = 0;
@@ -904,6 +916,7 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
               case IMG_ATMOS_MICRODISC:
               case IMG_ATMOS_JASMIN:
               case IMG_TELESTRAT_DISK:
+              case IMG_BD500_DISK:
               case IMG_PRAVETZ_DISK:
               case IMG_GUESS_MICRODISC:
                 printf("'%s' seems to be a disk image.\n", opt_arg);
@@ -954,6 +967,11 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
                 if (!sto->start_disktype_set) sto->start_disktype = DRV_MICRODISC;
                 break;
 
+              case IMG_BD500_DISK:
+                if (!sto->start_machine_set)  sto->start_machine = MACH_ATMOS;
+                if (!sto->start_disktype_set) sto->start_disktype = DRV_BD500;
+                break;
+
               case IMG_PRAVETZ_DISK:
                 if (!sto->start_machine_set)  sto->start_machine = MACH_PRAVETZ;
                 if (!sto->start_disktype_set) sto->start_disktype = DRV_PRAVETZ;
@@ -973,7 +991,16 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
                 printf("'%s' seems to be a snapshot file.\n", opt_arg);
                 strncpy( sto->start_snapshot, opt_arg, 1024);
                 sto->start_snapshot[1023] = 0;
+                sto->start_disk[0] = 0;
                 break;
+            }
+            if( sto->start_disk[0] )
+            {
+              if( sto->start_disks_count < 4 )
+              {
+                strcpy( sto->start_disks[sto->start_disks_count], sto->start_disk );
+                sto->start_disks_count++;
+              }
             }
           } else {
             error_printf( "No disk image specified" );
@@ -989,6 +1016,13 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
                ( strcasecmp( opt_arg, "m"         ) == 0 ))
             {
               sto->start_disktype = DRV_MICRODISC;
+              sto->start_disktype_set = SDL_TRUE;
+              break;
+            }
+            if(( strcasecmp( opt_arg, "bd500" ) == 0 ) ||
+               ( strcasecmp( opt_arg, "b"     ) == 0 ))
+            {
+              sto->start_disktype = DRV_BD500;
               sto->start_disktype_set = SDL_TRUE;
               break;
             }
@@ -1111,6 +1145,13 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
           sto->start_disk[1023] = 0;
           break;
 
+        case IMG_BD500_DISK:
+          if (!sto->start_machine_set)  sto->start_machine = MACH_ATMOS;
+          if (!sto->start_disktype_set) sto->start_disktype = DRV_BD500;
+          strncpy( sto->start_disk, argv[i], 1024 );
+          sto->start_disk[1023] = 0;
+          break;
+
         case IMG_PRAVETZ_DISK:
           if (!sto->start_machine_set)  sto->start_machine = MACH_PRAVETZ;
           if (!sto->start_disktype_set) sto->start_disktype = DRV_PRAVETZ;
@@ -1132,6 +1173,14 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
         default:
           free( sto );
           usage( EXIT_FAILURE );
+      }
+      if( sto->start_disk[0] )
+      {
+        if( sto->start_disks_count < 4 )
+        {
+          strcpy( sto->start_disks[sto->start_disks_count], sto->start_disk );
+          sto->start_disks_count++;
+        }
       }
     }
   }
@@ -1155,7 +1204,14 @@ SDL_bool init( struct machine *oric, int argc, char *argv[] )
 
   if( sto->start_disk[0] )
   {
-    diskimage_load( oric, sto->start_disk, 0 );
+    for( i=0; i<4; i++ )
+    {
+      disk_eject( oric, i );
+    }
+    for( i=0; i<sto->start_disks_count; i++ )
+    {
+      diskimage_load( oric, sto->start_disks[i], i );
+    }
     switch (oric->drivetype)
     {
       case DRV_PRAVETZ:
@@ -1296,7 +1352,16 @@ void frameloop_overclock( struct machine *oric, SDL_bool *framedone, SDL_bool *n
       /* Move the emulation on */
       via_clock( &oric->via, instcycles );
       ay_ticktock( &oric->ay, instcycles );
-      if((oric->drivetype == DRV_MICRODISC) || (oric->drivetype == DRV_JASMIN)) wd17xx_ticktock( &oric->wddisk, instcycles );
+
+      switch( oric->drivetype )
+      {
+        case DRV_MICRODISC:
+        case DRV_BD500:
+        case DRV_JASMIN:
+          wd17xx_ticktock( &oric->wddisk, instcycles );
+          break;
+      }
+
       if( oric->type == MACH_TELESTRAT )
       {
         via_clock( &oric->tele_via, instcycles );
@@ -1360,7 +1425,15 @@ void frameloop_normal( struct machine *oric, SDL_bool *framedone, SDL_bool *need
       ay_ticktock( &oric->exos[1]->ay, oric->exos[1]->cpu.icycles );
       ay_ticktock( &oric->ay, oric->cpu.icycles );
 
-      if((oric->drivetype == DRV_MICRODISC) || (oric->drivetype == DRV_JASMIN)) wd17xx_ticktock( &oric->wddisk, oric->cpu.icycles );
+      switch( oric->drivetype )
+      {
+        case DRV_MICRODISC:
+        case DRV_BD500:
+        case DRV_JASMIN:
+          wd17xx_ticktock( &oric->wddisk, oric->cpu.icycles );
+          break;
+      }
+
       if( oric->type == MACH_TELESTRAT )
       {
         via_clock( &oric->tele_via, oric->cpu.icycles );
@@ -1702,7 +1775,7 @@ int main( int argc, char *argv[] )
     avv = (char**)realloc(avv, sizeof(char*)*(ac+1));
     avv[ac] = strdup(av0[ac]);
   }
-  
+
   for( acc = 1; acc<argc; ac++, acc++ )
   {
     avv = (char**)realloc(avv, sizeof(char*)*(ac+1));
@@ -1710,7 +1783,7 @@ int main( int argc, char *argv[] )
     if( !strcmp(argv[acc], "-m1") ) exostype = MACH_ORIC1;
     if( !strcmp(argv[acc], "-ma") ) exostype = MACH_ATMOS;
   }
-  
+
   if( exostype == MACH_ATMOS )
   {
     acc = sizeof(avatmos)/sizeof(avatmos[0]);
@@ -1725,7 +1798,7 @@ int main( int argc, char *argv[] )
     isinit &= init( &exos[2], acc, avoric1 );
     isinit &= init( &exos[1], acc, avoric1 );
   }
-  
+
   isinit &= init( &exos[0], ac, avv );
 
   while(ac-->0) free(avv[ac]);

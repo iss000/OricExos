@@ -74,6 +74,7 @@ char pravdiskpath[4096], pravdiskfile[512];
 extern char atmosromfile[];
 extern char oric1romfile[];
 extern char mdiscromfile[];
+extern char bd500romfile[];
 extern char jasmnromfile[];
 extern char pravetzromfile[2][1024];
 extern char telebankfiles[8][1024];
@@ -272,6 +273,7 @@ struct osdmenuitem hwopitems[] = { { " Oric-1",                "1",    SDLK_1,  
                                    { " No disk",               "X",    'x',      setdrivetype,    DRV_NONE, 0 },
                                    { " Microdisc",             "M",    'm',      setdrivetype,    DRV_MICRODISC, 0 },
                                    { " Jasmin",                "J",    'j',      setdrivetype,    DRV_JASMIN, 0 },
+                                   { " BD500",                 "B",    'b',      setdrivetype,    DRV_BD500, 0 },
 //                                   { " Cumana",                "C",    'c',      NULL,            0, 0 },
                                    { " Pravetz 8D disk",       "P",    'p',      setdrivetype,    DRV_PRAVETZ, 0 },
                                    { OSDMENUBAR,               NULL,   0,        NULL,            0, 0 },
@@ -2201,6 +2203,7 @@ void preinit_gui( struct machine *oric )
   strcpy( atmosromfile, ROMPREFIX"basic11b" );
   strcpy( oric1romfile, ROMPREFIX"basic10" );
   strcpy( mdiscromfile, ROMPREFIX"microdis" );
+  strcpy( bd500romfile, ROMPREFIX"bd500" );
   strcpy( jasmnromfile, ROMPREFIX"jasmin" );
   strcpy( pravetzromfile[0], ROMPREFIX"pravetzt" );
   strcpy( pravetzromfile[1], ROMPREFIX"8dos2" );
@@ -2226,6 +2229,7 @@ void setmenutoggles( struct machine *oric )
   {
     case DRV_JASMIN:
     case DRV_MICRODISC:
+    case DRV_BD500:
       find_item_by_key(mainitems, SDLK_0)->func = insertdisk;
       find_item_by_key(mainitems, SDLK_1)->func = insertdisk;
       find_item_by_key(mainitems, SDLK_2)->func = insertdisk;
@@ -2339,10 +2343,11 @@ void setmenutoggles( struct machine *oric )
   find_item_by_key(hwopitems, 'j')->func = jasminrom_valid ? setdrivetype : NULL;
   find_item_by_key(hwopitems, 'p')->func = pravetzrom_valid ? setdrivetype : NULL;
 
-  find_item_by_key(hwopitems, 'x')->name = oric->drivetype==DRV_NONE      ? "\x0e""No disk"        : " No disk";
-  find_item_by_key(hwopitems, 'm')->name = oric->drivetype==DRV_MICRODISC ? "\x0e""Microdisc"      : " Microdisc";
-  find_item_by_key(hwopitems, 'j')->name = oric->drivetype==DRV_JASMIN    ? "\x0e""Jasmin"         : " Jasmin";
-  find_item_by_key(hwopitems, 'p')->name = oric->drivetype==DRV_PRAVETZ   ? "\x0e""Pravetz 8D disk": " Pravetz 8D disk";
+  find_item_by_key(hwopitems, 'x')->name = oric->drivetype==DRV_NONE      ? "\x0e""No disk"         : " No disk";
+  find_item_by_key(hwopitems, 'm')->name = oric->drivetype==DRV_MICRODISC ? "\x0e""Microdisc"       : " Microdisc";
+  find_item_by_key(hwopitems, 'b')->name = oric->drivetype==DRV_BD500     ? "\x0e""BD500"           : " BD500";
+  find_item_by_key(hwopitems, 'j')->name = oric->drivetype==DRV_JASMIN    ? "\x0e""Jasmin"          : " Jasmin";
+  find_item_by_key(hwopitems, 'p')->name = oric->drivetype==DRV_PRAVETZ   ? "\x0e""Pravetz 8D disk" : " Pravetz 8D disk";
 
   if(oric->show_keyboard)
      find_item_by_function(keopitems, togglekeyboard)->name = "\x0e""Show keyboard";
@@ -2383,24 +2388,24 @@ SDL_bool init_gui( struct machine *oric, Sint32 rendermode )
 
   if( oric->exos_id == 0 )
   {
-    // Set up SDL audio
-    wanted.freq     = AUDIO_FREQ;
-    wanted.format   = AUDIO_S16SYS;
-    wanted.channels = 2; /* 1 = mono, 2 = stereo */
-    wanted.samples  = AUDIO_BUFLEN;
-    
-    wanted.callback = (void*)ay_callback;
-    wanted.userdata = &oric->ay;
-    
-    soundavailable = SDL_FALSE;
-    soundon = SDL_FALSE;
-    if( SDL_OpenAudio( &wanted, &obtained ) >= 0 )
-    {
-      soundon = SDL_TRUE;
-      soundavailable = SDL_TRUE;
-      soundsilence = obtained.silence * 8192;
-      cyclespersample = ((CYCLESPERSECOND<<FPBITS)/obtained.freq);
-    }
+  // Set up SDL audio
+  wanted.freq     = AUDIO_FREQ;
+  wanted.format   = AUDIO_S16SYS;
+  wanted.channels = 2; /* 1 = mono, 2 = stereo */
+  wanted.samples  = AUDIO_BUFLEN;
+
+  wanted.callback = (void*)ay_callback;
+  wanted.userdata = &oric->ay;
+
+  soundavailable = SDL_FALSE;
+  soundon = SDL_FALSE;
+  if( SDL_OpenAudio( &wanted, &obtained ) >= 0 )
+  {
+    soundon = SDL_TRUE;
+    soundavailable = SDL_TRUE;
+    soundsilence = obtained.silence * 8192;
+    cyclespersample = ((CYCLESPERSECOND<<FPBITS)/obtained.freq);
+  }
   }
 
   setmenutoggles( oric );

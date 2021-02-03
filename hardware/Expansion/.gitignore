@@ -1,0 +1,33 @@
+*-backup/*
+*-backups/*
+# Temporary files
+*-save.kicad_pcb
+*-save.pro
+*.000
+*.bak
+*.bck
+*.*-bak
+*.tmp
+*~
+_autosave-*
+_saved_*
+*-cache
+*-rescue.*
+sym-lib-table
+
+
+# Netlists and autorouter files (exported from Pcbnew)
+# *.dsn
+# *.net
+# *.ses
+
+# Reports
+*.rpt
+
+# CPL data generated from PCB
+*.pos
+
+# Exported BOM files
+*.csv
+*.csv.tmp
+*.xml
